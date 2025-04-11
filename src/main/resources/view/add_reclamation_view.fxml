@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.AddReclamationController">
+
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #fff5f2; -fx-padding: 15 30;">
+            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                <image>
+                    <Image url="@/img/logo.png" />
+                </image>
+            </ImageView>
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
+            <HBox spacing="15">
+                <Hyperlink text="Home" style="-fx-text-fill: black; -fx-font-size: 14px;" />
+                <Hyperlink text="About Us" style="-fx-text-fill: black; -fx-font-size: 14px;" />
+                <Hyperlink text="Classes" style="-fx-text-fill: black; -fx-font-size: 14px;" />
+                <Hyperlink text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold;" />
+                <Hyperlink text="Boite de Discussions" style="-fx-text-fill: black; -fx-font-size: 14px;" />
+            </HBox>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" alignment="CENTER" style="-fx-background-color: #fff5f2; -fx-padding: 40;">
+            <Label text="Envoyer une Réclamation" style="-fx-font-size: 26px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;"/>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="500">
+                <!-- Email -->
+                <TextField fx:id="emailField" promptText="Votre Email"/>
+                <Label fx:id="emailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+
+                <!-- Role -->
+                <TextField fx:id="roleField" promptText="Votre Rôle"/>
+
+                <!-- Admin Email -->
+                <TextField fx:id="adminMailField" promptText="Email de l'Administrateur"/>
+                <Label fx:id="adminEmailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+
+                <!-- Objet -->
+                <TextField fx:id="objetField" promptText="Objet de la Réclamation"/>
+
+                <!-- Description -->
+                <TextArea fx:id="descriptionArea" promptText="Description" prefRowCount="4"/>
+
+                <!-- Submit -->
+                <Button text="Soumettre" onAction="#handleSave" maxWidth="Infinity"
+                        style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 0;"/>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
