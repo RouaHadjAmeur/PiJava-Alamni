@@ -4,58 +4,94 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.AddReclamationController">
 
+    <!-- Header -->
     <top>
-        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #fff5f2; -fx-padding: 15 30;">
-            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+            <ImageView fitHeight="60" fitWidth="90">
                 <image>
                     <Image url="@/img/logo.png" />
                 </image>
             </ImageView>
             <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
-            <HBox spacing="15">
-                <Hyperlink text="Home" style="-fx-text-fill: black; -fx-font-size: 14px;" />
-                <Hyperlink text="About Us" style="-fx-text-fill: black; -fx-font-size: 14px;" />
-                <Hyperlink text="Classes" style="-fx-text-fill: black; -fx-font-size: 14px;" />
-                <Hyperlink text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold;" />
-                <Hyperlink text="Boite de Discussions" style="-fx-text-fill: black; -fx-font-size: 14px;" />
+            <HBox spacing="20">
+                <Hyperlink text="Home" style="-fx-text-fill: #374151; -fx-font-size: 14px;" />
+                <Hyperlink text="About Us" style="-fx-text-fill: #374151; -fx-font-size: 14px;" />
+                <Hyperlink text="Classes" style="-fx-text-fill: #374151; -fx-font-size: 14px;" />
+                <Hyperlink text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px;" />
+                <Hyperlink text="Discussion" style="-fx-text-fill: #374151; -fx-font-size: 14px;" />
             </HBox>
         </HBox>
     </top>
 
+    <!-- Content -->
     <center>
-        <VBox spacing="20" alignment="CENTER" style="-fx-background-color: #fff5f2; -fx-padding: 40;">
-            <Label text="Envoyer une Réclamation" style="-fx-font-size: 26px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;"/>
+        <VBox spacing="30" alignment="CENTER" style="-fx-background-color: #fff5f2; -fx-padding: 15;">
+            <Label text="Envoyer une Réclamation"
+                   style="-fx-font-size: 28px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;"/>
 
-            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="500">
+            <VBox spacing="20" alignment="CENTER_LEFT" maxWidth="500"
+                  style="-fx-background-color: #ffffff; -fx-padding: 15; -fx-background-radius: 12;
+             -fx-border-color: #e5e7eb; -fx-border-radius: 12;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 4);">
+
                 <!-- Email -->
-                <TextField fx:id="emailField" promptText="Votre Email"/>
-                <Label fx:id="emailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+                <VBox spacing="3">
+                    <Label text="Votre Email" style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;"/>
+                    <TextField fx:id="emailField" promptText="Ex : example@gmail.com"
+                               style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;"/>
+                    <Label fx:id="emailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+                </VBox>
 
-                <!-- Role -->
-                <TextField fx:id="roleField" promptText="Votre Rôle"/>
+                <!-- Rôle -->
+                <VBox spacing="3">
+                    <Label text="Votre Rôle" style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;"/>
+                    <TextField fx:id="roleField" promptText="Ex : Étudiant(e)"
+                               style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;"/>
+                    <Label fx:id="roleErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
 
-                <!-- Admin Email -->
-                <TextField fx:id="adminMailField" promptText="Email de l'Administrateur"/>
-                <Label fx:id="adminEmailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+                </VBox>
+
+                <!-- Email Admin -->
+                <VBox spacing="3">
+                    <Label text="Email de l'Administrateur" style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;"/>
+                    <TextField fx:id="adminMailField" promptText="Ex : admin@gmail.com"
+                               style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;"/>
+                    <Label fx:id="adminEmailErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+                </VBox>
 
                 <!-- Objet -->
-                <TextField fx:id="objetField" promptText="Objet de la Réclamation"/>
+                <VBox spacing="3">
+                    <Label text="Objet" style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;"/>
+                    <TextField fx:id="objetField" promptText="Ex : Problème d'accès"
+                               style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;"/>
+                    <Label fx:id="objetErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
+
+                </VBox>
 
                 <!-- Description -->
-                <TextArea fx:id="descriptionArea" promptText="Description" prefRowCount="4"/>
+                <VBox spacing="3">
+                    <Label text="Description" style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;"/>
+                    <TextArea fx:id="descriptionArea" promptText="Expliquer votre problème..."
+                              prefRowCount="4"
+                              style="-fx-background-radius: 12; -fx-background-color: #ffffff; -fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 12;"/>
+                    <Label fx:id="descriptionErrorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 11px;" />
 
-                <!-- Submit -->
+                </VBox>
+
+                <!-- Button -->
                 <Button text="Soumettre" onAction="#handleSave" maxWidth="Infinity"
-                        style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 0;"/>
+                        style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold;
+                   -fx-background-radius: 30; -fx-padding: 10 0;"/>
             </VBox>
+
+
         </VBox>
+
     </center>
 
 </BorderPane>

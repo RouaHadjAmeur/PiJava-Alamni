@@ -11,7 +11,8 @@ import model.Reclamation;
 import model.ReponseReclamation;
 import services.ReclamationServices;
 import services.ReponseReclamationService;
-
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import java.util.List;
 
 public class ReclamationDetailsController {
@@ -102,13 +103,63 @@ public class ReclamationDetailsController {
             date.setStyle("-fx-font-size: 10px; -fx-text-fill: #7f8fa6;");
 
 
-
             Button btnModifier = new Button("Modifier");
             btnModifier.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 3 10;");
+
             btnModifier.setOnAction(e -> {
-                TextInputDialog dialog = new TextInputDialog(rep.getContenue());
-                dialog.setHeaderText("Modifier la réponse");
-                dialog.setContentText("Contenu :");
+                Dialog<String> dialog = new Dialog<>();
+                dialog.setTitle("Modifier la réponse");
+                dialog.setHeaderText("Saisir la nouvelle réponse :");
+                dialog.getDialogPane().setStyle("-fx-background-color: #ffffff;"); 
+
+
+                ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+                VBox content = new VBox(10);
+                content.setPadding(new Insets(10));
+
+                TextArea textArea = new TextArea(rep.getContenue());
+                textArea.setWrapText(true);
+                textArea.setPrefRowCount(4);
+
+                Label errorLabel = new Label();
+                errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+
+                content.getChildren().addAll(textArea, errorLabel);
+                dialog.getDialogPane().setContent(content);
+
+                Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
+                saveButton.setDisable(true);
+
+                textArea.textProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal.trim().isEmpty()) {
+                        errorLabel.setText("La réponse ne doit pas être vide.");
+                        saveButton.setDisable(true);
+                    } else if (newVal.trim().length() < 10) {
+                        errorLabel.setText("Minimum 10 caractères requis.");
+                        saveButton.setDisable(true);
+                    } else {
+                        errorLabel.setText("");
+                        saveButton.setDisable(false);
+                    }
+                });
+
+                // Custom Style for Buttons
+                dialog.setOnShown(event -> {
+                    Button btnSave = (Button) dialog.getDialogPane().lookupButton(saveButtonType);
+                    btnSave.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 20;");
+
+                    Button btnCancel = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    btnCancel.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 20;");
+                });
+
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == saveButtonType) {
+                        return textArea.getText().trim();
+                    }
+                    return null;
+                });
 
                 dialog.showAndWait().ifPresent(newText -> {
                     rep.setContenue(newText);
@@ -116,6 +167,10 @@ public class ReclamationDetailsController {
                     afficherReponses();
                 });
             });
+
+
+
+
 
             // Bouton Supprimer
             Button btnSupprimer = new Button("Supprimer");

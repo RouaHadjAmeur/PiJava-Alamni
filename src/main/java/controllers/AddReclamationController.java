@@ -18,6 +18,9 @@ public class AddReclamationController {
     @FXML private TextField roleField;
 
     @FXML private Label emailErrorLabel;
+    @FXML private Label objetErrorLabel;
+    @FXML private Label descriptionErrorLabel;
+    @FXML private Label roleErrorLabel;
     @FXML private Label adminEmailErrorLabel;
 
     private final ReclamationServices service = new ReclamationServices();
@@ -28,6 +31,7 @@ public class AddReclamationController {
 
         boolean valid = true;
 
+        // Email utilisateur
         if (emailField.getText().isEmpty()) {
             emailErrorLabel.setText("L'email est requis.");
             valid = false;
@@ -36,6 +40,7 @@ public class AddReclamationController {
             valid = false;
         }
 
+        // Email admin
         if (adminMailField.getText().isEmpty()) {
             adminEmailErrorLabel.setText("Email admin requis.");
             valid = false;
@@ -44,10 +49,30 @@ public class AddReclamationController {
             valid = false;
         }
 
-        if (objetField.getText().isEmpty() ||
-                descriptionArea.getText().isEmpty() ||
-                roleField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Veuillez remplir tous les champs !");
+        // Objet
+        if (objetField.getText().isEmpty()) {
+            objetErrorLabel.setText("Objet requis.");
+            valid = false;
+        } else if (objetField.getText().length() < 4) {
+            objetErrorLabel.setText("Au moins 4 lettres.");
+            valid = false;
+        }
+
+        // Description
+        if (descriptionArea.getText().isEmpty()) {
+            descriptionErrorLabel.setText("Description requise.");
+            valid = false;
+        } else if (descriptionArea.getText().length() < 10) {
+            descriptionErrorLabel.setText("Au moins 10 lettres.");
+            valid = false;
+        }
+
+        // Role
+        if (roleField.getText().isEmpty()) {
+            roleErrorLabel.setText("Rôle requis.");
+            valid = false;
+        } else if (roleField.getText().length() < 3) {
+            roleErrorLabel.setText("Au moins 3 lettres.");
             valid = false;
         }
 
@@ -62,7 +87,7 @@ public class AddReclamationController {
                     new Date(System.currentTimeMillis()),
                     adminMailField.getText(),
                     roleField.getText(),
-                    0 // userId auto ou non utilisé
+                    0
             );
 
             service.add(r);
@@ -74,6 +99,7 @@ public class AddReclamationController {
             showAlert(Alert.AlertType.ERROR, "Erreur : " + e.getMessage());
         }
     }
+
 
     private boolean isValidEmail(String email) {
         String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";

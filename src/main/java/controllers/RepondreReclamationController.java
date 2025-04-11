@@ -19,6 +19,9 @@ public class RepondreReclamationController {
     private Label emailLabel;
 
     @FXML
+    private Label reponseErrorLabel;
+
+    @FXML
     private Label objetLabel;
 
     @FXML
@@ -53,11 +56,17 @@ public class RepondreReclamationController {
         envoyerBtn.setOnAction(event -> handleEnvoyer());
     }
 
+
+
     private void handleEnvoyer() {
         String reponse = reponseArea.getText();
+        reponseErrorLabel.setText(""); // clear erreur
 
         if (reponse == null || reponse.trim().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Veuillez saisir une réponse avant d'envoyer.");
+            reponseErrorLabel.setText("Veuillez saisir une réponse.");
+            return;
+        } else if (reponse.trim().length() < 10) {
+            reponseErrorLabel.setText("Votre réponse doit contenir au moins 10 caractères.");
             return;
         }
 
@@ -74,14 +83,13 @@ public class RepondreReclamationController {
             reclamationService.update(currentReclamation);
 
             showAlert(Alert.AlertType.INFORMATION, "Réponse envoyée avec succès !");
-
-            Stage stage = (Stage) envoyerBtn.getScene().getWindow();
-            stage.close();
+            ((Stage) envoyerBtn.getScene().getWindow()).close();
 
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur lors de l'envoi de la réponse: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur lors de l'envoi de la réponse : " + e.getMessage());
         }
     }
+
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);
