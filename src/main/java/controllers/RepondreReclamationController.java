@@ -30,25 +30,27 @@ public class RepondreReclamationController {
     @FXML
     private Button envoyerBtn;
 
-    @FXML private Button btnRetour;
+    @FXML
+    private Button btnRetour;
 
     private Reclamation currentReclamation;
+
     private final ReclamationServices reclamationService = new ReclamationServices();
     private final ReponseReclamationService reponseService = new ReponseReclamationService();
 
     public void setReclamation(Reclamation reclamation) {
         this.currentReclamation = reclamation;
+
         emailLabel.setText(reclamation.getUser_email());
         objetLabel.setText(reclamation.getObjet());
         descriptionLabel.setText(reclamation.getDescription());
-        btnRetour.setOnAction(e -> ((Stage) btnRetour.getScene().getWindow()).close());
 
+        btnRetour.setOnAction(e -> ((Stage) btnRetour.getScene().getWindow()).close());
     }
 
     @FXML
     private void initialize() {
         envoyerBtn.setOnAction(event -> handleEnvoyer());
-    
     }
 
     private void handleEnvoyer() {
@@ -61,7 +63,7 @@ public class RepondreReclamationController {
 
         try {
             ReponseReclamation rep = new ReponseReclamation();
-            rep.setReclamationId(currentReclamation.getId());
+            rep.setReclamation(currentReclamation);
             rep.setAdminId(1);
             rep.setContenue(reponse);
             rep.setDateReponse(new Date(System.currentTimeMillis()));
@@ -80,7 +82,6 @@ public class RepondreReclamationController {
             showAlert(Alert.AlertType.ERROR, "Erreur lors de l'envoi de la réponse: " + e.getMessage());
         }
     }
-
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type);

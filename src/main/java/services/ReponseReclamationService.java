@@ -4,17 +4,15 @@ import Main.DatabaseConnection;
 import model.Reclamation;
 import model.ReponseReclamation;
 
-import Main.DatabaseConnection;
-import model.Reclamation;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReponseReclamationService implements Iservices<ReponseReclamation>{
+public class ReponseReclamationService implements Iservices<ReponseReclamation> {
+
     Connection cnx;
 
-    public ReponseReclamationService(){
+    public ReponseReclamationService() {
         cnx = DatabaseConnection.getInstance().getCnx();
     }
 
@@ -23,8 +21,8 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation>{
         String req = "INSERT INTO pijava.reponsereclamation (reclamation_id_id, admin_id_id, contenue, date_reponse) VALUES (?, ?, ?, ?)";
 
         try {
-            PreparedStatement ps=cnx.prepareStatement(req);
-            ps.setInt(1, r.getReclamationId());
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, r.getReclamation().getId());  // ici objet reclamation utilisé
             ps.setInt(2, r.getAdminId());
             ps.setString(3, r.getContenue());
             ps.setDate(4, r.getDateReponse());
@@ -35,19 +33,26 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation>{
         }
     }
 
-
-
     @Override
-    public void modify(ReponseReclamation reponseReclamation) {
+    public void modify(ReponseReclamation r) {
         String req = "UPDATE reponsereclamation SET contenue=? WHERE id=?";
         try {
-            PreparedStatement stm = cnx.prepareStatement(req);
-            stm.setString(1, reponseReclamation.getContenue());
-            stm.setInt(2, reponseReclamation.getId());
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, r.getContenue());
+            ps.setInt(2, r.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-
-
-            stm.executeUpdate();
+    @Override
+    public void delete(int id) {
+        String req = "DELETE FROM reponsereclamation WHERE id=?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, id);
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -55,32 +60,22 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation>{
 
     @Override
     public List<ReponseReclamation> afficher() {
-        return List.of();
+        return List.of(); // inutilisé ici
     }
 
     @Override
-    public void delete(int id){
-        String req = "DELETE FROM reponsereclamation WHERE id=?";
-        try {
-            PreparedStatement stm = cnx.prepareStatement(req);
-            stm.setInt(1, id);
-            stm.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @Override
     public ReponseReclamation getOne(int id) {
-        return null;
+        return null;  // optionnel si jamais tu le développes après
     }
 
     public List<ReponseReclamation> getByReclamationId(int reclamationId) {
         List<ReponseReclamation> reponses = new ArrayList<>();
-        //String req = "SELECT * FROM pijava.reponsereclamation WHERE reclamation_id_id = ? ORDER BY date_reponse ASC";
-        String req = "SELECT rr.*, r.objet, r.user_email, r.description, r.status " +
+
+        String req = "SELECT rr.*, r.objet, r.user_email, r.description, r.status, r.date_soumission, r.admin_mail " +
                 "FROM reponsereclamation rr " +
                 "JOIN reclamation r ON rr.reclamation_id_id = r.id " +
                 "WHERE rr.reclamation_id_id = ?";
+
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, reclamationId);
@@ -89,10 +84,20 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation>{
             while (rs.next()) {
                 ReponseReclamation rep = new ReponseReclamation();
                 rep.setId(rs.getInt("id"));
-                rep.setReclamationId(rs.getInt("reclamation_id_id"));
                 rep.setAdminId(rs.getInt("admin_id_id"));
                 rep.setContenue(rs.getString("contenue"));
                 rep.setDateReponse(rs.getDate("date_reponse"));
+
+                Reclamation reclamation = new Reclamation();
+                reclamation.setId(rs.getInt("reclamation_id_id"));
+                reclamation.setObjet(rs.getString("objet"));
+                reclamation.setUser_email(rs.getString("user_email"));
+                reclamation.setDescription(rs.getString("description"));
+                reclamation.setStatus(rs.getString("status"));
+                reclamation.setDate_soumission(rs.getDate("date_soumission"));
+                reclamation.setAdmin_mail(rs.getString("admin_mail"));
+
+                rep.setReclamation(reclamation);
 
                 reponses.add(rep);
             }
@@ -100,8 +105,6 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation>{
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la récupération des réponses : " + e.getMessage());
         }
-
         return reponses;
     }
-
 }
