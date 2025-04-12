@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.UtilisateurController"
+      style="-fx-background-color: white;">
+
+    <!-- En-tête -->
+    <VBox style="-fx-background-color: white; -fx-padding: 20 30; -fx-border-color: #ecf0f1; -fx-border-width: 0 0 1 0;">
+        <Label text="Gestion des utilisateurs" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Label text="Administrez tous les comptes de la plateforme" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;"/>
+    </VBox>
+
+    <!-- Barre d'outils -->
+    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 30; -fx-background-color: white;">
+        <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" prefWidth="300" promptText="Rechercher par nom, prénom ou email..."
+                       style="-fx-background-color: #f5f7fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-padding: 7;"/>
+        </HBox>
+        <Button onAction="#handleAjouterUser" text="Ajouter utilisateur"
+                style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 15; -fx-background-radius: 4;"/>
+        <Button onAction="#handleExportPdf" text="Exporter PDF"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 15; -fx-background-radius: 4;"/>
+    </HBox>
+
+    <!-- Tableau -->
+    <VBox VBox.vgrow="ALWAYS" style="-fx-padding: 15;">
+        <TableView fx:id="userTable" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);">
+            <columns>
+                <TableColumn fx:id="photoCol" prefWidth="80" text="Photo"/>
+                <TableColumn fx:id="nomCol" prefWidth="100" text="Nom"/>
+                <TableColumn fx:id="prenomCol" prefWidth="100" text="Prénom"/>
+                <TableColumn fx:id="emailCol" prefWidth="180" text="Email"/>
+                <TableColumn fx:id="roleCol" prefWidth="100" text="Rôle"/>
+                <TableColumn fx:id="niveauCol" prefWidth="120" text="Niveau"/>
+                <TableColumn fx:id="nomNiveauCol" prefWidth="120" text="Nom niveau"/>
+                <TableColumn fx:id="actionsCol" prefWidth="150" text="Actions"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Barre d'état -->
+    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 10 30; -fx-background-color: white; -fx-border-color: #ecf0f1; -fx-border-width: 1 0 0 0;">
+        <Label text="Total:" style="-fx-text-fill: #7f8c8d;"/>
+        <Label fx:id="totalCountLabel" text="0 utilisateurs" style="-fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Dernière mise à jour:" style="-fx-text-fill: #7f8c8d;"/>
+        <Label fx:id="lastUpdateLabel" text="12/04/2025, 20:22" style="-fx-font-weight: bold;"/>
+    </HBox>
+</VBox>
