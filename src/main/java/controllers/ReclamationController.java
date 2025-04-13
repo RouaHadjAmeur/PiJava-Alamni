@@ -2,27 +2,37 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import util.Session;
-import model.Utilisateur;
-
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
+import javafx.stage.Stage;
 import model.Reclamation;
+import model.Utilisateur;
 import services.ReclamationServices;
+import util.Session;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ReclamationController {
 
     @FXML
     private ListView<Reclamation> reclamationsListView;
+
+    @FXML private ImageView photoView;
+    @FXML private Label nomUtilisateur;
+    @FXML private Label roleUtilisateur;
+    @FXML private BorderPane rootPane;
+    @FXML private AnchorPane mainContentPane;
 
     private final ReclamationServices service = new ReclamationServices();
 
@@ -32,8 +42,20 @@ public class ReclamationController {
 
     @FXML
     public void initialize() {
-        Utilisateur user = Session.getUtilisateurConnecte();
-        System.out.println("Connecté : " + user.getEmail() + " | Rôle : " + user.getRole());
+        Utilisateur currentUser = Session.getUtilisateurConnecte();
+        if (currentUser != null) {
+            nomUtilisateur.setText(currentUser.getNom() + " " + currentUser.getPrenom());
+            roleUtilisateur.setText(currentUser.getRole());
+
+            if (currentUser.getPhoto() != null) {
+                File photoFile = new File(currentUser.getPhoto());
+                if (photoFile.exists()) {
+                    Image image = new Image(photoFile.toURI().toString());
+                    photoView.setImage(image);
+                }
+            }
+        }
+
         loadData();
     }
 
@@ -47,47 +69,43 @@ public class ReclamationController {
                 super.updateItem(r, empty);
 
                 if (empty || r == null) {
-                    setText(null);
                     setGraphic(null);
                 } else {
                     Label email = new Label(r.getUser_email());
-                    email.setPrefWidth(160);
+                    email.setPrefWidth(150);
 
                     Label objet = new Label(r.getObjet());
-                    objet.setPrefWidth(160);
+                    objet.setPrefWidth(150);
 
                     Label description = new Label(r.getDescription());
-                    description.setPrefWidth(160);
+                    description.setPrefWidth(200);
+
+                    Label status = new Label(r.getStatus());
+                    status.setPrefWidth(100);
+                    status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus())
+                            + "; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 10;");
+                    status.setAlignment(javafx.geometry.Pos.CENTER);
 
                     Label date = new Label(r.getDate_soumission().toString());
                     date.setPrefWidth(100);
 
-                    Label status = new Label(r.getStatus());
-                    status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) +
-                            "; -fx-text-fill: white; -fx-padding: 3 10; -fx-background-radius: 10;");
-                    status.setPrefWidth(100);
-                    status.setAlignment(Pos.CENTER);
-
-                    // Icons
-                    Button btnView = createIconButton("/img/voir.png", "#3B82F6");
+                    Button btnView = createActionButton("Voir", "#3B82F6");
                     btnView.setOnAction(e -> openViewReclamation(r));
 
-                    Button btnRepondre = createIconButton("/img/repondre.png", "#10B981");
+                    Button btnRepondre = createActionButton("Répondre", "#10B981");
                     btnRepondre.setOnAction(e -> openRepondreReclamation(r));
 
-                    Button btnDelete = createIconButton("/img/supprimer.png", "#EF4444");
+                    Button btnDelete = createActionButton("Supprimer", "#EF4444");
                     btnDelete.setOnAction(e -> {
                         service.delete(r.getId());
                         loadData();
                     });
 
                     HBox actions = new HBox(10, btnView, btnRepondre, btnDelete);
-                    actions.setPrefWidth(160);
-                    actions.setAlignment(Pos.CENTER_LEFT);
 
-                    HBox row = new HBox(20, email, objet, description, status, date, actions);
-                    row.setStyle("-fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
-                    row.setAlignment(Pos.CENTER_LEFT);
+                    HBox row = new HBox(15, email, objet, description, status, date, actions);
+                    row.setStyle("-fx-padding: 10; -fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
+                    row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
                     setGraphic(row);
                 }
@@ -95,66 +113,10 @@ public class ReclamationController {
         });
     }
 
-    private Button createIconButton(String imgPath, String bgColor) {
-        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream(imgPath)));
-        icon.setFitWidth(16);
-        icon.setFitHeight(16);
-
-        Button btn = new Button("", icon);
-        btn.setStyle("-fx-background-color: " + bgColor + "; -fx-background-radius: 5;");
+    private Button createActionButton(String text, String color) {
+        Button btn = new Button(text);
+        btn.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;");
         return btn;
-    }
-
-    private void openViewReclamation(Reclamation r) {
-        try {
-            if ("En attente".equalsIgnoreCase(r.getStatus())) {
-                r.setStatus("En cours");
-                service.update(r);
-            }
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reclamation_view.fxml"));
-            Parent root = loader.load();
-
-            ReclamationDetailsController controller = loader.getController();
-            controller.setReclamation(r);
-
-            Stage stage = new Stage();
-            stage.setTitle("Détails de la Réclamation");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            stage.setOnHiding(event -> loadData());
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showAlert("Erreur lors de l'ouverture de la réclamation.");
-        }
-    }
-
-    private void openRepondreReclamation(Reclamation r) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/repondre_reclamation.fxml"));
-            Parent root = loader.load();
-
-            RepondreReclamationController controller = loader.getController();
-            controller.setReclamation(r);
-
-            Stage stage = new Stage();
-            stage.setTitle("Répondre à la Réclamation");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            stage.setOnHiding(event -> loadData());
-
-            if (r.getStatus().equalsIgnoreCase("En attente") || r.getStatus().equalsIgnoreCase("En cours")) {
-                r.setStatus("En cours");
-                service.update(r);
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showAlert("Erreur lors de l'ouverture de la fenêtre de réponse.");
-        }
     }
 
     private String getStatusColor(String status) {
@@ -166,10 +128,60 @@ public class ReclamationController {
         };
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void openViewReclamation(Reclamation r) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reclamation_view.fxml"));
+            Parent root = loader.load();
+            ReclamationDetailsController controller = loader.getController();
+            controller.setReclamation(r);
+            Stage stage = new Stage();
+            stage.setTitle("Détails Réclamation");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void openRepondreReclamation(Reclamation r) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/repondre_reclamation.fxml"));
+            Parent root = loader.load();
+            RepondreReclamationController controller = loader.getController();
+            controller.setReclamation(r);
+            Stage stage = new Stage();
+            stage.setTitle("Répondre Réclamation");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // Navigation
+    @FXML private void handleDashboard() { loadView("/view/dashboard.fxml"); }
+    @FXML private void handleManagement() { loadView("/view/management.fxml"); }
+    @FXML private void handleUser() { loadView("/view/utilisateur.fxml"); }
+    @FXML private void handleDemandes() { loadView("/view/demandes.fxml"); }
+    @FXML private void handleClasses() { loadView("/view/classes.fxml"); }
+    @FXML private void handleReclamations() { loadView("/view/reclamation_dashboard.fxml"); }
+
+    private void loadView(String path) {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource(path));
+            mainContentPane.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+            mainContentPane.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
