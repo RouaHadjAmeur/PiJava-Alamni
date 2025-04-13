@@ -9,7 +9,8 @@
 
 <StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="controller.SignUpController"
-           style="-fx-background-color: linear-gradient(to bottom right, #3a1c71, #d76d77, #ffaf7b);">
+           style="-fx-background-color: linear-gradient(to bottom right, #3a1c71, #d76d77, #ffaf7b);"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://javafx.com/javafx/8 ">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -39,7 +40,8 @@
             <!-- Colonne gauche - Photo et informations personnelles -->
             <VBox spacing="15" prefWidth="400">
                 <!-- Section photo -->
-                <VBox alignment="CENTER" spacing="15" style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-background-radius: 10;">
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-background-radius: 10;">
                     <Label text="Photo de profil" style="-fx-font-weight: bold; -fx-text-fill: #495057;"/>
 
                     <StackPane>
@@ -104,7 +106,8 @@
                 </VBox>
 
                 <!-- Informations académiques (conditionnellement visible) -->
-                <VBox fx:id="academicSection" spacing="15" style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-background-radius: 10;">
+                <VBox fx:id="academicSection" spacing="15"
+                      style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-background-radius: 10;">
                     <Label text="Informations académiques" style="-fx-font-weight: bold; -fx-text-fill: #495057;"/>
 
                     <VBox spacing="8">
@@ -122,7 +125,8 @@
 
                 <!-- Conditions d'utilisation -->
                 <HBox alignment="CENTER_LEFT" style="-fx-padding: 5 0;">
-                    <CheckBox fx:id="cguCheckbox" text="J'accepte les conditions d'utilisation" style="-fx-text-fill: #495057;"/>
+                    <CheckBox fx:id="cguCheckbox" text="J'accepte les conditions d'utilisation"
+                              style="-fx-text-fill: #495057;"/>
                 </HBox>
 
                 <!-- Message de statut -->

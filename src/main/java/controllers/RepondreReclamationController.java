@@ -6,10 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import model.Administrateur;
 import model.Reclamation;
 import model.ReponseReclamation;
 import services.ReclamationServices;
 import services.ReponseReclamationService;
+import util.Session;
 
 import java.sql.Date;
 
@@ -73,8 +75,9 @@ public class RepondreReclamationController {
         try {
             ReponseReclamation rep = new ReponseReclamation();
             rep.setReclamation(currentReclamation);
-            rep.setAdminId(1);
-            rep.setContenue(reponse);
+            Administrateur admin = (Administrateur) Session.getUtilisateurConnecte();
+
+            rep.setAdmin(admin);            rep.setContenue(reponse);
             rep.setDateReponse(new Date(System.currentTimeMillis()));
 
             reponseService.add(rep);

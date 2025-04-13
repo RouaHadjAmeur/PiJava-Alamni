@@ -45,6 +45,8 @@
                         style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
                 <Button onAction="#handleClasses" text="Classes" styleClass="menu-button"
                         style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+                <Button onAction="#handleReclamations" text="Reclamations" styleClass="menu-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>

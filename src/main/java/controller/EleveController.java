@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -68,6 +69,28 @@ public class EleveController {
         alert.setHeaderText(null);
         alert.setContentText("Page des résultats de l’élève ici...");
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleAjouterReclamation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
+            Parent root = loader.load();
+
+            controllers.AddReclamationController controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Ajouter Réclamation");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleMesReclamations() {
+
     }
 
     @FXML

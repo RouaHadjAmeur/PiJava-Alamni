@@ -11,7 +11,7 @@ public class UtilisateurService {
 
     // ✅ Connexion avec filtre isPending
     public static Utilisateur login(String email, String password) {
-        String sql = "SELECT * FROM utilisateurs WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM pijava.utilisateurs WHERE email = ? AND password = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -43,7 +43,7 @@ public class UtilisateurService {
 
     // ✅ Vérifie si l'email existe
     public static boolean emailExiste(String email) {
-        String sql = "SELECT id FROM utilisateurs WHERE email = ?";
+        String sql = "SELECT id FROM pijava.utilisateurs WHERE email = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -61,7 +61,7 @@ public class UtilisateurService {
 
     // ✅ Inscription dans la base
     public static void inscrire(Utilisateur user) {
-        String sql = "INSERT INTO utilisateurs (nom, prenom, email, password, photo, niveau, nom_niveau, roles, isPending) " +
+        String sql = "INSERT INTO pijava.utilisateurs (nom, prenom, email, password, photo, niveau, nom_niveau, roles, isPending) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -228,4 +228,28 @@ public class UtilisateurService {
         }
         return "";
     }
+
+    public Utilisateur getById(int id) {
+        Utilisateur user = null;
+        String req = "SELECT * FROM utilisateurs WHERE id = ?";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            //PreparedStatement stmt = conn.prepareStatement(sql)
+            PreparedStatement ps = conn.prepareStatement(req);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new Administrateur(); // ou new Eleve() si c'est autre role
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setNom(rs.getString("nom"));
+                user.setPrenom(rs.getString("prenom"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur getById : " + e.getMessage());
+        }
+        return user;
+    }
+
 }

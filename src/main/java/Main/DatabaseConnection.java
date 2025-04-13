@@ -7,9 +7,11 @@ import java.sql.SQLException;
 public class DatabaseConnection {
 
     Connection cnx;
+ 
 
     public Connection getCnx() {
         return cnx;
+
     }
 
     public static DatabaseConnection instance;

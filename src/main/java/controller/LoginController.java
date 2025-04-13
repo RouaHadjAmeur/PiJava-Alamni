@@ -83,6 +83,7 @@ public class LoginController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/SignUp.fxml"));
             Stage stage = (Stage) emailField.getScene().getWindow();
+
             stage.setScene(new Scene(root));
             stage.setTitle("Créer un compte");
             stage.setResizable(false);

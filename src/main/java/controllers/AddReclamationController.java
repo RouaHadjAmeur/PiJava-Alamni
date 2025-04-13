@@ -1,11 +1,20 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Reclamation;
+import model.Utilisateur;
 import services.ReclamationServices;
+import util.Session;
 
+
+import java.io.IOException;
 import java.sql.Date;
 import java.util.regex.Pattern;
 
@@ -16,6 +25,10 @@ public class AddReclamationController {
     @FXML private TextArea descriptionArea;
     @FXML private TextField adminMailField;
     @FXML private TextField roleField;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label roleLabel;
 
     @FXML private Label emailErrorLabel;
     @FXML private Label objetErrorLabel;
@@ -26,19 +39,20 @@ public class AddReclamationController {
     private final ReclamationServices service = new ReclamationServices();
 
     @FXML
+    private void initialize() {
+        Utilisateur user = Session.getUtilisateurConnecte();
+
+        if (user != null) {
+            emailLabel.setText(user.getEmail());
+            roleLabel.setText(user.getRole());
+        }
+    }
+
+    @FXML
     private void handleSave() {
         clearErrors();
 
         boolean valid = true;
-
-        // Email utilisateur
-        if (emailField.getText().isEmpty()) {
-            emailErrorLabel.setText("L'email est requis.");
-            valid = false;
-        } else if (!isValidEmail(emailField.getText())) {
-            emailErrorLabel.setText("Format invalide. Ex: exemple@gmail.com");
-            valid = false;
-        }
 
         // Email admin
         if (adminMailField.getText().isEmpty()) {
@@ -67,33 +81,26 @@ public class AddReclamationController {
             valid = false;
         }
 
-        // Role
-        if (roleField.getText().isEmpty()) {
-            roleErrorLabel.setText("Rôle requis.");
-            valid = false;
-        } else if (roleField.getText().length() < 3) {
-            roleErrorLabel.setText("Au moins 3 lettres.");
-            valid = false;
-        }
+
 
         if (!valid) return;
 
         try {
             Reclamation r = new Reclamation(
-                    emailField.getText(),
+                    emailLabel.getText(),
                     objetField.getText(),
                     descriptionArea.getText(),
                     "En attente",
                     new Date(System.currentTimeMillis()),
                     adminMailField.getText(),
-                    roleField.getText(),
+                    roleLabel.getText(),
                     0
             );
 
             service.add(r);
 
             showAlert(Alert.AlertType.INFORMATION, "Réclamation ajoutée avec succès !");
-            ((Stage) emailField.getScene().getWindow()).close();
+            ((Stage) emailLabel.getScene().getWindow()).close();
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erreur : " + e.getMessage());
@@ -107,7 +114,7 @@ public class AddReclamationController {
     }
 
     private void clearErrors() {
-        emailErrorLabel.setText("");
+       // emailErrorLabel.setText("");
         adminEmailErrorLabel.setText("");
     }
 
@@ -117,4 +124,26 @@ public class AddReclamationController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleAjouterReclamation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            controllers.AddReclamationController controller = loader.getController();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void handleMesReclamations() {
+
+    }
+
 }

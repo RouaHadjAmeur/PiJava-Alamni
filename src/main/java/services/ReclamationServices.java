@@ -1,6 +1,8 @@
 package services;
 import Main.DatabaseConnection;
 import model.Reclamation;
+import model.Utilisateur;
+import util.Session;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -140,6 +142,41 @@ public class ReclamationServices implements Iservices<Reclamation> {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Reclamation> getMesReclamations() {
+        List<Reclamation> list = new ArrayList<>();
+
+        try {
+            Utilisateur user = Session.getUtilisateurConnecte();
+
+            String req = "SELECT * FROM reclamation WHERE user_email = ?";
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, user.getEmail());
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+
+                list.add(r);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur getMesReclamations : " + e.getMessage());
+        }
+
+        return list;
+    }
+    
+        
+
 
 }
 

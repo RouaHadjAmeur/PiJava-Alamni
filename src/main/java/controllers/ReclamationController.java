@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import util.Session;
+import model.Utilisateur;
 
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -30,6 +32,8 @@ public class ReclamationController {
 
     @FXML
     public void initialize() {
+        Utilisateur user = Session.getUtilisateurConnecte();
+        System.out.println("Connecté : " + user.getEmail() + " | Rôle : " + user.getRole());
         loadData();
     }
 

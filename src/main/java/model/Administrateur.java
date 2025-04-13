@@ -6,8 +6,12 @@ public class Administrateur extends Utilisateur {
         super(nom, prenom, email, password, "ADMINISTRATEUR");
     }
 
+    public Administrateur() {
+        super();
+    }
+
     @Override
     public String getDetailsRole() {
-        return "Administrateur de la plateforme.";
+        return "Administrateur";
     }
 }

@@ -8,7 +8,6 @@
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="687" prefWidth="1022"
             fx:controller="controller.ParentController">
-
     <!-- 🔝 Barre supérieure -->
     <top>
         <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #fff;">
@@ -19,6 +18,13 @@
                 <Button text="Home" style="-fx-background-color: transparent;"/>
                 <Button text="Élèves" style="-fx-background-color: transparent;"/>
                 <Button text="Contact" style="-fx-background-color: transparent;"/>
+                <MenuButton style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations" textAlignment="CENTER">
+                    <items>
+                        <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
+                        <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
+                    </items>
+
+                </MenuButton>
             </HBox>
 
             <Region HBox.hgrow="ALWAYS"/>

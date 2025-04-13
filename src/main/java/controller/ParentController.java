@@ -1,6 +1,8 @@
 package controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,6 +44,7 @@ public class ParentController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/profilUtilisateur.fxml"));
             Parent root = loader.load();
+            controllers.AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Mon Profil");
@@ -61,6 +64,52 @@ public class ParentController {
         info.setHeaderText(null);
         info.setContentText("Ici s'afficheront les notes de l'élève suivi.");
         info.showAndWait();
+    }
+
+    @FXML
+    private void handleAjouterReclamation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
+            Parent root = loader.load();
+
+            controllers.AddReclamationController controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Ajouter Réclamation");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleMesReclamations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+            Parent root = loader.load();
+
+            // Récupérer le Stage courant proprement
+            //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes Réclamations");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

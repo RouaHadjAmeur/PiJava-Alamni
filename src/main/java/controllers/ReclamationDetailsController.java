@@ -110,7 +110,7 @@ public class ReclamationDetailsController {
                 Dialog<String> dialog = new Dialog<>();
                 dialog.setTitle("Modifier la réponse");
                 dialog.setHeaderText("Saisir la nouvelle réponse :");
-                dialog.getDialogPane().setStyle("-fx-background-color: #ffffff;"); 
+                dialog.getDialogPane().setStyle("-fx-background-color: #ffffff;");
 
 
                 ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
