@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane fx:controller="view.MainController"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@/style.css">
+
+    <!-- Button Bar -->
+    <Button fx:id="btnAddPlanning" layoutX="30" layoutY="20" text="➕ Add Planning" styleClass="primary-btn"/>
+    <Button fx:id="btnAddSeance" layoutX="180" layoutY="20" text="🧑‍🏫 Add Seance" styleClass="primary-btn"/>
+
+    <!-- Content Container -->
+    <AnchorPane fx:id="mainContentPane" layoutX="30" layoutY="70" prefWidth="840" prefHeight="500" />
+</AnchorPane>

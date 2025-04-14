@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import model.Planning?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+            fx:controller="view.PlanningListViewController"
+            stylesheets="@/style.css">
+
+    <ListView fx:id="planningListView"
+              layoutX="0" layoutY="0"
+              prefWidth="840" prefHeight="500"
+              styleClass="custom-list"/>
+</AnchorPane>

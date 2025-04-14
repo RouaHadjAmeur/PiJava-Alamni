@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="12" alignment="TOP_LEFT" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="form.SeanceFormController" stylesheets="@/style.css">
+    <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+
+    <Label text="🗂 Seance Name" />
+    <TextField fx:id="nameField" />
+
+    <Label text="📝 Description" />
+    <TextArea fx:id="descArea" prefRowCount="5" />
+
+    <Button fx:id="saveBtn" text="➕ Add Seance" />
+    <Button fx:id="backToListBtn" text="⬅ Back to List" />
+
+</VBox>
+
