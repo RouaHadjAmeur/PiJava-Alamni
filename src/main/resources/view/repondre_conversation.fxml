@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RepondreConversationController">
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="700.0" prefWidth="800.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="760.0">
+            <Label text="Répondre au Message" textFill="#3b82f6">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+        </HBox>
+        <VBox spacing="8.0">
+            <Label text="Message d'origine:">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <TextArea fx:id="originalMessageTextArea" editable="false" prefHeight="150.0" prefWidth="760.0" wrapText="true" />
+        </VBox>
+        <VBox spacing="8.0">
+            <Label text="À:">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <Label fx:id="destinataireLabel" text="destinataire@example.com" />
+        </VBox>
+        <VBox spacing="8.0">
+            <Label text="Sujet:">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <Label fx:id="sujetLabel" text="Re: Sujet original" />
+        </VBox>
+        <VBox spacing="8.0" VBox.vgrow="ALWAYS">
+            <Label text="Votre réponse:">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <TextArea fx:id="reponseTextArea" prefHeight="300.0" prefWidth="760.0" promptText="Écrivez votre réponse ici" wrapText="true" VBox.vgrow="ALWAYS" />
+        </VBox>
+        <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="760.0" spacing="15.0">
+            <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6B7280; -fx-cursor: hand;" text="Annuler" textFill="WHITE">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
+            <Button fx:id="btnSend" defaultButton="true" mnemonicParsing="false" onAction="#handleSend" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #10B981; -fx-cursor: hand;" text="Envoyer" textFill="WHITE">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
+        </HBox>
+    </VBox>
+</AnchorPane> 

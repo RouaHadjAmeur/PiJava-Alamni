@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddConversationController">
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="500.0" prefWidth="600.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        
+        <!-- Header -->
+        <VBox styleClass="header">
+            <Label styleClass="header-title" text="Nouvelle Conversation" />
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="🏠 Accueil" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="📑 Pages" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="💬 Boite de discussions" />
+            </HBox>
+        </VBox>
+        
+        <!-- Form -->
+        <VBox styleClass="conversation-form">
+            <VBox styleClass="form-field">
+                <Label styleClass="form-label" text="👤 Choisissez un utilisateur :" />
+                <ComboBox fx:id="destinataireComboBox" styleClass="form-input" promptText="Sélectionnez un utilisateur" />
+            </VBox>
+            
+            <VBox styleClass="form-field">
+                <Label styleClass="form-label" text="💭 Message :" />
+                <TextArea fx:id="contenuTextArea" styleClass="form-input" promptText="Écrivez votre message ici..." wrapText="true" VBox.vgrow="ALWAYS" />
+            </VBox>
+            
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="btnCancel" cancelButton="true" onAction="#handleCancel" styleClass="cancel-button" text="Retour" />
+                <Button fx:id="btnSend" defaultButton="true" onAction="#handleSend" styleClass="form-button" text="✉ Envoyer" />
+            </HBox>
+        </VBox>
+        
+    </VBox>
+</AnchorPane> 
