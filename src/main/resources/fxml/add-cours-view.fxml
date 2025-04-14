@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.AddCoursController"
+      spacing="15" style="-fx-padding: 20;" prefWidth="600" prefHeight="650">
+
+    <Label text="Ajouter un nouveau cours" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15">
+        <padding>
+            <Insets top="20" />
+        </padding>
+
+        <Label text="Titre:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <TextField fx:id="titreField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="400" />
+
+        <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextArea fx:id="descriptionField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefHeight="100" wrapText="true" />
+
+        <Label text="Matière:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <TextField fx:id="matiereField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Niveau:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <ComboBox fx:id="niveauComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="400" />
+
+        <Label text="Image:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+        <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="imagePathField" HBox.hgrow="ALWAYS" editable="false" />
+            <Button fx:id="browseImageBtn" text="Parcourir..." />
+        </HBox>
+
+        <Label text="Support:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+        <HBox spacing="10" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <TextField fx:id="supportPathField" HBox.hgrow="ALWAYS" editable="false" />
+            <Button fx:id="browseSupportBtn" text="Parcourir..." />
+        </HBox>
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS" />
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelBtn" text="Annuler" prefWidth="100" />
+        <Button fx:id="saveBtn" text="Enregistrer" prefWidth="100" style="-fx-background-color: #8BC34A; -fx-text-fill: white;" />
+    </HBox>
+</VBox>

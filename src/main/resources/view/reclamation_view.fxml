@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ReclamationDetailsController"
+            style="-fx-background-color: #f9fafb;">
+
+    <center>
+
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-background-color: #fff5f2; -fx-padding: 20 20 20 20;">
+
+            <Label text="Détails de réclamation"
+                   style="-fx-font-size: 24px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;" />
+
+            <VBox spacing="15" style="-fx-background-color: #fff5f2; -fx-background-radius: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-padding: 15;">
+
+                <GridPane hgap="0" vgap="0">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="200" />
+                        <ColumnConstraints minWidth="400" />
+                    </columnConstraints>
+
+                    <Label text="ID" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <Label fx:id="idLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                    <Label text="Email Utilisateur" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <Label fx:id="emailLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                    <Label text="Objet" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label fx:id="objetLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                    <Label text="Description" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                    <Label fx:id="descriptionLabel" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                    <Label text="Status" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                    <Label fx:id="statusLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+                    <Label text="Date de Soumission" style="-fx-font-weight: bold;" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                    <Label fx:id="dateLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+
+                    <Label text="Email Destinataire" style="-fx-font-weight: bold;" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                    <Label fx:id="adminMailLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+                </GridPane>
+
+                <HBox spacing="15" alignment="CENTER">
+                    <Button fx:id="btnRetour" text="↩ Retour"
+                            style="-fx-background-color: #84cc16; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 25; -fx-font-size: 13px;" />
+                    <Button fx:id="btnSupprimer" text="🗑 Supprimer"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 25; -fx-font-size: 13px;" />
+                </HBox>
+
+            </VBox>
+
+            <Label text="Réponses précédentes"
+                   style="-fx-font-size: 24px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;" />
+
+            <ScrollPane prefHeight="200" prefWidth="600" fitToWidth="true" vbarPolicy="ALWAYS">
+                <VBox fx:id="reponsesContainer"
+                      spacing="10"
+                      style="-fx-padding: 10; -fx-background-color: #fff5f2; -fx-border-radius: 6; -fx-border-color: #e5e7eb; -fx-background-radius: 6;" />
+            </ScrollPane>
+
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.MainController"
+            prefHeight="700.0" prefWidth="1200.0">
+
+    <!-- Barre latérale gauche -->
+    <left>
+        <VBox styleClass="sidebar" style="-fx-background-color: #2D2D3E; -fx-padding: 10;">
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10 0 20 0;">
+                <Label text="ALAMNI" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px;"/>
+            </HBox>
+
+            <!-- Profil utilisateur -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 0 0 20 0;">
+                <!-- Au lieu de -->
+                <ImageView fx:id="profileImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />            </VBox>
+
+            <!-- Menu de navigation -->
+            <VBox spacing="5">
+                <Button fx:id="dashboardBtn" text="Dashboard" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="managementBtn" text="Management" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="userBtn" text="User" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="classesBtn" text="Classes" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="discussionsBtn" text="Discussions" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="publicationsBtn" text="Publications" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="coursBtn" text="Cours" styleClass="nav-button" prefWidth="200"/>
+                <Button fx:id="planningBtn" text="Planning" styleClass="nav-button" prefWidth="200"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button fx:id="logoutBtn" text="Déconnexion" styleClass="logout-button" prefWidth="200"/>
+        </VBox>
+    </left>
+
+    <!-- Contenu principal -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Liste des Cours" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Barre de recherche et boutons -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <TextField fx:id="searchField" promptText="Rechercher par matière" prefWidth="300"/>
+                <Button fx:id="exportPdfBtn" text="Exporter PDF" style="-fx-background-color: #FF5757; -fx-text-fill: white;"/>
+                <Button fx:id="addCoursBtn" text="Ajouter" style="-fx-background-color: #8BC34A; -fx-text-fill: white;"/>
+            </HBox>
+
+            <!-- Tableau des cours -->
+            <TableView fx:id="coursTableView" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="imgColumn" text="Img" prefWidth="100"/>
+                    <TableColumn fx:id="titreColumn" text="Titre" prefWidth="150"/>
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                    <TableColumn fx:id="matiereColumn" text="Matière" prefWidth="150"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="niveauColumn" text="Niveau" prefWidth="100"/>
+                    <TableColumn fx:id="supportColumn" text="Support" prefWidth="150"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

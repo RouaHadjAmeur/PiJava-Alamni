@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationViewController">
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0" spacing="0.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        
+        <!-- Header -->
+        <VBox styleClass="header">
+            <Label fx:id="titleLabel" styleClass="header-title" text="Conversation" />
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="🏠 Accueil" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="📑 Pages" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="💬 Boite de discussions" />
+            </HBox>
+            
+            <!-- Conversation Info -->
+            <GridPane styleClass="conversation-info" vgap="8" hgap="15">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+                
+                <Label text="De:" styleClass="info-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <Label fx:id="expediteurLabel" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                
+                <Label text="À:" styleClass="info-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <Label fx:id="destinataireLabel" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                
+                <Label text="Date:" styleClass="info-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <Label fx:id="dateLabel" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                
+                <Label text="Statut:" styleClass="info-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <Label fx:id="statutLabel" styleClass="info-value" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            </GridPane>
+        </VBox>
+
+        <!-- Messages List -->
+        <ListView fx:id="messagesListView" styleClass="messages-list" VBox.vgrow="ALWAYS" />
+
+        <!-- Action Buttons -->
+        <HBox styleClass="action-bar" alignment="CENTER_RIGHT" spacing="10">
+            <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button">
+                <graphic>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="🗑️" style="-fx-text-fill: #ef4444;"/>
+                        <Label text="Supprimer" style="-fx-text-fill: #ef4444;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </graphic>
+            </Button>
+            <Button fx:id="btnUpdate" onAction="#handleUpdate" styleClass="action-button, update-button">
+                <graphic>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="✏️" style="-fx-text-fill: #f59e0b;"/>
+                        <Label text="Modifier" style="-fx-text-fill: #f59e0b;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </graphic>
+            </Button>
+            <Button fx:id="btnClose" onAction="#handleClose" styleClass="action-button">
+                <graphic>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="❌" style="-fx-text-fill: #475569;"/>
+                        <Label text="Fermer" style="-fx-text-fill: #475569;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </graphic>
+            </Button>
+            <Button fx:id="btnRepondre" onAction="#handleRepondre" styleClass="action-button, reply-button" defaultButton="true">
+                <graphic>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="↩️" style="-fx-text-fill: white;"/>
+                        <Label text="Répondre" style="-fx-text-fill: white;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </graphic>
+            </Button>
+        </HBox>
+        
+    </VBox>
+</AnchorPane> 

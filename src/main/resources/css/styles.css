@@ -1,0 +1,81 @@
+/* Styles généraux */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #f5f5f5;
+}
+
+/* Styles pour la barre latérale */
+.sidebar {
+    -fx-background-color: #2D2D3E;
+}
+
+/* Styles pour les boutons de navigation */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Style pour le bouton de déconnexion */
+.logout-button {
+    -fx-background-color: #FF5757;
+    -fx-text-fill: white;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #FF3030;
+}
+
+/* Styles pour le tableau */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f0f0f0;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-cell {
+    -fx-alignment: center;
+    -fx-padding: 5;
+}
+
+/* Styles pour les boutons d'action */
+.action-button {
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+}
+
+.view-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.edit-button {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: white;
+}
+
+.delete-button {
+    -fx-background-color: #FF5252;
+    -fx-text-fill: white;
+}
+
+.download-button {
+    -fx-background-color: #607D8B;
+    -fx-text-fill: white;
+}

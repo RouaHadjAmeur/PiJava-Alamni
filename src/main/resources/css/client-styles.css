@@ -1,0 +1,395 @@
+/* Palette de couleurs */
+* {
+    /* Couleurs principales */
+    -primary: #1e6091;
+    -primary-light: #2a7aad;
+    -primary-dark: #0d4a77;
+    -secondary: #ff6b6b;
+    -secondary-light: #ff8a8a;
+    -accent: #4ecdc4;
+
+    /* Couleurs neutres */
+    -dark: #2d3748;
+    -medium-dark: #4a5568;
+    -medium: #718096;
+    -light-medium: #a0aec0;
+    -light: #e2e8f0;
+    -ultralight: #f7fafc;
+
+    /* Couleurs de fond */
+    -bg-banner: rgba(74, 85, 104, 0.8);
+    -bg-card: white;
+    -bg-light: #f0f9ff;
+
+    /* Effets */
+    -shadow-soft: rgba(0, 0, 0, 0.1);
+    -shadow-medium: rgba(0, 0, 0, 0.15);
+}
+
+/* Styles généraux */
+.main-container {
+    -fx-background-color: -ultralight;
+    -fx-font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+/* Barre de navigation */
+.nav-bar {
+    -fx-background-color: white;
+    -fx-padding: 15 30;
+    -fx-effect: dropshadow(gaussian, -shadow-soft, 5, 0, 0, 2);
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+/* Logo */
+.logo-container {
+    -fx-padding: 5;
+}
+
+.logo-bg {
+    -fx-fill: -secondary;
+    -fx-stroke: none;
+}
+
+.logo-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+.brand-name {
+    -fx-text-fill: -secondary;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Comic Sans MS', cursive;
+}
+
+/* Liens de navigation */
+.nav-links {
+    -fx-padding: 0 20;
+}
+
+.nav-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: -medium-dark;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: transparent;
+}
+
+.nav-link:hover {
+    -fx-text-fill: -primary;
+}
+
+.nav-link-active {
+    -fx-text-fill: -primary;
+    -fx-border-color: -primary;
+}
+
+/* Profil utilisateur */
+.user-profile {
+    -fx-padding: 0 10;
+}
+
+.avatar-container {
+    -fx-padding: 2;
+}
+
+.avatar-circle {
+    -fx-fill: -primary-light;
+    -fx-stroke: none;
+}
+
+.avatar-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.username-text {
+    -fx-text-fill: -medium-dark;
+    -fx-font-size: 14px;
+}
+
+.dropdown-icon {
+    -fx-fill: -medium;
+}
+
+/* Bannière de titre */
+.title-banner {
+    -fx-background-color: -bg-banner;
+    -fx-padding: 40 20;
+}
+
+.page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Georgia', serif;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 3, 0, 0, 1);
+}
+
+/* Fil d'Ariane */
+.breadcrumb {
+    -fx-padding: 5 0 0 0;
+}
+
+.breadcrumb-item {
+    -fx-text-fill: -light;
+    -fx-font-size: 14px;
+}
+
+.breadcrumb-separator {
+    -fx-text-fill: -light;
+    -fx-font-size: 14px;
+    -fx-padding: 0 5;
+}
+
+.breadcrumb-item-active {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Conteneur de contenu */
+.content-container {
+    -fx-padding: 40 60;
+}
+
+/* Titre de section */
+.section-title {
+    -fx-text-fill: -primary-dark;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Georgia', serif;
+}
+
+/* Badge de niveau */
+.level-label {
+    -fx-text-fill: -medium-dark;
+    -fx-font-size: 16px;
+}
+
+.level-badge {
+    -fx-background-color: -secondary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5 15;
+    -fx-background-radius: 20;
+}
+
+/* Filtres et recherche */
+.filters-container {
+    -fx-padding: 10 0;
+}
+
+.filter-combo {
+    -fx-background-color: white;
+    -fx-border-color: -light-medium;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-pref-width: 150px;
+    -fx-padding: 8;
+}
+
+.search-box {
+    -fx-background-color: white;
+    -fx-border-color: -light-medium;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-padding: 0 0 0 15;
+    -fx-alignment: center-left;
+    -fx-spacing: 5;
+}
+
+.search-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-pref-width: 250px;
+    -fx-font-size: 14px;
+}
+
+.search-button {
+    -fx-background-color: -primary;
+    -fx-background-radius: 50%;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-max-width: 35px;
+    -fx-max-height: 35px;
+    -fx-cursor: hand;
+}
+
+.search-icon {
+    -fx-fill: white;
+}
+
+/* Défilement des cours */
+.courses-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0;
+    -fx-border-color: transparent;
+}
+
+.courses-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.courses-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+}
+
+.courses-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: -light-medium;
+    -fx-background-radius: 6;
+}
+
+/* Message si aucun cours */
+.empty-courses-container {
+    -fx-background-color: -bg-light;
+    -fx-background-radius: 10;
+    -fx-padding: 50;
+    -fx-border-color: -light;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.info-icon-container {
+    -fx-padding: 5;
+}
+
+.info-circle {
+    -fx-fill: -primary-light;
+    -fx-stroke: none;
+}
+
+.info-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.empty-title {
+    -fx-text-fill: -medium-dark;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.empty-subtitle {
+    -fx-text-fill: -medium;
+    -fx-font-size: 14px;
+}
+
+/* Carte de cours */
+.course-card {
+    -fx-background-color: -bg-card;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -light;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, -shadow-soft, 8, 0, 0, 2);
+    -fx-padding: 0;
+}
+
+.course-card:hover {
+    -fx-effect: dropshadow(gaussian, -shadow-medium, 12, 0, 0, 4);
+    -fx-border-color: -primary-light;
+}
+
+.course-image-container {
+    -fx-background-color: -primary-light;
+    -fx-background-radius: 10 10 0 0;
+    -fx-min-height: 140px;
+    -fx-max-height: 140px;
+}
+
+.course-image {
+    -fx-background-radius: 10 10 0 0;
+}
+
+.course-content {
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}
+
+.course-title {
+    -fx-text-fill: -dark;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.course-description {
+    -fx-text-fill: -medium;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-max-height: 60px;
+}
+
+.course-meta {
+    -fx-padding: 10 0 0 0;
+    -fx-spacing: 10;
+}
+
+.meta-item {
+    -fx-background-color: -light;
+    -fx-background-radius: 15;
+    -fx-padding: 5 10;
+    -fx-alignment: center;
+    -fx-spacing: 5;
+}
+
+.meta-icon {
+    -fx-fill: -primary;
+}
+
+.meta-text {
+    -fx-text-fill: -medium-dark;
+    -fx-font-size: 12px;
+}
+
+.course-actions {
+    -fx-padding: 10 15 15 15;
+    -fx-spacing: 10;
+}
+
+.view-button {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+    -fx-pref-width: 100px;
+}
+
+.view-button:hover {
+    -fx-background-color: -primary-dark;
+}
+
+.favorite-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -light-medium;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+}
+
+.favorite-button:hover {
+    -fx-border-color: -secondary;
+}
+
+.favorite-icon {
+    -fx-fill: -light-medium;
+}
+
+.favorite-button:hover .favorite-icon {
+    -fx-fill: -secondary;
+}
+
+.favorite-active .favorite-icon {
+    -fx-fill: -secondary;
+}
