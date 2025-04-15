@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.DemandeInscriptionController"
+            prefWidth="1000" prefHeight="600">
+
+    <VBox spacing="10" alignment="TOP_CENTER" prefWidth="1000">
+        <Label text="📩 Demandes d'inscription"
+               style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+        <TableView fx:id="tableDemandes" prefHeight="500" prefWidth="960">
+            <columns>
+                <TableColumn fx:id="nomCol" text="Nom" prefWidth="120"/>
+                <TableColumn fx:id="prenomCol" text="Prénom" prefWidth="120"/>
+                <TableColumn fx:id="emailCol" text="Email" prefWidth="180"/>
+                <TableColumn fx:id="roleCol" text="Rôle" prefWidth="100"/>
+                <TableColumn fx:id="niveauCol" text="Niveau" prefWidth="100"/>
+                <TableColumn fx:id="actionsCol" text="Actions" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

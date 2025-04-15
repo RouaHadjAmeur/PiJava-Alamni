@@ -1,27 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<<<<<<< HEAD
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.planningalamni</groupId>
     <artifactId>planningalamni</artifactId>
+=======
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.maven.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>Almani</artifactId>
+>>>>>>> upstream/user
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+<<<<<<< HEAD
         <javafx.version>21</javafx.version>
         <platform>win</platform> <!-- Make sure this is win, not win-x86 -->
     </properties>
 
     <dependencies>
+=======
+        <java.version>17</java.version>
+        <javafx.version>17.0.2</javafx.version>
+    </properties>
+
+    <dependencies>
+        <!-- MySQL -->
+>>>>>>> upstream/user
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
 
+<<<<<<< HEAD
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
@@ -34,10 +52,15 @@
             <version>${javafx.version}</version>
             <classifier>${platform}</classifier>
         </dependency>
+=======
+        <!-- JavaFX -->
+
+>>>>>>> upstream/user
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
+<<<<<<< HEAD
             <classifier>${platform}</classifier>
         </dependency>
         <dependency>
@@ -48,6 +71,12 @@
         </dependency>
     </dependencies>
 
+=======
+        </dependency>
+    </dependencies>
+
+    <!-- Plugin JavaFX -->
+>>>>>>> upstream/user
     <build>
         <plugins>
             <plugin>
@@ -55,9 +84,25 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
+<<<<<<< HEAD
                     <mainClass>org.example.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
+=======
+                    <mainClass>main.MainApp</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+>>>>>>> upstream/user
