@@ -1,3 +1,4 @@
+/* Root container style */
 .root {
     -fx-background-color: #f8fafc;
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
@@ -304,4 +305,4 @@
 
 .new-conversation-btn:hover {
     -fx-background-color: #ff5252;
-} 
+}

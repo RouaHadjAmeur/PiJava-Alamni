@@ -11,11 +11,11 @@
             stylesheets="@../styles/conversation.css"
             prefWidth="1000" prefHeight="800"
             minWidth="800" minHeight="600">
-    
-    <VBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" 
+
+    <VBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           styleClass="root" spacing="20">
-        
+
         <!-- Header -->
         <VBox styleClass="header">
             <padding>
@@ -33,7 +33,7 @@
                 <Label styleClass="breadcrumb-item" text="💬 Boite de discussions" />
             </HBox>
         </VBox>
-        
+
         <!-- Main Content -->
         <VBox spacing="20" styleClass="conversation-list-container" VBox.vgrow="ALWAYS">
             <padding>
@@ -46,9 +46,9 @@
                 </HBox>
                 <Button text="+ Nouvelle Conversation" onAction="#handleNewConversation" styleClass="new-conversation-btn" />
             </HBox>
-            
+
             <ListView fx:id="allConversationsListView" styleClass="list-view" VBox.vgrow="ALWAYS" />
         </VBox>
-        
+
     </VBox>
-</AnchorPane> 
+</AnchorPane>

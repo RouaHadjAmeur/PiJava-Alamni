@@ -14,6 +14,9 @@ import model.Utilisateur;
 import service.UtilisateurService;
 import services.ConversationService;
 import util.Session;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
 import Main.DatabaseConnection;
 
 import java.sql.Date;
@@ -75,7 +78,7 @@ public class AddConversationController {
         }
     }
 
-    private void loadDestinataires() {
+    /*private void loadDestinataires() {
         try {
             List<Utilisateur> utilisateurs = UtilisateurService.lister();
             
@@ -88,7 +91,43 @@ public class AddConversationController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de chargement", "Impossible de charger la liste des destinataires.");
         }
+    }*/
+    private void loadDestinataires() {
+        try {
+            List<Utilisateur> utilisateurs = UtilisateurService.lister();
+
+            // Remove the current user from the list
+            Utilisateur currentUser = Session.getUtilisateurConnecte();
+            utilisateurs.removeIf(u -> u.getId() == currentUser.getId());
+
+            destinataireComboBox.setItems(FXCollections.observableArrayList(utilisateurs));
+
+            // Set a custom cell factory to display the email of each utilisateur
+            destinataireComboBox.setCellFactory(new Callback<ListView<Utilisateur>, ListCell<Utilisateur>>() {
+                @Override
+                public ListCell<Utilisateur> call(ListView<Utilisateur> param) {
+                    return new ListCell<Utilisateur>() {
+                        @Override
+                        protected void updateItem(Utilisateur item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item != null) {
+                                setText(item.getEmail());  // Show email in ComboBox
+                            } else {
+                                setText(null);
+                            }
+                        }
+                    };
+                }
+            });
+
+            destinataireComboBox.setButtonCell(destinataireComboBox.getCellFactory().call(null));  // Ensure the selected item is also displayed correctly
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de chargement", "Impossible de charger la liste des destinataires.");
+        }
     }
+
 
     @FXML
     private void handleCancel() {

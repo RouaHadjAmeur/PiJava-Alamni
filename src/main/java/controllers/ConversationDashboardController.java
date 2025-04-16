@@ -34,9 +34,9 @@ public class ConversationDashboardController {
     public void initialize() {
         try {
             loadAllConversations();
-            
+
             // Set the window's userData to a refresh callback
-            if (allConversationsListView.getScene() != null && 
+            if (allConversationsListView.getScene() != null &&
                 allConversationsListView.getScene().getWindow() != null) {
                 allConversationsListView.getScene().getWindow().setUserData((Runnable) this::refreshData);
             }
@@ -100,13 +100,13 @@ public class ConversationDashboardController {
             showErrorAlert("Erreur lors de l'ouverture de la nouvelle conversation: " + e.getMessage());
         }
     }
-    
+
     @FXML
     private void handleReturnToHome() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/parent.fxml"));
             Parent root = loader.load();
-            
+
             Scene scene = allConversationsListView.getScene();
             if (scene != null) {
                 Stage stage = (Stage) scene.getWindow();
@@ -118,7 +118,7 @@ public class ConversationDashboardController {
             showErrorAlert("Impossible de retourner à l'accueil: " + e.getMessage());
         }
     }
-    
+
     private void showErrorAlert(String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
@@ -130,4 +130,4 @@ public class ConversationDashboardController {
     public void refreshData() {
         loadAllConversations();
     }
-} 
+}
