@@ -69,7 +69,6 @@ public class AdminController {
 
     @FXML
     private void handleLogout(ActionEvent event) {
-        // Pas besoin d'appeler Session.logout() si on change simplement de vue
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
             mainContentPane.getScene().setRoot(root);
@@ -77,10 +76,7 @@ public class AdminController {
             e.printStackTrace();
         }
     }
-    /**
-     * Charge une vue dans le conteneur principal
-     * @param fxmlPath chemin vers le fichier FXML à charger
-     */
+
     private void loadViewInMainContent(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -91,9 +87,10 @@ public class AdminController {
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
-            AnchorPane.setLeftAnchor(view, 0.0);
+//            AnchorPane.setLeftAnchor(view, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
+

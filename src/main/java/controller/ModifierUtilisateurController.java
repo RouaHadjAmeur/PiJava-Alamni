@@ -159,15 +159,21 @@ public class ModifierUtilisateurController {
             eleve.setNomNiveau(nomNiveau);
         }
 
-        // 🔁 Mise à jour en base
-        boolean success = UtilisateurService.updateUtilisateur(utilisateur);
+        // 🔁 Mise à jour en base - CORRECTION ICI
+        boolean success = UtilisateurService.modifier(utilisateur);
 
         if (success) {
-            Utilisateur utilisateurMisAJour = UtilisateurService.login(utilisateur.getEmail(), utilisateur.getPassword());
+            // Récupérer l'utilisateur mis à jour de manière plus sûre - CORRECTION ICI
+            Utilisateur utilisateurMisAJour = UtilisateurService.getById(utilisateur.getId());
             Session.setUtilisateurConnecte(utilisateurMisAJour);
 
             statusLabel.setText("✅ Profil modifié !");
             statusLabel.setStyle("-fx-text-fill: green;");
+
+            // Si un callback est défini, l'exécuter
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
 
             // ➤ fermer la fenêtre après une courte pause
             new Thread(() -> {
