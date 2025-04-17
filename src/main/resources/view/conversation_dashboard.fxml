@@ -5,48 +5,57 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.ConversationDashboardController"
-            stylesheets="@../styles/conversation.css"
-            prefWidth="1000" prefHeight="800"
-            minWidth="800" minHeight="600">
-
-    <VBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-          styleClass="root" spacing="20">
-
-        <!-- Header -->
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationDashboardController">
+    <VBox layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0" spacing="0.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        
+        <!-- Header Section -->
         <VBox styleClass="header">
             <padding>
-                <Insets top="30" right="40" bottom="30" left="40"/>
+                <Insets top="20" right="40" bottom="20" left="40"/>
             </padding>
-            <Label styleClass="header-title" text="Mes Conversations" />
+            
+            <!-- Dashboard Title and Back to Home Button -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label fx:id="dashboardTitleLabel" text="Mes Conversations" styleClass="header-title" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button">
+                    <graphic>
+                        <HBox spacing="8" alignment="CENTER">
+                            <Label text="🏠" style="-fx-text-fill: #4CAF50;"/>
+                            <Label text="Retour à l'accueil" style="-fx-text-fill: #4CAF50;">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </HBox>
+            
+            <!-- Dashboard Info -->
             <HBox styleClass="breadcrumb">
-                <padding>
-                    <Insets top="10" />
-                </padding>
                 <Label styleClass="breadcrumb-item" text="🏠 Accueil" />
                 <Label styleClass="breadcrumb-separator" text="/" />
-                <Label styleClass="breadcrumb-item" text="📑 Pages" />
-                <Label styleClass="breadcrumb-separator" text="/" />
-                <Label styleClass="breadcrumb-item" text="💬 Boite de discussions" />
+                <Label styleClass="breadcrumb-item" text="💬 Messages" />
             </HBox>
         </VBox>
-
+        
         <!-- Main Content -->
         <VBox spacing="20" styleClass="conversation-list-container" VBox.vgrow="ALWAYS">
             <padding>
                 <Insets top="20" right="40" bottom="30" left="40"/>
             </padding>
-            <HBox spacing="15" alignment="CENTER_LEFT">
+            
+            <!-- Filter Buttons -->
+            <HBox spacing="15" alignment="CENTER_LEFT" fx:id="filterButtonsContainer">
                 <HBox spacing="15" HBox.hgrow="ALWAYS">
-                    <Button text="💬 Reponse" styleClass="tab-button" onAction="#handleFavorisFilter" />
-                    <Button text="👥 Tous" styleClass="tab-button" onAction="#handleTousFilter" />
+                    <Button fx:id="btnAllConversations" text="👥 Mes conversations" styleClass="tab-button" onAction="#handleAllFilter" />
+                    <Button fx:id="btnSentConversations" text="📤 Envoyées" styleClass="tab-button" onAction="#handleSentFilter" />
+                    <Button fx:id="btnReceivedConversations" text="📥 Reçues" styleClass="tab-button" onAction="#handleReceivedFilter" />
                 </HBox>
-                <Button text="+ Nouvelle Conversation" onAction="#handleNewConversation" styleClass="new-conversation-btn" />
+                <Button fx:id="btnAddConversation" text="+ Nouvelle Conversation" onAction="#handleNewConversation" styleClass="new-conversation-btn" />
             </HBox>
 
+            <!-- Conversations List -->
             <ListView fx:id="allConversationsListView" styleClass="list-view" VBox.vgrow="ALWAYS" />
         </VBox>
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.MessageController"
+            prefHeight="500.0" prefWidth="700.0" stylesheets="/css/styles.css">
+
+    <top>
+        <VBox spacing="10" styleClass="header-box">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+            <Label fx:id="conversationTitleLabel" styleClass="title-label"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+            <ListView fx:id="messagesListView" VBox.vgrow="ALWAYS" styleClass="messages-list"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox spacing="10" styleClass="message-input-box">
+            <padding>
+                <Insets top="10" right="15" bottom="15" left="15"/>
+            </padding>
+            
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="editButton" text="Modifier le message" onAction="#handleEditMessage" 
+                        styleClass="btn, btn-primary" />
+                <Button fx:id="deleteButton" text="Supprimer le message" onAction="#handleDeleteMessage" 
+                        styleClass="btn, btn-danger" />
+            </HBox>
+            
+            <TextArea fx:id="messageContentTextArea" promptText="Écrivez votre message ici..." 
+                     prefHeight="60.0" wrapText="true" />
+            
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="sendButton" text="Envoyer" onAction="#handleSendMessage" 
+                        styleClass="btn, btn-success" defaultButton="true" />
+            </HBox>
+        </VBox>
+    </bottom>
+
+</BorderPane> 

@@ -55,6 +55,22 @@
         </VBox>
         
         <HBox alignment="CENTER_RIGHT" prefHeight="50.0" spacing="15.0">
+            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+                <Button fx:id="btnBackToHome" mnemonicParsing="false" onAction="#handleBackToHome" 
+                    prefHeight="40.0" prefWidth="160.0" 
+                    style="-fx-background-color: #4CAF50; -fx-cursor: hand;" textFill="WHITE">
+                    <graphic>
+                        <HBox spacing="8" alignment="CENTER">
+                            <Label text="🏠" style="-fx-text-fill: white;"/>
+                            <Label text="Retour à l'accueil" style="-fx-text-fill: white;">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </HBox>
             <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" 
                     prefHeight="40.0" prefWidth="120.0" 
                     style="-fx-background-color: #6B7280; -fx-cursor: hand;" textFill="WHITE">

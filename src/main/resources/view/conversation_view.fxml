@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationViewController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css, @../css/styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationViewController">
     <VBox layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0" spacing="0.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         
         <!-- Header -->
@@ -45,6 +45,20 @@
 
         <!-- Action Buttons -->
         <HBox styleClass="action-bar" alignment="CENTER_RIGHT" spacing="10">
+            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="action-button, home-button">
+                    <graphic>
+                        <HBox spacing="8" alignment="CENTER">
+                            <Label text="🏠" style="-fx-text-fill: #4CAF50;"/>
+                            <Label text="Retour à l'accueil" style="-fx-text-fill: #4CAF50;">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </HBox>
             <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button">
                 <graphic>
                     <HBox spacing="8" alignment="CENTER">
@@ -62,6 +76,18 @@
                     <HBox spacing="8" alignment="CENTER">
                         <Label text="✏️" style="-fx-text-fill: #f59e0b;"/>
                         <Label text="Modifier" style="-fx-text-fill: #f59e0b;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </graphic>
+            </Button>
+            <Button fx:id="btnManageMessages" onAction="#handleManageMessages" styleClass="action-button, manage-button">
+                <graphic>
+                    <HBox spacing="8" alignment="CENTER">
+                        <Label text="✉️" style="-fx-text-fill: #3b82f6;"/>
+                        <Label text="Gérer les messages" style="-fx-text-fill: #3b82f6;">
                             <font>
                                 <Font size="14.0" />
                             </font>

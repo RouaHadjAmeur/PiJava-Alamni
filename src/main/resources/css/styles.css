@@ -1,0 +1,136 @@
+/* General Styles */
+.root {
+    -fx-font-family: 'Arial';
+    -fx-background-color: #f5f5f5;
+}
+
+.title-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.header-box {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+/* Button Styles */
+.btn {
+    -fx-padding: 8px 15px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-radius: 3px;
+}
+
+.btn-primary {
+    -fx-background-color: #2980b9;
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #3498db;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+.btn-success {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+}
+
+.btn-success:hover {
+    -fx-background-color: #2ecc71;
+}
+
+/* Message Styles */
+.messages-list {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.message-input-box {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, -2);
+}
+
+.message-bubble-sent, .message-bubble-received {
+    -fx-padding: 10px;
+    -fx-background-radius: 8px;
+    -fx-max-width: 300px;
+    -fx-min-width: 50px;
+}
+
+.message-bubble-sent {
+    -fx-background-color: #3498db;
+    -fx-padding: 10px;
+    -fx-background-radius: 8px 0px 8px 8px;
+    -fx-alignment: center-right;
+}
+
+.message-bubble-sent .message-content {
+    -fx-text-fill: white;
+}
+
+.message-bubble-sent .message-sender, .message-bubble-sent .message-timestamp {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 11px;
+}
+
+.message-bubble-received {
+    -fx-background-color: #e8e8e8;
+    -fx-padding: 10px;
+    -fx-background-radius: 0px 8px 8px 8px;
+    -fx-alignment: center-left;
+}
+
+.message-bubble-received .message-content {
+    -fx-text-fill: #333333;
+}
+
+.message-bubble-received .message-sender, .message-bubble-received .message-timestamp {
+    -fx-text-fill: #777777;
+    -fx-font-size: 11px;
+}
+
+.message-sender {
+    -fx-font-weight: bold;
+}
+
+.message-content {
+    -fx-font-size: 14px;
+}
+
+.message-timestamp {
+    -fx-font-size: 11px;
+    -fx-opacity: 0.6;
+}
+
+/* Status indicators */
+.status-read {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 3px 8px;
+    -fx-background-radius: 3px;
+}
+
+.status-replied {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-padding: 3px 8px;
+    -fx-background-radius: 3px;
+}
+
+.status-unread {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-padding: 3px 8px;
+    -fx-background-radius: 3px;
+} 

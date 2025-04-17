@@ -14,6 +14,8 @@ import model.Conversation;
 import model.Message;
 import services.ConversationService;
 import Main.DatabaseConnection;
+import model.Utilisateur;
+import util.Session;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,10 +34,16 @@ public class ConversationListCell extends ListCell<Conversation> {
             VBox container = new VBox(5);
             container.setStyle("-fx-padding: 5;");
 
-            // Subject and status
+            // Get the current user to determine who the conversation is with
+            Utilisateur currentUser = Session.getUtilisateurConnecte();
+            String partnerEmail = currentUser.getEmail().equals(conversation.getExpediteur_email()) ?
+                                 conversation.getDestinataire_email() :
+                                 conversation.getExpediteur_email();
+            
+            // Title and status row
             HBox header = new HBox(10);
-            Label subjectLabel = new Label(conversation.getSujet());
-            subjectLabel.setStyle("-fx-font-weight: bold;");
+            Label conversationTitle = new Label("Conversation avec " + partnerEmail);
+            conversationTitle.setStyle("-fx-font-weight: bold;");
             
             Label statusLabel = new Label(conversation.getStatut());
             if (conversation.getStatut().equalsIgnoreCase("Non lu")) {
@@ -45,7 +53,11 @@ public class ConversationListCell extends ListCell<Conversation> {
             } else if (conversation.getStatut().equalsIgnoreCase("Répondu")) {
                 statusLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
             }
-            header.getChildren().addAll(subjectLabel, statusLabel);
+            header.getChildren().addAll(conversationTitle, statusLabel);
+
+            // Original subject
+            Label originalSubject = new Label(conversation.getSujet());
+            originalSubject.setStyle("-fx-font-size: 12px; -fx-text-fill: #6B7280;");
 
             // Last message preview
             String lastMessageContent = "";
@@ -60,15 +72,18 @@ public class ConversationListCell extends ListCell<Conversation> {
             Label messagePreview = new Label(lastMessageContent);
             messagePreview.setStyle("-fx-text-fill: #6B7280;");
 
-            // Date and participants
+            // Message count and date info
             HBox footer = new HBox(10);
             footer.setAlignment(Pos.CENTER_LEFT);
-            Label dateLabel = new Label(conversation.getDate_creation().toString());
+            
+            int messageCount = messages != null ? messages.size() : 0;
+            Label messagesCountLabel = new Label(messageCount + " messages");
+            messagesCountLabel.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 12px;");
+            
+            Label dateLabel = new Label(" · Dernière activité: " + conversation.getDate_creation().toString());
             dateLabel.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 12px;");
             
-            Label participantsLabel = new Label(conversation.getExpediteur_email() + " → " + conversation.getDestinataire_email());
-            participantsLabel.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 12px;");
-            footer.getChildren().addAll(dateLabel, participantsLabel);
+            footer.getChildren().addAll(messagesCountLabel, dateLabel);
 
             // View button
             Button viewButton = new Button("Voir");
@@ -79,7 +94,7 @@ public class ConversationListCell extends ListCell<Conversation> {
             buttonContainer.setAlignment(Pos.CENTER_RIGHT);
             buttonContainer.getChildren().add(viewButton);
 
-            container.getChildren().addAll(header, messagePreview, footer, buttonContainer);
+            container.getChildren().addAll(header, originalSubject, messagePreview, footer, buttonContainer);
             setGraphic(container);
         }
     }
@@ -89,28 +104,36 @@ public class ConversationListCell extends ListCell<Conversation> {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/conversation_view.fxml"));
             Parent root = loader.load();
             
-            ConversationViewController controller = loader.getController();
-            controller.setConversation(conversation);
+            // Get the controller from the loader
+            Object controller = loader.getController();
             
-            // Add a refresh callback to update the list after changes
-            controller.setRefreshCallback(unused -> {
-                getListView().refresh();
+            // Check if it's the correct type and set conversation
+            if (controller instanceof ConversationViewController) {
+                ConversationViewController viewController = (ConversationViewController) controller;
+                viewController.setConversation(conversation);
                 
-                // Try to get the parent controller (ConversationDashboardController) to refresh its data
-                if (getListView().getScene() != null && 
-                    getListView().getScene().getWindow() != null) {
+                // Add a refresh callback to update the list after changes
+                viewController.setRefreshCallback(unused -> {
+                    getListView().refresh();
                     
-                    Object userData = getListView().getScene().getWindow().getUserData();
-                    if (userData instanceof Runnable) {
-                        ((Runnable) userData).run();
+                    // Try to get the parent controller (ConversationDashboardController) to refresh its data
+                    if (getListView().getScene() != null && 
+                        getListView().getScene().getWindow() != null) {
+                        
+                        Object userData = getListView().getScene().getWindow().getUserData();
+                        if (userData instanceof Runnable) {
+                            ((Runnable) userData).run();
+                        }
                     }
-                }
-            });
-            
-            Stage stage = new Stage();
-            stage.setTitle("Conversation: " + conversation.getSujet());
-            stage.setScene(new Scene(root));
-            stage.show();
+                });
+                
+                Stage stage = new Stage();
+                stage.setTitle("Conversation: " + conversation.getSujet());
+                stage.setScene(new Scene(root));
+                stage.show();
+            } else {
+                System.err.println("Controller is not a ConversationViewController: " + controller.getClass().getName());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

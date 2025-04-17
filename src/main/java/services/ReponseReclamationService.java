@@ -1,10 +1,7 @@
 package services;
 
 import Main.DatabaseConnection;
-import model.Administrateur;
-import model.Reclamation;
-import model.ReponseReclamation;
-import model.Utilisateur;
+import model.*;
 import service.UtilisateurService;
 
 import java.sql.*;
@@ -20,7 +17,17 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
     }
 
     @Override
-    public void add(ReponseReclamation r) {
+    public void ajouter(Conversation conversation) {
+
+    }
+
+    @Override
+    public void modifier(Conversation conversation) {
+
+    }
+
+    @Override
+    public int add(ReponseReclamation r) {
         String req = "INSERT INTO pijava.reponsereclamation (reclamation_id_id, admin_id_id, contenue, date_reponse) VALUES (?, ?, ?, ?)";
 
         try {
@@ -34,6 +41,7 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'ajout de la réponse : " + e.getMessage());
         }
+        return 0;
     }
 
     @Override
@@ -69,6 +77,11 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
     @Override
     public ReponseReclamation getOne(int id) {
         return null;  // optionnel si jamais tu le développes après
+    }
+
+    @Override
+    public List<Conversation> readAll() {
+        return List.of();
     }
 
     public List<ReponseReclamation> getByReclamationId(int reclamationId) {

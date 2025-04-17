@@ -1,5 +1,6 @@
 package services;
 import Main.DatabaseConnection;
+import model.Conversation;
 import model.Reclamation;
 import model.Utilisateur;
 import util.Session;
@@ -18,7 +19,17 @@ public class ReclamationServices implements Iservices<Reclamation> {
     }
 
     @Override
-    public void add(Reclamation reclamation) {
+    public void ajouter(Conversation conversation) {
+
+    }
+
+    @Override
+    public void modifier(Conversation conversation) {
+
+    }
+
+    @Override
+    public int add(Reclamation reclamation) {
         String req="INSERT INTO pijava.reclamation (user_email, objet, description, status, date_soumission, admin_mail, role, user_id) VALUES (?, ?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm=cnx.prepareStatement(req);
@@ -35,6 +46,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
 
     @Override
@@ -129,6 +141,11 @@ public class ReclamationServices implements Iservices<Reclamation> {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    @Override
+    public List<Conversation> readAll() {
+        return List.of();
     }
 
     public void update(Reclamation reclamation) {

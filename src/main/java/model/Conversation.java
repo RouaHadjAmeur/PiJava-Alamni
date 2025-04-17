@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,12 @@ public class Conversation {
     private int destinataire_id;
     private List<Message> messages;
 
+    // Default constructor
     public Conversation() {
+        this.messages = new ArrayList<>();
+    }
+
+    public Conversation(String email, String trim, String trimmed, String nonLu, Timestamp timestamp) {
         this.messages = new ArrayList<>();
     }
 

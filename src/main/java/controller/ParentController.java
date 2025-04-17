@@ -52,12 +52,13 @@ public class ParentController {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen(); // ✅ centrer
+            stage.centerOnScreen();
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleMesBulletins() {
         Alert info = new Alert(Alert.AlertType.INFORMATION);
@@ -72,14 +73,12 @@ public class ParentController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
-
             controllers.AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter Réclamation");
             stage.setScene(new Scene(root));
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,15 +90,10 @@ public class ParentController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le Stage courant proprement
-            //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-
-
             stage.setScene(new Scene(root));
             stage.setTitle("Mes Réclamations");
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
@@ -109,39 +103,33 @@ public class ParentController {
     @FXML
     private void handleConversations() {
         try {
-            // Fix the path to use controllers package path pattern
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/conversation_dashboard.fxml"));
-            
-            // Set controller factory to handle package differences
+
+            // Set controller factory to handle package differences - corrected to use "controllers" package
             loader.setControllerFactory(c -> {
                 try {
-                    // Try to create controller from controllers package (matching FXML declaration)
-                    return Class.forName(c.getName()).getDeclaredConstructor().newInstance();
+                    return Class.forName("controllers." + c.getSimpleName()).getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 }
             });
-            
+
             Parent root = loader.load();
-            
+
             Stage currentStage = (Stage) userMenu.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.setTitle("Conversations - Alamni");
-            
+
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Impossible de charger les conversations. Erreur: " + e.getMessage() + 
-                     "\nChemin du fichier: " + getClass().getResource("/view/conversation_dashboard.fxml"));
+            showAlert(Alert.AlertType.ERROR, "Impossible de charger les conversations. Erreur: " + e.getMessage());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            
-            // Check if the exception was caused by a database error
             Throwable cause = e.getCause();
             if (cause instanceof SQLException) {
                 SQLException sqlEx = (SQLException) cause;
-                showAlert(Alert.AlertType.ERROR, "Erreur de base de données: " + sqlEx.getMessage() + 
-                          "\nAssurez-vous que la table 'conversation' existe et a les bonnes colonnes.");
+                showAlert(Alert.AlertType.ERROR, "Erreur de base de données: " + sqlEx.getMessage());
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur lors du chargement des conversations: " + e.getMessage());
             }
