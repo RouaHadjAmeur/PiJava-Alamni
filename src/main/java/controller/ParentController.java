@@ -1,5 +1,6 @@
 package controller;
 
+import controllers.AddReclamationController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -9,8 +10,10 @@ import javafx.scene.image.ImageView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javafx.stage.Window;
 import model.Utilisateur;
 import util.Session;
 
@@ -44,13 +47,13 @@ public class ParentController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/profilUtilisateur.fxml"));
             Parent root = loader.load();
-            controllers.AddReclamationController controller = loader.getController();
+            AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Mon Profil");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.centerOnScreen(); // ✅ centrer
             stage.showAndWait();
         } catch (Exception e) {
@@ -72,7 +75,7 @@ public class ParentController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
 
-            controllers.AddReclamationController controller = loader.getController();
+            AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter Réclamation");

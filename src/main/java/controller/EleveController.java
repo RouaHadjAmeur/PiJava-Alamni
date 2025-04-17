@@ -89,8 +89,31 @@ public class EleveController {
         }
     }
     @FXML
-    private void handleMesReclamations() {
+    private void handleMesReclamations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+            Parent root = loader.load();
 
+            // Récupérer le Stage courant proprement
+            //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes Réclamations");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

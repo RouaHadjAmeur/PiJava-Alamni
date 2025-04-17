@@ -252,4 +252,30 @@ public class UtilisateurService {
         return user;
     }
 
+    public static List<Utilisateur> getAdmins() {
+        List<Utilisateur> admins = new ArrayList<>();
+
+        String sql = "SELECT * FROM utilisateurs";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Utilisateur utilisateur = mapper(rs);
+                if (utilisateur != null && "ADMINISTRATEUR".equalsIgnoreCase(utilisateur.getRole())) {
+                    admins.add(utilisateur);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return admins;
+    }
+
+
+
+
 }

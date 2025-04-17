@@ -7,23 +7,35 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Reclamation;
 import model.Utilisateur;
 import services.ReclamationServices;
+import service.UtilisateurService;
 import util.Session;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class AddReclamationController {
 
+    @FXML private MenuButton userMenu;
+    @FXML private ImageView profileImage;
+
+
     @FXML private TextField emailField;
     @FXML private TextField objetField;
     @FXML private TextArea descriptionArea;
-    @FXML private TextField adminMailField;
+//    @FXML private TextField adminMailField;
+    @FXML private ComboBox<String> adminComboBox;
+
     @FXML private TextField roleField;
     @FXML
     private Label emailLabel;
@@ -41,12 +53,37 @@ public class AddReclamationController {
     @FXML
     private void initialize() {
         Utilisateur user = Session.getUtilisateurConnecte();
+        loadAdmins();
+
 
         if (user != null) {
             emailLabel.setText(user.getEmail());
             roleLabel.setText(user.getRole());
+            userMenu.setText(user.getPrenom() + " " + user.getNom());
+        }
+        if (user.getPhoto() != null) {
+            File file = new File(user.getPhoto());
+            if (file.exists()) {
+                Image image = new Image(file.toURI().toString(), 40, 40, true, true);
+                profileImage.setImage(image);
+            }
         }
     }
+
+    private void loadAdmins() {
+        try {
+            // Appel à un service fictif (on l'ajoutera à l'étape suivante)
+            List<Utilisateur> admins = UtilisateurService.getAdmins();
+
+            for (Utilisateur admin : admins) {
+                adminComboBox.getItems().add(admin.getEmail());
+            }
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur lors du chargement des administrateurs : " + e.getMessage());
+        }
+    }
+
 
     @FXML
     private void handleSave() {
@@ -54,14 +91,24 @@ public class AddReclamationController {
 
         boolean valid = true;
 
-        // Email admin
-        if (adminMailField.getText().isEmpty()) {
-            adminEmailErrorLabel.setText("Email admin requis.");
+//        // Email admin
+//        if (adminMailField.getText().isEmpty()) {
+//            adminEmailErrorLabel.setText("Email admin requis.");
+//            valid = false;
+//        } else if (!isValidEmail(adminMailField.getText())) {
+//            adminEmailErrorLabel.setText("Format invalide. Ex: admin@gmail.com");
+//            valid = false;
+//        }
+        String selectedAdminEmail = adminComboBox.getValue();
+
+        if (selectedAdminEmail == null || selectedAdminEmail.isEmpty()) {
+            adminEmailErrorLabel.setText("Veuillez sélectionner un administrateur.");
             valid = false;
-        } else if (!isValidEmail(adminMailField.getText())) {
+        } else if (!isValidEmail(selectedAdminEmail)) {
             adminEmailErrorLabel.setText("Format invalide. Ex: admin@gmail.com");
             valid = false;
         }
+
 
         // Objet
         if (objetField.getText().isEmpty()) {
@@ -92,7 +139,8 @@ public class AddReclamationController {
                     descriptionArea.getText(),
                     "En attente",
                     new Date(System.currentTimeMillis()),
-                    adminMailField.getText(),
+                   // adminMailField.getText(),
+                    selectedAdminEmail,
                     roleLabel.getText(),
                     0
             );
@@ -142,8 +190,67 @@ public class AddReclamationController {
 
 
     @FXML
-    private void handleMesReclamations() {
+    private void handleMesReclamations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+            Parent root = loader.load();
 
+            // Récupérer le Stage courant proprement
+            //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes Réclamations");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        }
     }
+
+
+
+//----------------------------------profile-----------------------------------------------
+@FXML
+private void handleMonProfil() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/profilUtilisateur.fxml"));
+        Parent root = loader.load();
+        controllers.AddReclamationController controller = loader.getController();
+
+        Stage stage = new Stage();
+        stage.setTitle("Mon Profil");
+        stage.setScene(new Scene(root));
+        stage.setResizable(false);
+        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        stage.centerOnScreen(); // ✅ centrer
+        stage.showAndWait();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+@FXML
+private void handleMesBulletins() {
+    Alert info = new Alert(Alert.AlertType.INFORMATION);
+    info.setTitle("Bulletin");
+    info.setHeaderText(null);
+    info.setContentText("Ici s'afficheront les notes de l'élève suivi.");
+    info.showAndWait();
+}
+
+@FXML
+private void handleLogout() {
+    Session.clear();
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        Stage stage = (Stage) userMenu.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Connexion - Alamni");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
 }

@@ -35,7 +35,7 @@
             <ImageView fx:id="profileImage" fitHeight="40" fitWidth="40"/>
 
             <MenuButton fx:id="userMenu" text="Mon Compte"
-                        style="-fx-font-size: 16px; -fx-text-fill: #333;">
+                        style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;">
                 <items>
                     <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
                     <MenuItem text="📝 Mes Résultats" onAction="#handleMesNotes"/>

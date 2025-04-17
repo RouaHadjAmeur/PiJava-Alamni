@@ -10,29 +10,50 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Reclamation;
 import model.ReponseReclamation;
 import services.ReclamationServices;
 import services.ReponseReclamationService;
+import util.Session;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import model.Utilisateur;
+import services.ReclamationServices;
+import util.Session;
+
 
 public class MesReclamationController implements Initializable {
 
     @FXML
     private ListView<Reclamation> reclamationsListView;
-
+    @FXML private MenuButton userMenu;
+    @FXML private ImageView profileImage;
     private final ReclamationServices service = new ReclamationServices();
     @FXML private Label statusLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         afficherMesReclamations();
+        Utilisateur user = Session.getUtilisateurConnecte();
+
+        if (user != null) {
+            userMenu.setText(user.getPrenom() + " " + user.getNom());
+        }
+        if (user.getPhoto() != null) {
+            File file = new File(user.getPhoto());
+            if (file.exists()) {
+                Image image = new Image(file.toURI().toString(), 40, 40, true, true);
+                profileImage.setImage(image);
+            }
+        }
     }
 
     private void afficherMesReclamations() {
@@ -177,4 +198,46 @@ public class MesReclamationController implements Initializable {
 
 
 
+    //----------------------------------profile-----------------------------------------------
+    @FXML
+    private void handleMonProfil() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/profilUtilisateur.fxml"));
+            Parent root = loader.load();
+            controllers.AddReclamationController controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Mon Profil");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.centerOnScreen(); // ✅ centrer
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleMesBulletins() {
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setTitle("Bulletin");
+        info.setHeaderText(null);
+        info.setContentText("Ici s'afficheront les notes de l'élève suivi.");
+        info.showAndWait();
+    }
+
+    @FXML
+    private void handleLogout() {
+        Session.clear();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+            Stage stage = (Stage) userMenu.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Connexion - Alamni");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+

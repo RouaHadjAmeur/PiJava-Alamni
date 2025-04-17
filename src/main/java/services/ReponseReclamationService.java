@@ -25,7 +25,7 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
 
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
-            ps.setInt(1, r.getReclamation().getId());  // ici objet reclamation utilisé
+            ps.setInt(1, r.getReclamation().getId());
             ps.setInt(2, r.getAdminId());
             ps.setString(3, r.getContenue());
             ps.setDate(4, r.getDateReponse());

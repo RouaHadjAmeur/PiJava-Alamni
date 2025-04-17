@@ -89,13 +89,31 @@ public class ReclamationController {
                     Label date = new Label(r.getDate_soumission().toString());
                     date.setPrefWidth(100);
 
-                    Button btnView = createActionButton("Voir", "#3B82F6");
+                    ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream("/img/voir.png")));
+                    iconView.setFitWidth(16);
+                    iconView.setFitHeight(16);
+                    Button btnView = new Button("", iconView);
+                    btnView.setStyle("-fx-background-color: #3B82F6; -fx-background-radius: 5;");
+
+                    //Button btnView = createActionButton("Voir", "#3B82F6");
                     btnView.setOnAction(e -> openViewReclamation(r));
 
-                    Button btnRepondre = createActionButton("Répondre", "#10B981");
+
+                    ImageView iconRepondre = new ImageView(new Image(getClass().getResourceAsStream("/img/repondre.png")));
+                    iconRepondre.setFitWidth(16);
+                    iconRepondre.setFitHeight(16);
+                    Button btnRepondre = new Button("", iconRepondre);
+                    btnRepondre.setStyle("-fx-background-color: #10B981; -fx-background-radius: 5;");
+                    //Button btnRepondre = createActionButton("Répondre", "#10B981");
                     btnRepondre.setOnAction(e -> openRepondreReclamation(r));
 
-                    Button btnDelete = createActionButton("Supprimer", "#EF4444");
+                    ImageView iconDelete = new ImageView(new Image(getClass().getResourceAsStream("/img/supprimer.png")));
+                    iconDelete.setFitWidth(16);
+                    iconDelete.setFitHeight(16);
+                    Button btnDelete = new Button("", iconDelete);
+                    btnDelete.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 5;");
+
+                    //Button btnDelete = createActionButton("Supprimer", "#EF4444");
                     btnDelete.setOnAction(e -> {
                         service.delete(r.getId());
                         loadData();
