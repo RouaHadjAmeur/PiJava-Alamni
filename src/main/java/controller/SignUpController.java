@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import model.*;
 import javafx.event.ActionEvent;
 import service.UtilisateurService;
+import util.PasswordUtils; // Nouvel import
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,9 @@ public class SignUpController {
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
     );
+
+    // Pattern pour valider les noms et prénoms (lettres, espaces, traits d'union, apostrophes)
+    private static final Pattern TEXT_ONLY_PATTERN = Pattern.compile("^[\\p{L} \\-']+$");
 
     @FXML
     public void initialize() {
@@ -115,7 +119,27 @@ public class SignUpController {
             return;
         }
 
+<<<<<<< HEAD
         // Vérification que les mots de passe correspondent
+=======
+        if (!TEXT_ONLY_PATTERN.matcher(nom).matches()) {
+            statusLabel.setText("❗ Le nom doit contenir uniquement des lettres.");
+            return;
+        }
+
+        if (!TEXT_ONLY_PATTERN.matcher(prenom).matches()) {
+            statusLabel.setText("❗ Le prénom doit contenir uniquement des lettres.");
+            return;
+        }
+
+        // Vérifier que le mot de passe a au moins 6 caractères
+        if (password.length() < 6) {
+            statusLabel.setText("❗ Le mot de passe doit contenir au moins 6 caractères.");
+            return;
+        }
+
+        // Vérifier que les mots de passe correspondent
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
         if (!password.equals(confirmPassword)) {
             showAlert(Alert.AlertType.ERROR, "Mots de passe différents", "Les mots de passe ne correspondent pas.");
             return;
@@ -133,7 +157,34 @@ public class SignUpController {
             return;
         }
 
+<<<<<<< HEAD
         // Créer l'utilisateur selon le rôle
+=======
+        // Pour les élèves, vérifier que le niveau est renseigné
+        String niveau = null;
+        String nomNiveau = null;
+
+        if ("ÉLÈVE".equalsIgnoreCase(role)) {
+            niveau = niveauComboBox.getValue();
+            nomNiveau = nomNiveauField.getText().trim();
+
+            if (niveau == null || nomNiveau.isEmpty()) {
+                statusLabel.setText("❗ Veuillez compléter les informations académiques.");
+                return;
+            }
+        }
+
+        // Vérifier si l'email existe déjà
+        if (UtilisateurService.emailExiste(email)) {
+            statusLabel.setText("❗ Cet email est déjà utilisé.");
+            return;
+        }
+
+        // Hacher le mot de passe avant de créer l'utilisateur (NOUVEAU CODE)
+        String hashedPassword = PasswordUtils.hashPassword(password);
+
+        // Créer l'utilisateur selon son rôle avec le mot de passe haché
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
         Utilisateur user;
 
         switch (role.toUpperCase()) {
@@ -141,26 +192,41 @@ public class SignUpController {
                 user = new Administrateur(nom, prenom, email, password);
                 break;
             case "ÉLÈVE":
+<<<<<<< HEAD
                 Eleve eleve = new Eleve(nom, prenom, email, password);
                 // Définir le niveau et le nom du niveau pour l'élève
                 if (niveauComboBox.getValue() != null) {
                     eleve.setNiveau(niveauComboBox.getValue());
                     eleve.setNomNiveau(nomNiveauField.getText());
                 }
+=======
+                Eleve eleve = new Eleve(nom, prenom, email, hashedPassword); // Mot de passe haché
+                eleve.setNiveau(niveau);
+                eleve.setNomNiveau(nomNiveau);
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
                 user = eleve;
                 break;
             case "ENSEIGNANT":
-                user = new Enseignant(nom, prenom, email, password);
+                user = new Enseignant(nom, prenom, email, hashedPassword); // Mot de passe haché
                 break;
             case "PARENT":
-                user = new ParentUser(nom, prenom, email, password);
+                user = new ParentUser(nom, prenom, email, hashedPassword); // Mot de passe haché
                 break;
+<<<<<<< HEAD
+=======
+            case "ADMINISTRATEUR":
+                user = new Administrateur(nom, prenom, email, hashedPassword); // Mot de passe haché
+                break;
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
             default:
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle invalide.");
                 return;
         }
 
+<<<<<<< HEAD
         // Définir le chemin de la photo si elle a été choisie
+=======
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
         if (photoPath != null && !photoPath.isEmpty()) {
             user.setPhoto(photoPath);
         }

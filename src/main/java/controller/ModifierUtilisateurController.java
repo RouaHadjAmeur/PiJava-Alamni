@@ -228,6 +228,7 @@ public class ModifierUtilisateurController {
             eleve.setNomNiveau(nomNiveau);
         }
 
+<<<<<<< HEAD
         // Mise à jour du mot de passe si nécessaire
         if (changePassword) {
             boolean passwordUpdated = UtilisateurService.updatePassword(utilisateur.getId(), newPassword);
@@ -258,9 +259,23 @@ public class ModifierUtilisateurController {
                 Utilisateur utilisateurMisAJour = UtilisateurService.getUserById(utilisateur.getId());
                 Session.setUtilisateurConnecte(utilisateurMisAJour);
             }
+=======
+        // 🔁 Mise à jour en base - CORRECTION ICI
+        boolean success = UtilisateurService.modifier(utilisateur);
+
+        if (success) {
+            // Récupérer l'utilisateur mis à jour de manière plus sûre - CORRECTION ICI
+            Utilisateur utilisateurMisAJour = UtilisateurService.getById(utilisateur.getId());
+            Session.setUtilisateurConnecte(utilisateurMisAJour);
+>>>>>>> dd7e7d536a97bd60490b2f7ec2e156079eb20e69
 
             statusLabel.setText("✅ Profil modifié !");
             statusLabel.setStyle("-fx-text-fill: green;");
+
+            // Si un callback est défini, l'exécuter
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
 
             // ➤ fermer la fenêtre après une courte pause
             new Thread(() -> {
