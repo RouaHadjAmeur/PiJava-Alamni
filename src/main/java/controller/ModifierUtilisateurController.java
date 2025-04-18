@@ -10,6 +10,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import util.Session;
 
 public class ModifierUtilisateurController {
@@ -22,9 +26,14 @@ public class ModifierUtilisateurController {
     @FXML private ImageView photoImageView;
 
 
+    @FXML private PasswordField newPasswordField;
+    @FXML private PasswordField confirmPasswordField;
+
+
     private String photoPath = null;
     private Utilisateur utilisateur;
     private Runnable onCloseCallback;
+    private boolean photoChanged = false;
 
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
@@ -45,17 +54,31 @@ public class ModifierUtilisateurController {
                 nomNiveauField.setVisible(false);
             }
 
+            // Dans setUtilisateur()
             photoPath = utilisateur.getPhoto();
             if (photoPath != null) {
-                File photoFile = new File(photoPath);
-                photoLabel.setText(photoFile.getName());
+                photoLabel.setText(new File(photoPath).getName());
 
-                // Afficher l'aperçu de l'image
                 try {
-                    Image image = new Image(photoFile.toURI().toString());
+                    // Méthode 1 : Essayer de charger via le classpath des ressources
+                    Image image = new Image(getClass().getResourceAsStream("/" + photoPath));
                     photoImageView.setImage(image);
+                    System.out.println("Image chargée via classpath: " + photoPath);
                 } catch (Exception e) {
-                    System.err.println("Erreur lors du chargement de l'image: " + e.getMessage());
+                    try {
+                        // Méthode 2 : Essayer de charger via le chemin absolu
+                        File resourceDir = new File("src/main/resources");
+                        File imageFile = new File(resourceDir, photoPath);
+                        if (imageFile.exists()) {
+                            Image image = new Image(imageFile.toURI().toString());
+                            photoImageView.setImage(image);
+                            System.out.println("Image chargée via chemin absolu: " + imageFile.getAbsolutePath());
+                        } else {
+                            System.err.println("Fichier d'image introuvable: " + imageFile.getAbsolutePath());
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Erreur lors du chargement de l'image: " + ex.getMessage());
+                    }
                 }
             }
         }
@@ -82,22 +105,44 @@ public class ModifierUtilisateurController {
     @FXML
     private void handleChoosePhoto() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir une image");
+        fileChooser.setTitle("Sélectionner une photo de profil");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png", "*.jpeg")
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
         );
-        File file = fileChooser.showOpenDialog(nomField.getScene().getWindow());
 
-        if (file != null) {
-            photoPath = file.getAbsolutePath();
-            photoLabel.setText(file.getName());
-
-            // Afficher l'aperçu de l'image
+        File selectedFile = fileChooser.showOpenDialog(photoImageView.getScene().getWindow());
+        if (selectedFile != null) {
             try {
-                Image image = new Image(file.toURI().toString());
+                // Créer le répertoire de destination s'il n'existe pas
+                File destinationDir = new File("src/main/resources/images/users/");
+                if (!destinationDir.exists()) {
+                    destinationDir.mkdirs();
+                }
+
+                // Générer un nom unique pour la photo
+                String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                File targetFile = new File(destinationDir, fileName);
+
+                // Copier le fichier
+                Files.copy(selectedFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // IMPORTANT: Stocker un chemin relatif (et non absolu)
+                photoPath = "images/users/" + fileName;
+
+                // Charger l'image pour l'aperçu
+                Image image = new Image(targetFile.toURI().toString());
                 photoImageView.setImage(image);
-            } catch (Exception e) {
-                System.err.println("Erreur lors du chargement de l'image: " + e.getMessage());
+
+                // Signaler que la photo a été modifiée
+                photoChanged = true;
+
+                photoLabel.setText(fileName);
+                System.out.println("Photo mise à jour avec succès. Nouveau chemin : " + photoPath);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                statusLabel.setText("❌ Erreur lors du téléchargement de la photo !");
+                statusLabel.setStyle("-fx-text-fill: red;");
             }
         }
     }
@@ -110,12 +155,17 @@ public class ModifierUtilisateurController {
     private void handleSave() {
         if (utilisateur == null) return;
 
+        // Récupération des valeurs des champs
         String nom = nomField.getText().trim();
         String prenom = prenomField.getText().trim();
         String email = emailField.getText().trim();
         String role = roleComboBox.getValue();
         String niveau = niveauComboBox.getValue();
         String nomNiveau = nomNiveauField.getText().trim();
+
+        // Récupération des valeurs des champs de mot de passe
+        String newPassword = newPasswordField.getText().trim();
+        String confirmPassword = confirmPasswordField.getText().trim();
 
         // 1️⃣ Nom / prénom → lettres uniquement
         if (!nom.matches("^[A-Za-zÀ-ÿ\\s-]{2,}$") || !prenom.matches("^[A-Za-zÀ-ÿ\\s-]{2,}$")) {
@@ -147,6 +197,25 @@ public class ModifierUtilisateurController {
             }
         }
 
+        // 5️⃣ Validation du mot de passe si l'utilisateur souhaite le modifier
+        boolean changePassword = !newPassword.isEmpty() || !confirmPassword.isEmpty();
+
+        if (changePassword) {
+            // Vérifier que le nouveau mot de passe est assez fort
+            if (newPassword.length() < 8) {
+                statusLabel.setText("❗ Le nouveau mot de passe doit contenir au moins 8 caractères.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            // Vérifier que les deux mots de passe correspondent
+            if (!newPassword.equals(confirmPassword)) {
+                statusLabel.setText("❗ Les nouveaux mots de passe ne correspondent pas.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+        }
+
         // ✅ Mise à jour des champs
         utilisateur.setNom(nom);
         utilisateur.setPrenom(prenom);
@@ -159,12 +228,36 @@ public class ModifierUtilisateurController {
             eleve.setNomNiveau(nomNiveau);
         }
 
+        // Mise à jour du mot de passe si nécessaire
+        if (changePassword) {
+            boolean passwordUpdated = UtilisateurService.updatePassword(utilisateur.getId(), newPassword);
+            if (!passwordUpdated) {
+                statusLabel.setText("❌ Erreur lors de la modification du mot de passe !");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+        }
+
         // 🔁 Mise à jour en base
         boolean success = UtilisateurService.updateUtilisateur(utilisateur);
 
         if (success) {
-            Utilisateur utilisateurMisAJour = UtilisateurService.login(utilisateur.getEmail(), utilisateur.getPassword());
-            Session.setUtilisateurConnecte(utilisateurMisAJour);
+            // Au lieu de faire un login qui peut échouer
+            if (changePassword) {
+                // Si le mot de passe a changé, récupérer l'utilisateur mis à jour par login
+                Utilisateur utilisateurMisAJour = UtilisateurService.login(utilisateur.getEmail(), newPassword);
+                if (utilisateurMisAJour != null) {
+                    Session.setUtilisateurConnecte(utilisateurMisAJour);
+                } else {
+                    // Fallback: utiliser getUserById pour éviter de perdre la session
+                    Utilisateur utilisateurFallback = UtilisateurService.getUserById(utilisateur.getId());
+                    Session.setUtilisateurConnecte(utilisateurFallback);
+                }
+            } else {
+                // Si le mot de passe n'a pas changé, récupérer directement par ID
+                Utilisateur utilisateurMisAJour = UtilisateurService.getUserById(utilisateur.getId());
+                Session.setUtilisateurConnecte(utilisateurMisAJour);
+            }
 
             statusLabel.setText("✅ Profil modifié !");
             statusLabel.setStyle("-fx-text-fill: green;");

@@ -78,6 +78,32 @@
                             </GridPane>
                         </VBox>
 
+                        <!-- Section mot de passe -->
+                        <!-- Section mot de passe -->
+                        <VBox spacing="15" styleClass="form-section">
+                            <Label text="Modifier le mot de passe"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #3949ab;" />
+                            <Label text="Laissez vide si vous ne souhaitez pas modifier le mot de passe"
+                                   style="-fx-font-size: 12px; -fx-text-fill: #757575;" />
+                            <GridPane hgap="15" vgap="15">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="50" />
+                                    <ColumnConstraints percentWidth="50" />
+                                </columnConstraints>
+
+                                <Label text="Nouveau mot de passe" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                                       style="-fx-text-fill: #616161;" />
+                                <PasswordField fx:id="newPasswordField" promptText="Nouveau mot de passe"
+                                               style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-padding: 10;"
+                                               GridPane.rowIndex="1" GridPane.columnIndex="0" />
+
+                                <Label text="Confirmer le mot de passe" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                                       style="-fx-text-fill: #616161;" />
+                                <PasswordField fx:id="confirmPasswordField" promptText="Confirmez le nouveau mot de passe"
+                                               style="-fx-background-radius: 4; -fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-padding: 10;"
+                                               GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                            </GridPane>
+                        </VBox>
                         <!-- Section rôle et niveau -->
                         <VBox spacing="15" styleClass="form-section">
                             <Label text="Rôle et niveau"

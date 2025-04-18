@@ -18,6 +18,7 @@ public class DetailUtilisateurController {
     @FXML private Label niveauLabel, nomNiveauLabel, statutLabel;
     @FXML private VBox sectionNiveau;
 
+
     private Utilisateur utilisateur;
 
     public void setUtilisateur(Utilisateur user) {
@@ -37,11 +38,62 @@ public class DetailUtilisateurController {
             statutLabel.setStyle("-fx-background-color: #a5d6a7; -fx-text-fill: #1b5e20; -fx-padding: 5 15; -fx-background-radius: 20;");
         }
 
-        // Photo
-        if (user.getPhoto() != null) {
-            File f = new File(user.getPhoto());
-            if (f.exists()) {
-                photoView.setImage(new Image(f.toURI().toString()));
+        // Photo - Code amélioré pour charger les images depuis différentes sources
+        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+            String photoPath = user.getPhoto();
+            boolean photoLoaded = false;
+
+            // Méthode 1: Essayer via le classpath
+            try {
+                Image image = new Image(getClass().getResourceAsStream("/" + photoPath));
+                if (image != null && !image.isError()) {
+                    photoView.setImage(image);
+                    photoLoaded = true;
+                }
+            } catch (Exception e) {
+                // Passer à la méthode suivante
+            }
+
+            // Méthode 2: Essayer via le chemin absolu dans src/main/resources
+            if (!photoLoaded) {
+                try {
+                    File resourceDir = new File("src/main/resources");
+                    File imageFile = new File(resourceDir, photoPath);
+                    if (imageFile.exists()) {
+                        Image image = new Image(imageFile.toURI().toString());
+                        photoView.setImage(image);
+                        photoLoaded = true;
+                    }
+                } catch (Exception e) {
+                    // Passer à la méthode suivante
+                }
+            }
+
+            // Méthode 3: Essayer via le chemin absolu dans target/classes
+            if (!photoLoaded) {
+                try {
+                    File targetDir = new File("target/classes");
+                    File imageFile = new File(targetDir, photoPath);
+                    if (imageFile.exists()) {
+                        Image image = new Image(imageFile.toURI().toString());
+                        photoView.setImage(image);
+                        photoLoaded = true;
+                    }
+                } catch (Exception e) {
+                    System.err.println("Impossible de charger la photo: " + photoPath);
+                }
+            }
+
+            // Si aucune méthode n'a fonctionné, essayer la méthode originale (pour la compatibilité)
+            if (!photoLoaded) {
+                try {
+                    File f = new File(photoPath);
+                    if (f.exists()) {
+                        photoView.setImage(new Image(f.toURI().toString()));
+                    }
+                } catch (Exception e) {
+                    System.err.println("Échec du chargement de l'image: " + e.getMessage());
+                }
             }
         }
 

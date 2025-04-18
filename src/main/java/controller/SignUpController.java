@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.*;
+import javafx.event.ActionEvent;
 import service.UtilisateurService;
 
 import java.io.File;
@@ -93,13 +94,14 @@ public class SignUpController {
         }
     }
 
-    @FXML
-    private void handleSignUp() {
-        // Réinitialiser le message d'état
-        statusLabel.setText("");
-        statusLabel.setTextFill(Color.RED);
+    // Nouveau pattern pour valider les noms et prénoms (lettres, espaces, traits d'union, apostrophes)
+    private static final Pattern TEXT_ONLY_PATTERN = Pattern.compile("^[\\p{L} \\-']+$");
 
-        // Vérifier que tous les champs obligatoires sont remplis
+
+    // Modification dans SignUpController.java - pour l'inscription avec mot de passe haché
+    @FXML
+    private void handleSignUp(ActionEvent event) {
+        // Récupérer les données du formulaire
         String nom = nomField.getText().trim();
         String prenom = prenomField.getText().trim();
         String email = emailField.getText().trim();
@@ -107,57 +109,44 @@ public class SignUpController {
         String confirmPassword = confirmPasswordField.getText();
         String role = roleComboBox.getValue();
 
-        if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || role == null) {
-            statusLabel.setText("❗ Tous les champs obligatoires doivent être remplis.");
+        // Vérification des champs obligatoires
+        if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty() || role == null) {
+            showAlert(Alert.AlertType.WARNING, "Champs incomplets", "Veuillez remplir tous les champs obligatoires.");
             return;
         }
 
-        // Vérifier que les mots de passe correspondent
+        // Vérification que les mots de passe correspondent
         if (!password.equals(confirmPassword)) {
-            statusLabel.setText("❗ Les mots de passe ne correspondent pas.");
+            showAlert(Alert.AlertType.ERROR, "Mots de passe différents", "Les mots de passe ne correspondent pas.");
             return;
         }
 
-        // Vérifier que le format d'email est valide
+        // Vérification de l'email
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            statusLabel.setText("❗ Format d'email invalide.");
+            showAlert(Alert.AlertType.ERROR, "Email invalide", "Veuillez entrer une adresse email valide.");
             return;
         }
 
-        // Vérifier que les CGU sont acceptées
+        // Vérification de l'acceptation des CGU
         if (!cguCheckbox.isSelected()) {
-            statusLabel.setText("❗ Vous devez accepter les conditions d'utilisation.");
+            showAlert(Alert.AlertType.WARNING, "CGU non acceptées", "Vous devez accepter les conditions générales d'utilisation.");
             return;
         }
 
-        // Pour les élèves, vérifier que le niveau est renseigné
-        String niveau = null;
-        String nomNiveau = null;
-
-        if ("ÉLÈVE".equalsIgnoreCase(role)) {
-            niveau = niveauComboBox.getValue();
-            nomNiveau = nomNiveauField.getText().trim();
-
-            if (niveau == null || nomNiveau.isEmpty()) {
-                statusLabel.setText("❗ Veuillez compléter les informations académiques.");
-                return;
-            }
-        }
-
-        // Vérifier si l'email existe déjà
-        if (UtilisateurService.emailExiste(email)) {
-            statusLabel.setText("❗ Cet email est déjà utilisé.");
-            return;
-        }
-
-        // Créer l'utilisateur selon son rôle
+        // Créer l'utilisateur selon le rôle
         Utilisateur user;
 
-        switch (role) {
+        switch (role.toUpperCase()) {
+            case "ADMINISTRATEUR":
+                user = new Administrateur(nom, prenom, email, password);
+                break;
             case "ÉLÈVE":
                 Eleve eleve = new Eleve(nom, prenom, email, password);
-                eleve.setNiveau(niveau);
-                eleve.setNomNiveau(nomNiveau);
+                // Définir le niveau et le nom du niveau pour l'élève
+                if (niveauComboBox.getValue() != null) {
+                    eleve.setNiveau(niveauComboBox.getValue());
+                    eleve.setNomNiveau(nomNiveauField.getText());
+                }
                 user = eleve;
                 break;
             case "ENSEIGNANT":
@@ -166,43 +155,45 @@ public class SignUpController {
             case "PARENT":
                 user = new ParentUser(nom, prenom, email, password);
                 break;
-            case "ADMINISTRATEUR":
-                user = new Administrateur(nom, prenom, email, password);
-                break;
             default:
-                statusLabel.setText("❗ Rôle non reconnu.");
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle invalide.");
                 return;
         }
 
-        // Définir la photo si elle a été choisie
+        // Définir le chemin de la photo si elle a été choisie
         if (photoPath != null && !photoPath.isEmpty()) {
             user.setPhoto(photoPath);
         }
 
-        // Marquer comme en attente (sauf pour les administrateurs qui sont déjà validés)
-        if (!"ADMINISTRATEUR".equals(role)) {
-            user.setPending(true);
-        }
+        // S'assurer que le compte est en attente de validation
+        user.setPending(true);
 
-        // Enregistrer l'utilisateur
-        try {
-            UtilisateurService.inscrire(user);
-            // Si on arrive ici sans exception, l'inscription a réussi
-            statusLabel.setTextFill(Color.GREEN);
-            statusLabel.setText("✅ Compte créé avec succès! Vous pouvez maintenant vous connecter.");
+        // Inscrire l'utilisateur
+        if (UtilisateurService.inscrire(user)) {
+            showAlert(Alert.AlertType.INFORMATION, "Inscription réussie",
+                    "Votre compte a été créé. Veuillez attendre la validation par un administrateur.");
 
-            // Redirection vers la page de connexion après un court délai
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                    javafx.application.Platform.runLater(this::handleGoToLogin);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        } catch (Exception e) {
-            statusLabel.setText("❌ Erreur lors de la création du compte: " + e.getMessage());
+            // Retourner à l'écran de connexion
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+                Stage stage = (Stage) nomField.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Erreur d'inscription",
+                    "Un problème est survenu lors de l'inscription. L'email est peut-être déjà utilisé.");
         }
+    }
+
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

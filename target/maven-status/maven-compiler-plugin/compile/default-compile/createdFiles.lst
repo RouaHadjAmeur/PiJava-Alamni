@@ -1,6 +1,9 @@
+controller\EnseignantController.class
 model\ParentUser.class
 model\Enseignant.class
-controller\UserController.class
+controller\ParentController.class
+controller\DemandeInscriptionController$1.class
+controller\UtilisateurController.class
 controller\SignUpController.class
 service\UtilisateurService.class
 main\MainApp.class
@@ -9,9 +12,14 @@ controller\EleveController.class
 Main.class
 model\Administrateur.class
 controller\LoginController.class
+controller\DetailUtilisateurController.class
 controller\AdminController.class
 controller\ModifierUtilisateurController.class
 model\Utilisateur.class
 util\Session.class
 controller\AjouterUtilisateurController.class
+controller\UtilisateurController$1.class
 util\DatabaseConnection.class
+controller\UtilisateurController$2.class
+controller\DemandeInscriptionController.class
+controller\ProfilUtilisateurController.class

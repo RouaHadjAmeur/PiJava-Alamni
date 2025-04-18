@@ -23,6 +23,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import java.io.File;
 
+import javafx.stage.FileChooser;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.awt.Desktop;
+import java.io.File;
+
 public class UtilisateurController {
 
     @FXML private TableView<Utilisateur> userTable;
@@ -69,6 +75,10 @@ public class UtilisateurController {
         // Configurer la colonne Photo
         configurePhotoColumn();
 
+        UtilisateurService.migrerCheminsPhotos();
+
+
+
         // Configurer la colonne Actions
         ajouterColonnesActions();
 
@@ -89,9 +99,8 @@ public class UtilisateurController {
             private final ImageView imageView = new ImageView();
 
             {
-                // Configurer l'ImageView pour qu'elle s'adapte bien à la colonne
-                imageView.setFitHeight(50);
-                imageView.setFitWidth(50);
+                imageView.setFitHeight(40);
+                imageView.setFitWidth(40);
                 imageView.setPreserveRatio(true);
             }
 
@@ -101,43 +110,96 @@ public class UtilisateurController {
 
                 if (empty) {
                     setGraphic(null);
-                } else {
-                    Utilisateur utilisateur = getTableView().getItems().get(getIndex());
-                    if (utilisateur != null && utilisateur.getPhoto() != null) {
-                        try {
-                            File photoFile = new File(utilisateur.getPhoto());
-                            if (photoFile.exists()) {
-                                Image image = new Image(photoFile.toURI().toString());
-                                imageView.setImage(image);
-                                setGraphic(imageView);
-                            } else {
-                                setDefaultImage();
-                            }
-                        } catch (Exception e) {
-                            setDefaultImage();
-                            System.err.println("Erreur lors du chargement de l'image: " + e.getMessage());
-                        }
-                    } else {
-                        setDefaultImage();
-                    }
+                    return;
                 }
-            }
 
-            private void setDefaultImage() {
                 try {
-                    // Option 1: Utiliser une image par défaut depuis les ressources
-                    Image defaultImage = new Image(getClass().getResourceAsStream("/images/default_avatar.png"));
-                    imageView.setImage(defaultImage);
-                    setGraphic(imageView);
+                    int index = getIndex();
+                    if (index >= 0 && index < getTableView().getItems().size()) {
+                        Utilisateur utilisateur = getTableView().getItems().get(index);
+                        String photoPath = utilisateur.getPhoto();
+
+                        System.out.println("Tentative de chargement de photo pour: " +
+                                utilisateur.getEmail() + ", chemin: " + photoPath);
+
+                        if (photoPath != null && !photoPath.isEmpty()) {
+                            boolean photoLoaded = false;
+
+                            // MÉTHODE 1: Essayer via le classpath
+                            try {
+                                System.out.println("  Méthode 1 - classpath: /" + photoPath);
+                                Image image = new Image(getClass().getResourceAsStream("/" + photoPath));
+                                if (image != null && !image.isError()) {
+                                    imageView.setImage(image);
+                                    setGraphic(imageView);
+                                    photoLoaded = true;
+                                    System.out.println("  ✓ Image chargée via classpath");
+                                } else {
+                                    System.out.println("  ✗ Échec classpath: image error");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("  ✗ Échec classpath: " + e.getMessage());
+                            }
+
+                            // MÉTHODE 2: Essayer dans src/main/resources
+                            if (!photoLoaded) {
+                                try {
+                                    File resourceDir = new File("src/main/resources");
+                                    File imageFile = new File(resourceDir, photoPath);
+                                    System.out.println("  Méthode 2 - resources: " + imageFile.getAbsolutePath());
+
+                                    if (imageFile.exists()) {
+                                        Image image = new Image(imageFile.toURI().toString());
+                                        imageView.setImage(image);
+                                        setGraphic(imageView);
+                                        photoLoaded = true;
+                                        System.out.println("  ✓ Image chargée via resources");
+                                    } else {
+                                        System.out.println("  ✗ Fichier non trouvé dans resources");
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("  ✗ Échec resources: " + e.getMessage());
+                                }
+                            }
+
+                            // MÉTHODE 3: Essayer dans target/classes
+                            if (!photoLoaded) {
+                                try {
+                                    File targetDir = new File("target/classes");
+                                    File imageFile = new File(targetDir, photoPath);
+                                    System.out.println("  Méthode 3 - target: " + imageFile.getAbsolutePath());
+
+                                    if (imageFile.exists()) {
+                                        Image image = new Image(imageFile.toURI().toString());
+                                        imageView.setImage(image);
+                                        setGraphic(imageView);
+                                        photoLoaded = true;
+                                        System.out.println("  ✓ Image chargée via target");
+                                    } else {
+                                        System.out.println("  ✗ Fichier non trouvé dans target");
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("  ✗ Échec target: " + e.getMessage());
+                                }
+                            }
+
+                            // Si aucune méthode n'a réussi
+                            if (!photoLoaded) {
+                                setText("?");
+                                setGraphic(null);
+                                System.out.println("  ✗ Échec de toutes les méthodes de chargement");
+                            }
+                        } else {
+                            setText("?");
+                            setGraphic(null);
+                            System.out.println("  ✗ Pas de chemin de photo défini");
+                        }
+                    }
                 } catch (Exception e) {
-                    // Option 2: Créer un cercle avec les initiales ou un placeholder
-                    StackPane placeholder = new StackPane();
-                    placeholder.setPrefSize(40, 40);
-                    placeholder.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 20;");
-                    Label label = new Label("?");
-                    label.setStyle("-fx-text-fill: #757575; -fx-font-weight: bold;");
-                    placeholder.getChildren().add(label);
-                    setGraphic(placeholder);
+                    setText("!");
+                    setGraphic(null);
+                    System.err.println("Erreur générale lors du chargement: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
@@ -145,9 +207,14 @@ public class UtilisateurController {
 
     private void chargerUtilisateurs() {
         utilisateurs.clear();
-// Remplace getAllUtilisateurs() par la méthode qui existe réellement
-        utilisateurs.addAll(UtilisateurService.lister()); // ou la méthode correcte
+        // Utiliser findAll() au lieu de lister()
+        utilisateurs.addAll(UtilisateurService.findAll().stream()
+                .filter(u -> !u.isPending())  // Exclure les utilisateurs en attente
+                .toList());
         userTable.setItems(utilisateurs);
+
+        // Log pour débogage
+        System.out.println("Utilisateurs chargés: " + utilisateurs.size());
     }
     private void filtrerUtilisateurs(String searchText) {
         if (searchText == null || searchText.isEmpty()) {
@@ -177,12 +244,52 @@ public class UtilisateurController {
 
     @FXML
     private void handleExportPdf() {
-        // Implémentation de l'export PDF
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Export PDF");
-        alert.setHeaderText("Fonction Export PDF");
-        alert.setContentText("Le PDF a été exporté !");
-        alert.showAndWait();
+        try {
+            // Créer un sélecteur de fichier
+            javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+            fileChooser.setTitle("Enregistrer le PDF");
+            fileChooser.getExtensionFilters().add(
+                    new javafx.stage.FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+            fileChooser.setInitialFileName("utilisateurs_" +
+                    java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd")) + ".pdf");
+
+            // Afficher le sélecteur de fichier
+            java.io.File file = fileChooser.showSaveDialog(userTable.getScene().getWindow());
+
+            if (file != null) {
+                // Exporter les utilisateurs actuellement affichés dans le tableau
+                util.PDFExporter.exportUtilisateurs(userTable.getItems(), file.getAbsolutePath());
+
+                // Afficher un message de confirmation
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export PDF");
+                alert.setHeaderText("Export réussi");
+                alert.setContentText("Le fichier PDF a été créé avec succès à l'emplacement :\n" + file.getAbsolutePath());
+
+                // Ajouter un bouton pour ouvrir le dossier contenant le fichier
+                ButtonType openFolderButton = new ButtonType("Ouvrir le dossier");
+                alert.getButtonTypes().add(openFolderButton);
+
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == openFolderButton) {
+                        try {
+                            java.awt.Desktop.getDesktop().open(file.getParentFile());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            // Afficher une erreur
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Échec de l'export PDF");
+            alert.setContentText("Une erreur est survenue lors de la création du PDF : " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
