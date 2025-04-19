@@ -105,15 +105,8 @@ public class ParentController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/conversation_dashboard.fxml"));
 
-            // Set controller factory to handle package differences - corrected to use "controllers" package
-            loader.setControllerFactory(c -> {
-                try {
-                    return Class.forName("controllers." + c.getSimpleName()).getDeclaredConstructor().newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            });
+            // Load the controller directly without modifying the class name
+            // The FXML already specifies the full class name with package
 
             Parent root = loader.load();
 

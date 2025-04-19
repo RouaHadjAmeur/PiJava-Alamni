@@ -2,6 +2,7 @@ package model;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,8 @@ public class Conversation {
     private int expediteur_id;
     private int destinataire_id;
     private List<Message> messages;
+    private Utilisateur expediteur;
+    private Utilisateur destinataire;
 
     // Default constructor
     public Conversation() {
@@ -122,7 +125,10 @@ public class Conversation {
     }
 
     public void addMessage(Message message) {
-        this.messages.add(message);
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+        messages.add(message);
     }
 
     public String getLastMessageContent() {
@@ -130,6 +136,22 @@ public class Conversation {
             return messages.get(messages.size() - 1).getContenu();
         }
         return "";
+    }
+
+    public Utilisateur getExpediteur() {
+        return expediteur;
+    }
+
+    public void setExpediteur(Utilisateur expediteur) {
+        this.expediteur = expediteur;
+    }
+
+    public Utilisateur getDestinataire() {
+        return destinataire;
+    }
+
+    public void setDestinataire(Utilisateur destinataire) {
+        this.destinataire = destinataire;
     }
 
     @Override
@@ -156,7 +178,7 @@ public class Conversation {
                 ", statut='" + statut + '\'' +
                 ", expediteur_id=" + expediteur_id +
                 ", destinataire_id=" + destinataire_id +
-                ", messages=" + messages +
+                ", messages=" + (messages != null ? messages.size() : 0) +
                 '}';
     }
 } 

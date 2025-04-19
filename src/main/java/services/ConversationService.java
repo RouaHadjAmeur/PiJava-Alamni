@@ -242,18 +242,21 @@ public class ConversationService implements Iservices<Conversation> {
 
     @Override
     public List<Conversation> afficher() {
-        Utilisateur currentUser = Session.getUtilisateurConnecte();
-        if (currentUser == null) {
-            return new ArrayList<>();
+        List<Conversation> conversations = new ArrayList<>();
+        String req = "SELECT * FROM conversation ORDER BY date_creation DESC";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(req);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Conversation conversation = mapResultSetToConversation(rs);
+                // Load messages for the conversation
+                conversation.setMessages(messageService.getMessagesByConversationId(conversation.getId()));
+                conversations.add(conversation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des conversations: " + e.getMessage());
         }
-
-        // If the user is an admin, return all conversations
-        if ("ADMINISTRATEUR".equalsIgnoreCase(currentUser.getRole())) {
-            return getAllConversations();
-        } else {
-            // Otherwise, only return conversations where the user is involved
-            return getUserConversations(currentUser);
-        }
+        return conversations;
     }
 
     private List<Conversation> getAllConversations() {
@@ -353,71 +356,49 @@ public class ConversationService implements Iservices<Conversation> {
     }
     
     public List<Conversation> getMesConversationsRecues() {
+        List<Conversation> conversations = new ArrayList<>();
         Utilisateur currentUser = Session.getUtilisateurConnecte();
         if (currentUser == null) {
-            return new ArrayList<>();
+            return conversations;
         }
         
-        List<Conversation> conversations = new ArrayList<>();
-        String req = "SELECT * FROM conversation WHERE destinataire_email = ?";
+        String req = "SELECT * FROM conversation WHERE destinataire_id = ? ORDER BY date_creation DESC";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
-            stm.setString(1, currentUser.getEmail());
+            stm.setInt(1, currentUser.getId());
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                Conversation conversation = new Conversation();
-                conversation.setId(rs.getInt("id"));
-                conversation.setSujet(rs.getString("sujet"));
-                conversation.setDate_creation(rs.getDate("date_creation"));
-                conversation.setExpediteur_email(rs.getString("expediteur_email"));
-                conversation.setDestinataire_email(rs.getString("destinataire_email"));
-                conversation.setStatut(rs.getString("statut"));
-                conversation.setExpediteur_id(rs.getInt("expediteur_id"));
-                conversation.setDestinataire_id(rs.getInt("destinataire_id"));
-
-                // Load messages for this conversation
-                List<Message> messages = messageService.getMessagesByConversationId(conversation.getId());
-                conversation.setMessages(messages);
-
+                Conversation conversation = mapResultSetToConversation(rs);
+                // Load messages for the conversation
+                conversation.setMessages(messageService.getMessagesByConversationId(conversation.getId()));
                 conversations.add(conversation);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur getMesConversationsRecues : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération des conversations reçues: " + e.getMessage());
         }
         return conversations;
     }
     
     public List<Conversation> getMesConversationsEnvoyees() {
+        List<Conversation> conversations = new ArrayList<>();
         Utilisateur currentUser = Session.getUtilisateurConnecte();
         if (currentUser == null) {
-            return new ArrayList<>();
+            return conversations;
         }
         
-        List<Conversation> conversations = new ArrayList<>();
-        String req = "SELECT * FROM conversation WHERE expediteur_email = ?";
+        String req = "SELECT * FROM conversation WHERE expediteur_id = ? ORDER BY date_creation DESC";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
-            stm.setString(1, currentUser.getEmail());
+            stm.setInt(1, currentUser.getId());
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                Conversation conversation = new Conversation();
-                conversation.setId(rs.getInt("id"));
-                conversation.setSujet(rs.getString("sujet"));
-                conversation.setDate_creation(rs.getDate("date_creation"));
-                conversation.setExpediteur_email(rs.getString("expediteur_email"));
-                conversation.setDestinataire_email(rs.getString("destinataire_email"));
-                conversation.setStatut(rs.getString("statut"));
-                conversation.setExpediteur_id(rs.getInt("expediteur_id"));
-                conversation.setDestinataire_id(rs.getInt("destinataire_id"));
-
-                // Load messages for this conversation
-                List<Message> messages = messageService.getMessagesByConversationId(conversation.getId());
-                conversation.setMessages(messages);
-
+                Conversation conversation = mapResultSetToConversation(rs);
+                // Load messages for the conversation
+                conversation.setMessages(messageService.getMessagesByConversationId(conversation.getId()));
                 conversations.add(conversation);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur getMesConversationsEnvoyees : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération des conversations envoyées: " + e.getMessage());
         }
         return conversations;
     }
@@ -509,5 +490,44 @@ public class ConversationService implements Iservices<Conversation> {
             System.out.println("Error getting user ID by email: " + e.getMessage());
         }
         return -1;
+    }
+
+    private Conversation mapResultSetToConversation(ResultSet rs) throws SQLException {
+        Conversation conversation = new Conversation(
+            rs.getInt("id"),
+            rs.getString("sujet"),
+            rs.getDate("date_creation"),
+            rs.getString("expediteur_email"),
+            rs.getString("destinataire_email"),
+            rs.getString("statut"),
+            rs.getInt("expediteur_id"),
+            rs.getInt("destinataire_id")
+        );
+        return conversation;
+    }
+
+    public List<Conversation> getMesConversations() {
+        List<Conversation> conversations = new ArrayList<>();
+        Utilisateur currentUser = Session.getUtilisateurConnecte();
+        if (currentUser == null) {
+            return conversations;
+        }
+        
+        String req = "SELECT * FROM conversation WHERE expediteur_id = ? OR destinataire_id = ? ORDER BY date_creation DESC";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(req);
+            stm.setInt(1, currentUser.getId());
+            stm.setInt(2, currentUser.getId());
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Conversation conversation = mapResultSetToConversation(rs);
+                // Load messages for the conversation
+                conversation.setMessages(messageService.getMessagesByConversationId(conversation.getId()));
+                conversations.add(conversation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des conversations: " + e.getMessage());
+        }
+        return conversations;
     }
 }

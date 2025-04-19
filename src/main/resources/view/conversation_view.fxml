@@ -3,123 +3,72 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css, @../css/styles.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationViewController">
-    <VBox layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0" spacing="0.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationViewController">
+    <VBox prefHeight="600.0" prefWidth="800.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <!-- Header -->
         <VBox styleClass="header">
             <Label fx:id="titleLabel" styleClass="header-title" text="Conversation" />
             <HBox styleClass="breadcrumb">
-                <Label styleClass="breadcrumb-item" text="🏠 Accueil" />
+                <Label styleClass="breadcrumb-item" text="Home" />
                 <Label styleClass="breadcrumb-separator" text="/" />
-                <Label styleClass="breadcrumb-item" text="📑 Pages" />
-                <Label styleClass="breadcrumb-separator" text="/" />
-                <Label styleClass="breadcrumb-item" text="💬 Boite de discussions" />
+                <Label styleClass="breadcrumb-item" text="Conversations" />
             </HBox>
-            
-            <!-- Conversation Info -->
-            <GridPane styleClass="conversation-info" vgap="8" hgap="15">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="100" />
-                    <ColumnConstraints hgrow="ALWAYS" />
-                </columnConstraints>
-                
-                <Label text="De:" styleClass="info-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <Label fx:id="expediteurLabel" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                
-                <Label text="À:" styleClass="info-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <Label fx:id="destinataireLabel" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                
-                <Label text="Date:" styleClass="info-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <Label fx:id="dateLabel" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                
-                <Label text="Statut:" styleClass="info-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                <Label fx:id="statutLabel" styleClass="info-value" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-            </GridPane>
+            <VBox styleClass="conversation-info" spacing="8">
+                <HBox spacing="10">
+                    <Label text="From:" styleClass="info-label" />
+                    <Label fx:id="expediteurLabel" styleClass="info-value" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="To:" styleClass="info-label" />
+                    <Label fx:id="destinataireLabel" styleClass="info-value" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Date:" styleClass="info-label" />
+                    <Label fx:id="dateLabel" styleClass="info-value" />
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="Status:" styleClass="info-label" />
+                    <Label fx:id="statutLabel" styleClass="info-value" />
+                </HBox>
+            </VBox>
         </VBox>
 
         <!-- Messages List -->
         <ListView fx:id="messagesListView" styleClass="messages-list" VBox.vgrow="ALWAYS" />
 
         <!-- Action Buttons -->
-        <HBox styleClass="action-bar" alignment="CENTER_RIGHT" spacing="10">
-            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="action-button, home-button">
-                    <graphic>
-                        <HBox spacing="8" alignment="CENTER">
-                            <Label text="🏠" style="-fx-text-fill: #4CAF50;"/>
-                            <Label text="Retour à l'accueil" style="-fx-text-fill: #4CAF50;">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                        </HBox>
-                    </graphic>
-                </Button>
-            </HBox>
-            <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="🗑️" style="-fx-text-fill: #ef4444;"/>
-                        <Label text="Supprimer" style="-fx-text-fill: #ef4444;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
+        <HBox styleClass="action-bar" alignment="CENTER_RIGHT" spacing="15">
+            <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="Back to Home">
+                <tooltip>
+                    <Tooltip text="Return to Home" />
+                </tooltip>
             </Button>
-            <Button fx:id="btnUpdate" onAction="#handleUpdate" styleClass="action-button, update-button">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="✏️" style="-fx-text-fill: #f59e0b;"/>
-                        <Label text="Modifier" style="-fx-text-fill: #f59e0b;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
+            <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button" text="Delete">
+                <tooltip>
+                    <Tooltip text="Delete Conversation" />
+                </tooltip>
             </Button>
-            <Button fx:id="btnManageMessages" onAction="#handleManageMessages" styleClass="action-button, manage-button">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="✉️" style="-fx-text-fill: #3b82f6;"/>
-                        <Label text="Gérer les messages" style="-fx-text-fill: #3b82f6;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
+            <Button fx:id="btnUpdate" onAction="#handleUpdate" styleClass="action-button, update-button" text="Edit">
+                <tooltip>
+                    <Tooltip text="Edit Conversation" />
+                </tooltip>
             </Button>
-            <Button fx:id="btnClose" onAction="#handleClose" styleClass="action-button">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="❌" style="-fx-text-fill: #475569;"/>
-                        <Label text="Fermer" style="-fx-text-fill: #475569;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
+            <Button fx:id="btnManageMessages" onAction="#handleManageMessages" styleClass="action-button" text="Manage Messages">
+                <tooltip>
+                    <Tooltip text="Manage Messages" />
+                </tooltip>
             </Button>
-            <Button fx:id="btnRepondre" onAction="#handleRepondre" styleClass="action-button, reply-button" defaultButton="true">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="↩️" style="-fx-text-fill: white;"/>
-                        <Label text="Répondre" style="-fx-text-fill: white;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
+            <Button fx:id="btnClose" onAction="#handleClose" styleClass="action-button, cancel-button" text="Close">
+                <tooltip>
+                    <Tooltip text="Close" />
+                </tooltip>
+            </Button>
+            <Button fx:id="btnRepondre" onAction="#handleRepondre" styleClass="action-button, form-button" text="Reply">
+                <tooltip>
+                    <Tooltip text="Reply to Conversation" />
+                </tooltip>
             </Button>
         </HBox>
-        
     </VBox>
-</AnchorPane> 
+</AnchorPane>

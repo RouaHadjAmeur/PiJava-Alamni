@@ -3,102 +3,67 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UpdateConversationController">
-    <VBox layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-        </padding>
-        <HBox alignment="CENTER" prefHeight="50.0">
-            <Label text="Modifier la Conversation" textFill="#3b82f6">
-                <font>
-                    <Font name="System Bold" size="24.0" />
-                </font>
-            </Label>
-        </HBox>
-        
-        <VBox spacing="8.0">
-            <Label text="Destinataire:">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-            </Label>
-            <Label fx:id="destinataireLabel" text="destinataire@example.com" />
-        </VBox>
-        
-        <VBox spacing="8.0">
-            <Label text="Sujet:">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-            </Label>
-            <TextField fx:id="sujetField" prefHeight="30.0" prefWidth="760.0" />
-        </VBox>
-        
-        <VBox spacing="8.0" VBox.vgrow="ALWAYS">
-            <Label text="Messages existants:">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-            </Label>
-            <ListView fx:id="messagesListView" prefHeight="200.0" prefWidth="760.0" />
-        </VBox>
-        
-        <VBox spacing="8.0">
-            <Label text="Nouveau message:">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-            </Label>
-            <TextArea fx:id="messageTextArea" prefHeight="150.0" prefWidth="760.0" promptText="Écrivez votre message ici" wrapText="true" />
-        </VBox>
-        
-        <HBox alignment="CENTER_RIGHT" prefHeight="50.0" spacing="15.0">
-            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-                <Button fx:id="btnBackToHome" mnemonicParsing="false" onAction="#handleBackToHome" 
-                    prefHeight="40.0" prefWidth="160.0" 
-                    style="-fx-background-color: #4CAF50; -fx-cursor: hand;" textFill="WHITE">
-                    <graphic>
-                        <HBox spacing="8" alignment="CENTER">
-                            <Label text="🏠" style="-fx-text-fill: white;"/>
-                            <Label text="Retour à l'accueil" style="-fx-text-fill: white;">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                        </HBox>
-                    </graphic>
+<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UpdateConversationController">
+    <VBox prefHeight="700.0" prefWidth="900.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Header -->
+        <VBox styleClass="header">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Edit Conversation" styleClass="header-title" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="Back to Home">
+                    <tooltip>
+                        <Tooltip text="Return to Home" />
+                    </tooltip>
                 </Button>
             </HBox>
-            <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" 
-                    prefHeight="40.0" prefWidth="120.0" 
-                    style="-fx-background-color: #6B7280; -fx-cursor: hand;" textFill="WHITE">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="❌" style="-fx-text-fill: white;"/>
-                        <Label text="Annuler" style="-fx-text-fill: white;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
-            </Button>
-            <Button fx:id="btnSave" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" 
-                    prefHeight="40.0" prefWidth="150.0" 
-                    style="-fx-background-color: #F59E0B; -fx-cursor: hand;" textFill="WHITE">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <Label text="💾" style="-fx-text-fill: white;"/>
-                        <Label text="Enregistrer" style="-fx-text-fill: white;">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </graphic>
-            </Button>
-        </HBox>
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="Home" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Conversations" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Edit" />
+            </HBox>
+        </VBox>
+
+        <!-- Conversation Details -->
+        <VBox styleClass="conversation-details-section" spacing="10">
+            <HBox spacing="10">
+                <Label text="Recipient:" styleClass="detail-label" />
+                <Label fx:id="destinataireLabel" styleClass="detail-value" text="destinataire@example.com" />
+            </HBox>
+            <HBox spacing="10">
+                <Label text="Subject:" styleClass="detail-label" />
+                <TextField fx:id="sujetField" styleClass="form-input" HBox.hgrow="ALWAYS" />
+            </HBox>
+        </VBox>
+
+        <!-- Messages -->
+        <VBox styleClass="messages-section" VBox.vgrow="ALWAYS">
+            <Label text="Messages" styleClass="section-title" />
+            <ListView fx:id="messagesListView" styleClass="messages-list" VBox.vgrow="ALWAYS" />
+        </VBox>
+
+        <!-- Reply -->
+        <VBox styleClass="reply-section">
+            <Label text="New Message" styleClass="section-title" />
+            <HBox styleClass="rich-text-toolbar" spacing="5">
+                <Button text="B" styleClass="icon-button" tooltip="Bold"/>
+                <Button text="I" styleClass="icon-button" tooltip="Italic"/>
+                <Button text="U" styleClass="icon-button" tooltip="Underline"/>
+            </HBox>
+            <TextArea fx:id="messageTextArea" styleClass="rich-text-area" promptText="Write your message..." wrapText="true" VBox.vgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Button fx:id="btnCancel" onAction="#handleCancel" styleClass="cancel-button" text="Cancel">
+                    <tooltip>
+                        <Tooltip text="Cancel" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnSave" onAction="#handleSave" styleClass="form-button" text="Send">
+                    <tooltip>
+                        <Tooltip text="Send Message" />
+                    </tooltip>
+                </Button>
+            </HBox>
+        </VBox>
     </VBox>
-</AnchorPane> 
+</AnchorPane>

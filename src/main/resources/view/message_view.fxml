@@ -4,50 +4,58 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.MessageController"
-            prefHeight="500.0" prefWidth="700.0" stylesheets="/css/styles.css">
-
-    <top>
-        <VBox spacing="10" styleClass="header-box">
-            <padding>
-                <Insets top="10" right="15" bottom="10" left="15"/>
-            </padding>
-            <Label fx:id="conversationTitleLabel" styleClass="title-label"/>
-        </VBox>
-    </top>
-
-    <center>
-        <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="15" bottom="10" left="15"/>
-            </padding>
-            <ListView fx:id="messagesListView" VBox.vgrow="ALWAYS" styleClass="messages-list"/>
-        </VBox>
-    </center>
-
-    <bottom>
-        <VBox spacing="10" styleClass="message-input-box">
-            <padding>
-                <Insets top="10" right="15" bottom="15" left="15"/>
-            </padding>
-            
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button fx:id="editButton" text="Modifier le message" onAction="#handleEditMessage" 
-                        styleClass="btn, btn-primary" />
-                <Button fx:id="deleteButton" text="Supprimer le message" onAction="#handleDeleteMessage" 
-                        styleClass="btn, btn-danger" />
-            </HBox>
-            
-            <TextArea fx:id="messageContentTextArea" promptText="Écrivez votre message ici..." 
-                     prefHeight="60.0" wrapText="true" />
-            
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button fx:id="sendButton" text="Envoyer" onAction="#handleSendMessage" 
-                        styleClass="btn, btn-success" defaultButton="true" />
+<AnchorPane prefHeight="500.0" prefWidth="700.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MessageController">
+    <VBox prefHeight="500.0" prefWidth="700.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Header -->
+        <VBox styleClass="header">
+            <Label fx:id="conversationTitleLabel" styleClass="header-title" text="Messages" />
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="Home" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Conversations" />
             </HBox>
         </VBox>
-    </bottom>
 
-</BorderPane> 
+        <!-- Messages List -->
+        <ListView fx:id="messagesListView" styleClass="messages-list" VBox.vgrow="ALWAYS" />
+
+        <!-- Input Area -->
+        <VBox styleClass="message-input-box" spacing="10">
+            <HBox styleClass="rich-text-toolbar" spacing="5">
+                <Button text="B" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Bold" />
+                    </tooltip>
+                </Button>
+                <Button text="I" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Italic" />
+                    </tooltip>
+                </Button>
+                <Button text="U" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Underline" />
+                    </tooltip>
+                </Button>
+            </HBox>
+            <TextArea fx:id="messageContentTextArea" promptText="Write your message..." prefHeight="100.0" wrapText="true" styleClass="rich-text-area" />
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Button fx:id="editButton" text="Edit Message" onAction="#handleEditMessage" styleClass="form-button">
+                    <tooltip>
+                        <Tooltip text="Edit Selected Message" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="deleteButton" text="Delete Message" onAction="#handleDeleteMessage" styleClass="delete-button">
+                    <tooltip>
+                        <Tooltip text="Delete Selected Message" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="sendButton" text="Send" onAction="#handleSendMessage" styleClass="form-button">
+                    <tooltip>
+                        <Tooltip text="Send Message" />
+                    </tooltip>
+                </Button>
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>
