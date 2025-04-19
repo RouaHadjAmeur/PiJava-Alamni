@@ -1,0 +1,78 @@
+/* Styles généraux des dialogues */
+.reset-dialog {
+    -fx-background-color: white;
+}
+
+.reset-dialog .header-panel {
+    -fx-background-color: #3949ab;
+    -fx-padding: 20px;
+}
+
+.reset-dialog .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Styles des champs */
+.modern-field {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+.modern-field:focused {
+    -fx-border-color: #3949ab;
+    -fx-background-color: white;
+}
+
+/* Labels et textes */
+.field-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+}
+
+.info-text {
+    -fx-font-style: italic;
+    -fx-text-fill: #757575;
+    -fx-font-size: 12px;
+}
+
+.demo-code {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: #3949ab;
+}
+
+.strength-label {
+    -fx-text-fill: #757575;
+    -fx-font-size: 12px;
+}
+
+/* Boutons */
+.confirm-button {
+    -fx-background-color: #3949ab;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.confirm-button:hover {
+    -fx-background-color: #303f9f;
+}
+
+/* Indicateur de force de mot de passe */
+.weak-password {
+    -fx-accent: #f44336;
+}
+
+.medium-password {
+    -fx-accent: #ff9800;
+}
+
+.strong-password {
+    -fx-accent: #4caf50;
+}

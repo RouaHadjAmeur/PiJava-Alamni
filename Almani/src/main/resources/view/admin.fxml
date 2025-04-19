@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="687" prefWidth="1022"
+            fx:controller="controller.AdminController">
+
+    <!-- Menu latéral gauche -->
+    <left>
+        <VBox alignment="TOP_CENTER" prefWidth="220" spacing="15" style="-fx-background-color: #2c3e50;">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="20" />
+            </padding>
+
+            <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="ALAMNI" />
+
+            <StackPane style="-fx-background-radius: 75; -fx-background-color: #3498db; -fx-min-height: 100; -fx-min-width: 100; -fx-max-height: 100; -fx-max-width: 100;">
+
+                <ImageView fx:id="photoView" fitHeight="90" fitWidth="90" preserveRatio="true" />
+            </StackPane>
+
+            <!-- Ne pas oublier fx:id ici -->
+            <Label fx:id="nomUtilisateur" style="-fx-text-fill: white; -fx-font-weight: bold;" text="Utilisateur" />
+            <Label fx:id="roleUtilisateur" style="-fx-text-fill: #cccccc;" text="Rôle" />
+
+            <Separator style="-fx-background-color: #34495e;" />
+
+            <VBox spacing="5" style="-fx-padding: 10 0;">
+                <Label text="MENU PRINCIPAL" style="-fx-text-fill: #95a5a6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Button onAction="#handleDashboard" text="Tableau de bord" styleClass="menu-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+                <Button onAction="#handleManagement" text="Gestion" styleClass="menu-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+                <Button onAction="#handleUser" text="Utilisateurs" styleClass="menu-button-active"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+            </VBox>
+
+            <VBox spacing="5" style="-fx-padding: 5 0;">
+                <Label text="ADMINISTRATION" style="-fx-text-fill: #95a5a6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Button onAction="#handleDemandes" text="Inscriptions" styleClass="menu-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+                <Button onAction="#handleClasses" text="Classes" styleClass="menu-button"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-pref-width: 200;"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button onAction="#handleLogout" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 200;" text="Déconnexion" />
+        </VBox>
+    </left>
+
+    <center>
+        <!-- Conteneur principal qui sera rempli dynamiquement -->
+        <AnchorPane fx:id="mainContentPane" />
+    </center>
+</BorderPane>
