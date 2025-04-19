@@ -12,46 +12,43 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Reclamation;
-import model.ReponseReclamation;
+import model.Utilisateur;
 import services.ReclamationServices;
-import services.ReponseReclamationService;
 import util.Session;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-import model.Utilisateur;
-import services.ReclamationServices;
-import util.Session;
-
 
 public class MesReclamationController implements Initializable {
 
-    @FXML
-    private ListView<Reclamation> reclamationsListView;
+    @FXML private ListView<Reclamation> reclamationsListView;
     @FXML private MenuButton userMenu;
     @FXML private ImageView profileImage;
-    private final ReclamationServices service = new ReclamationServices();
     @FXML private Label statusLabel;
+
+    private final ReclamationServices service = new ReclamationServices();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         afficherMesReclamations();
-        Utilisateur user = Session.getUtilisateurConnecte();
 
+        Utilisateur user = Session.getUtilisateurConnecte();
         if (user != null) {
             userMenu.setText(user.getPrenom() + " " + user.getNom());
-        }
-        if (user.getPhoto() != null) {
-            File file = new File(user.getPhoto());
-            if (file.exists()) {
-                Image image = new Image(file.toURI().toString(), 40, 40, true, true);
-                profileImage.setImage(image);
+
+            if (user.getPhoto() != null) {
+                File file = new File(user.getPhoto());
+                if (file.exists()) {
+                    Image image = new Image(file.toURI().toString(), 40, 40, true, true);
+                    profileImage.setImage(image);
+                }
             }
         }
     }
@@ -68,7 +65,7 @@ public class MesReclamationController implements Initializable {
                 if (empty || r == null) {
                     setGraphic(null);
                 } else {
-                    VBox card = new VBox(5);
+                    VBox card = new VBox(10);
                     card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;");
 
                     Label objet = new Label("Objet : " + r.getObjet());
@@ -83,55 +80,61 @@ public class MesReclamationController implements Initializable {
                     Label status = new Label("Statut : " + r.getStatus());
                     status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) + "; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 5;");
 
-                    Button btnReponse = new Button("Voir Réponse");
-                    btnReponse.setStyle("-fx-background-color: #ff5722; -fx-text-fill: white; -fx-background-radius: 5;");
-                    btnReponse.setOnAction(e -> openReponse(r));
+                    Button btnVoirReponses = new Button("Voir Réponses");
+                    btnVoirReponses.setStyle("-fx-background-color: #ff5722; -fx-text-fill: white; -fx-background-radius: 5;");
+                    btnVoirReponses.setOnAction(e -> openReponse(r));
 
-                    card.getChildren().addAll(objet, description, date, status, btnReponse);
+                    HBox actions = new HBox(10, btnVoirReponses);
+                    card.getChildren().addAll(objet, description, date, status, actions);
                     setGraphic(card);
                 }
             }
         });
     }
 
-
-
-//    private void openReponse(Reclamation r) {
-//        List<ReponseReclamation> reponses = new ReponseReclamationService().getReponsesByReclamationId(r.getId());
+//    private void openReponse(Reclamation reclamation) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/voirRepRec.fxml"));
+//            Parent root = loader.load();
 //
-//        if (reponses.isEmpty()) {
-//            showAlert(Alert.AlertType.INFORMATION,"Aucune réponse trouvée pour cette réclamation.");
-//        } else {
-//            StringBuilder content = new StringBuilder();
-//            for (ReponseReclamation rep : reponses) {
-//                content.append("- ").append(rep.getContenue()).append("\n\n");
-//            }
+//            controllers.voirRepRecController controller = loader.getController();
+//            controller.setReclamation(reclamation); // passer la réclamation
 //
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Réponses");
-//            alert.setHeaderText("Réponses à votre réclamation :");
-//            alert.setContentText(content.toString());
-//            alert.showAndWait();
+//            Stage stage = new Stage();
+//            stage.setTitle("Réponses de la Réclamation");
+//            stage.setScene(new Scene(root));
+//            stage.setResizable(false);
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//            stage.centerOnScreen();
+//            stage.showAndWait();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
 //    }
 
-    private void openReponse(Reclamation r) {
+    private void openReponse(Reclamation reclamation) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/voirRepRec.fxml"));
             Parent root = loader.load();
 
             voirRepRecController controller = loader.getController();
-            controller.setReclamation(r);
+            controller.setReclamation(reclamation);
 
-            Stage stage = new Stage();
-            stage.setTitle("Réponses de la réclamation");
-            stage.setScene(new Scene(root));
-            stage.show();
+            // Récupérer le stage actuel depuis un composant
+            Stage currentStage = (Stage) reclamationsListView.getScene().getWindow();
 
-        } catch (Exception e) {
+            // Changer la scène de la même fenêtre
+            Scene newScene = new Scene(root, currentStage.getWidth(), currentStage.getHeight());
+            currentStage.setScene(newScene);
+            currentStage.setTitle("Réponses de la Réclamation");
+            currentStage.centerOnScreen(); // recentre proprement
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 
     @FXML
@@ -140,27 +143,27 @@ public class MesReclamationController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
 
-            controllers.AddReclamationController controller = loader.getController();
+            // Récupérer la fenêtre depuis le MenuItem
+            MenuItem menuItem = (MenuItem) event.getSource();
+            Stage currentStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
 
-            Stage stage = new Stage();
-            stage.setTitle("Ajouter Réclamation");
-            stage.setScene(new Scene(root));
-            stage.show();
+            Scene newScene = new Scene(root, currentStage.getWidth(), currentStage.getHeight());
+            currentStage.setScene(newScene);
+            currentStage.setTitle("Ajouter Réclamation");
+            currentStage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     @FXML
     private void handleMesReclamations(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
             Parent root = loader.load();
-
-            // Récupérer le Stage courant proprement
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
             stage.setScene(new Scene(root));
             stage.setTitle("Mes Réclamations");
             stage.show();
@@ -171,52 +174,23 @@ public class MesReclamationController implements Initializable {
         }
     }
 
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private String getStatusColor(String status) {
-        return switch (status.toLowerCase()) {
-            case "en attente" -> "#f59e0b";
-            case "en cours" -> "#3b82f6";
-            case "résolue" -> "#10b981";
-            default -> "#6b7280";
-        };
-    }
-
-    @FXML
-    private void filterByStatus(ActionEvent event) {
-        // Option 1 : Si tu n'as pas encore implémenté le filtre :
-        System.out.println("Filtrer les réclamations selon le status...");
-
-        // Option 2 : Si tu veux afficher un message temporaire :
-        showAlert(Alert.AlertType.INFORMATION, "Filtre en cours de développement.");
-    }
-
-
-
-    //----------------------------------profile-----------------------------------------------
     @FXML
     private void handleMonProfil() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/profilUtilisateur.fxml"));
             Parent root = loader.load();
-            controllers.AddReclamationController controller = loader.getController();
-
             Stage stage = new Stage();
             stage.setTitle("Mon Profil");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen(); // ✅ centrer
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.centerOnScreen();
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleMesBulletins() {
         Alert info = new Alert(Alert.AlertType.INFORMATION);
@@ -239,5 +213,24 @@ public class MesReclamationController implements Initializable {
         }
     }
 
-}
+    @FXML
+    private void filterByStatus(ActionEvent event) {
+        showAlert(Alert.AlertType.INFORMATION, "Filtre en cours de développement.");
+    }
 
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private String getStatusColor(String status) {
+        return switch (status.toLowerCase()) {
+            case "en attente" -> "#f59e0b";
+            case "en cours" -> "#3b82f6";
+            case "résolue" -> "#10b981";
+            default -> "#6b7280";
+        };
+    }
+}

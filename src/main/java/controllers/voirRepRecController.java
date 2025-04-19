@@ -7,10 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Reclamation;
 import model.ReponseReclamation;
+import services.ReclamationServices;
 import services.ReponseReclamationService;
 
 import java.io.IOException;
@@ -24,6 +27,8 @@ public class voirRepRecController implements Initializable {
     @FXML private Label descriptionLabel;
     @FXML private Label statusLabel;
     @FXML private VBox reponsesContainer;
+    @FXML private CheckBox resolueCheckBox;
+
 
     private Reclamation reclamation;
 
@@ -32,7 +37,45 @@ public class voirRepRecController implements Initializable {
 
         objetLabel.setText("Objet : " + reclamation.getObjet());
         descriptionLabel.setText("Description : " + reclamation.getDescription());
-        statusLabel.setText("Status : " + reclamation.getStatus());
+        statusLabel.setText("Statut : " + reclamation.getStatus());
+
+        resolueCheckBox.setSelected("Résolue".equalsIgnoreCase(reclamation.getStatus()));
+
+// Empêcher l'exécution du listener lors de l'initialisation
+        resolueCheckBox.setOnAction(event -> {
+            if (resolueCheckBox.isSelected()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText("Vous êtes sur le point de marquer cette réclamation comme résolue.");
+                alert.setContentText("Êtes-vous sûr de vouloir continuer ?");
+
+                ButtonType oui = new ButtonType("Oui");
+                ButtonType non = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                alert.getButtonTypes().setAll(oui, non);
+
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == oui) {
+                        // ✅ Mettre à jour le statut
+                        reclamation.setStatus("Résolue");
+                        statusLabel.setText("Statut : Résolue");
+
+                        // Appel du service pour enregistrer le changement
+                        new services.ReclamationServices().update(reclamation);
+                    } else {
+                        resolueCheckBox.setSelected(false);
+                    }
+                });
+            }
+        });
+
+
+        afficherReponses();
+    }
+
+
+    private void afficherReponses() {
+        reponsesContainer.getChildren().clear();
 
         List<ReponseReclamation> reponses = new ReponseReclamationService().getReponsesByReclamationId(reclamation.getId());
 
@@ -41,23 +84,62 @@ public class voirRepRecController implements Initializable {
             box.setStyle("-fx-background-color: #ffffff; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 5;");
 
             Label admin = new Label("Admin: " + rep.getAdmin().getEmail());
-            Label contenu = new Label("Réponse :" + rep.getContenue());
+            Label contenu = new Label("Réponse : " + rep.getContenue());
             Label date = new Label("Posté le " + rep.getDateReponse().toString());
 
-            box.getChildren().addAll(admin, contenu, date);
+            Button btnRepondre = new Button("Répondre");
+            btnRepondre.setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 5;");
+            btnRepondre.setOnAction(e -> openDiscussion(rep));
+
+            HBox footer = new HBox(btnRepondre);
+            footer.setSpacing(10);
+
+            box.getChildren().addAll(admin, contenu, date, footer);
             reponsesContainer.getChildren().add(box);
         }
     }
 
+    private void openDiscussion(ReponseReclamation rep) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/repondre_a_admin.fxml"));
+            Parent root = loader.load();
+
+            controllers.RepondreAAdminController controller = loader.getController();
+            controller.setReclamationAndReponse(reclamation, rep);
+
+            Stage stage = new Stage();
+            stage.setTitle("Discussion sur la réponse");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleRetour() {
-        ((Stage) reponsesContainer.getScene().getWindow()).close();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+            Parent root = loader.load();
+
+            // Remplacer le contenu de la scène actuelle
+            Stage currentStage = (Stage) reponsesContainer.getScene().getWindow();
+            currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Mes Réclamations");
+            currentStage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        // Rien à initialiser
     }
 
     @FXML
@@ -65,8 +147,6 @@ public class voirRepRecController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
-
-            controllers.AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter Réclamation");
@@ -83,9 +163,7 @@ public class voirRepRecController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-
 
             stage.setScene(new Scene(root));
             stage.setTitle("Mes Réclamations");

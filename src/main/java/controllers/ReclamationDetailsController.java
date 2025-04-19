@@ -13,6 +13,11 @@ import services.ReclamationServices;
 import services.ReponseReclamationService;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import controllers.RepondreAAdminController;
+
+import java.io.IOException;
 import java.util.List;
 
 public class ReclamationDetailsController {
@@ -184,14 +189,40 @@ public class ReclamationDetailsController {
                     }
                 });
             });
+            Button btnVoirDiscussion = new Button("Voir réponses");
+            btnVoirDiscussion.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 3 10;");
+            btnVoirDiscussion.setOnAction(e -> openDiscussion(rep));
 
-            HBox actions = new HBox(10, btnModifier, btnSupprimer);
+
+            //HBox actions = new HBox(10, btnModifier, btnSupprimer);
+            HBox actions = new HBox(10, btnModifier, btnSupprimer, btnVoirDiscussion);
             actions.setAlignment(Pos.CENTER_LEFT);
 
             card.getChildren().addAll(admin, contenu, date, actions);
             reponsesContainer.getChildren().add(card);
         }
     }
+
+    private void openDiscussion(ReponseReclamation rep) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/repondre_a_admin.fxml"));
+            Parent root = loader.load();
+
+            RepondreAAdminController controller = loader.getController();
+            controller.setReclamationAndReponse(reclamation, rep); // ✅ combine tout ici
+
+            Stage stage = new Stage();
+            stage.setTitle("Discussion - Réclamation");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.centerOnScreen();
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private String formatDate(java.sql.Date date) {
         return date.toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));

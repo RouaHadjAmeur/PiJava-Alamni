@@ -82,8 +82,6 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
                 "JOIN utilisateurs u ON rr.admin_id_id = u.id " +
                 "WHERE rr.reclamation_id_id = ?";
 
-
-
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, reclamationId);
@@ -95,6 +93,7 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
                 rep.setAdminId(rs.getInt("admin_id_id"));
                 rep.setContenue(rs.getString("contenue"));
                 rep.setDateReponse(rs.getDate("date_reponse"));
+                rep.setUserReponse(rs.getString("user_reponse")); // 👈 ajout important
 
                 Reclamation reclamation = new Reclamation();
                 reclamation.setId(rs.getInt("reclamation_id_id"));
@@ -107,8 +106,6 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
 
                 rep.setReclamation(reclamation);
 
-
-                // Objet Admin
                 Administrateur admin = new Administrateur();
                 admin.setId(rs.getInt("admin_id_id"));
                 admin.setNom(rs.getString("nom"));
@@ -125,6 +122,10 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         return reponses;
     }
 
+
+
+
+
     public List<ReponseReclamation> getReponsesByReclamationId(int reclamationId) {
         List<ReponseReclamation> reponses = new ArrayList<>();
 
@@ -136,33 +137,20 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
 
             ResultSet rs = ps.executeQuery();
 
-//            while (rs.next()) {
-//                ReponseReclamation rep = new ReponseReclamation();
-//                rep.setId(rs.getInt("id"));
-//                rep.setAdminId(rs.getInt("admin_id_id"));
-//                UtilisateurService utilisateurService = new UtilisateurService();
-//                Utilisateur admin = utilisateurService.getById(rs.getInt("admin_id_id"));
-//                reponse.setAdmin(admin);
-//                rep.setContenue(rs.getString("contenue"));
-//                rep.setDateReponse(rs.getDate("date_reponse"));
-//
-//                reponses.add(rep);
-//            }
             while (rs.next()) {
                 ReponseReclamation rep = new ReponseReclamation();
                 rep.setId(rs.getInt("id"));
                 rep.setAdminId(rs.getInt("admin_id_id"));
                 rep.setContenue(rs.getString("contenue"));
                 rep.setDateReponse(rs.getDate("date_reponse"));
+                rep.setUserReponse(rs.getString("user_reponse")); // 👈 ajout ici aussi
 
-                // Charger Admin
                 UtilisateurService utilisateurService = new UtilisateurService();
                 Utilisateur admin = utilisateurService.getById(rs.getInt("admin_id_id"));
                 rep.setAdmin((Administrateur) admin);
 
                 reponses.add(rep);
             }
-
 
         } catch (SQLException e) {
             System.out.println("Erreur getReponsesByReclamationId : " + e.getMessage());
@@ -171,4 +159,17 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         return reponses;
     }
 
+    public void updateUserReponse(int reponseId, String userReponse) {
+        String req = "UPDATE reponsereclamation SET user_reponse = ? WHERE id = ?";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, userReponse);
+            ps.setInt(2, reponseId);
+            ps.executeUpdate();
+            System.out.println("Réponse utilisateur enregistrée avec succès.");
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour de la réponse utilisateur : " + e.getMessage());
+        }
+    }
 }

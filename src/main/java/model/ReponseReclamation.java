@@ -8,22 +8,27 @@ public class ReponseReclamation {
     private Administrateur admin;
     private String contenue;
     private Date dateReponse;
+    private String userReponse;
+
 
     public ReponseReclamation() {}
 
-    public ReponseReclamation(Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse) {
+    public ReponseReclamation(Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse) {
         this.reclamation = reclamation;
         this.admin = admin;
         this.contenue = contenue;
         this.dateReponse = dateReponse;
+        this.userReponse = userReponse;
     }
 
-    public ReponseReclamation(int id, Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse) {
+    public ReponseReclamation(int id, Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse) {
         this.id = id;
         this.reclamation = reclamation;
         this.admin = admin;
         this.contenue = contenue;
         this.dateReponse = dateReponse;
+        this.userReponse = userReponse;
+
     }
 
     public int getId() { return id; }
@@ -52,4 +57,11 @@ public class ReponseReclamation {
         this.admin.setId(adminId);
     }
 
+    public String getUserReponse() {
+        return userReponse;
+    }
+
+    public void setUserReponse(String userReponse) {
+        this.userReponse = userReponse;
+    }
 }

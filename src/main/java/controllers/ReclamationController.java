@@ -22,6 +22,7 @@ import util.Session;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class ReclamationController {
 
@@ -33,6 +34,14 @@ public class ReclamationController {
     @FXML private Label roleUtilisateur;
     @FXML private BorderPane rootPane;
     @FXML private AnchorPane mainContentPane;
+
+    @FXML
+    private TextField emailSearchField;
+    @FXML
+    private TextField objetSearchField;
+
+    private final ReclamationServices reclamationService = new ReclamationServices();
+
 
     private final ReclamationServices service = new ReclamationServices();
 
@@ -55,6 +64,17 @@ public class ReclamationController {
                 }
             }
         }
+
+
+            emailSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                List<Reclamation> filtrées = reclamationService.rechercherParEmail(newVal);
+                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
+        });
+
+            objetSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                List<Reclamation> filtrées = reclamationService.rechercherParObjet(newVal);
+                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
+            });
 
         loadData();
     }
@@ -176,6 +196,9 @@ public class ReclamationController {
         }
     }
 
+
+
+
     // Navigation
     @FXML private void handleDashboard() { loadView("/view/dashboard.fxml"); }
     @FXML private void handleManagement() { loadView("/view/management.fxml"); }
@@ -196,10 +219,17 @@ public class ReclamationController {
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-            mainContentPane.getScene().setRoot(root);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
+            Parent root = loader.load();
+
+            // Récupère la fenêtre à partir d’un composant quelconque
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Connexion");
+            stage.centerOnScreen(); // centrer proprement
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

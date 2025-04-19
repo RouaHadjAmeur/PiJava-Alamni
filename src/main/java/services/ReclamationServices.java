@@ -174,8 +174,56 @@ public class ReclamationServices implements Iservices<Reclamation> {
 
         return list;
     }
-    
-        
+
+    public List<Reclamation> rechercherParEmail(String email) {
+        List<Reclamation> resultats = new ArrayList<>();
+        String req = "SELECT * FROM reclamation WHERE user_email LIKE ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setString(1, "%" + email + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                resultats.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultats;
+    }
+
+
+    public List<Reclamation> rechercherParObjet(String objet) {
+        List<Reclamation> resultats = new ArrayList<>();
+        String req = "SELECT * FROM reclamation WHERE objet LIKE ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setString(1, "%" + objet + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                resultats.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultats;
+    }
+
 
 
 }

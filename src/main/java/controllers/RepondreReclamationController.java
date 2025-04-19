@@ -82,7 +82,7 @@ public class RepondreReclamationController {
 
             reponseService.add(rep);
 
-            currentReclamation.setStatus("Résolue");
+            //currentReclamation.setStatus("Résolue");
             reclamationService.update(currentReclamation);
 
             showAlert(Alert.AlertType.INFORMATION, "Réponse envoyée avec succès !");

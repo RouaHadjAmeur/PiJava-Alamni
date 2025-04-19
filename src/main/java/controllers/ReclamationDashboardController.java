@@ -12,6 +12,8 @@ import model.Reclamation;
 import services.ReclamationServices;
 import javafx.geometry.Pos;
 
+import java.util.List;
+
 public class ReclamationDashboardController {
 
     @FXML
@@ -22,6 +24,7 @@ public class ReclamationDashboardController {
     @FXML
     public void initialize() {
         loadReclamations();
+
     }
 
     private void loadReclamations() {
@@ -49,4 +52,7 @@ public class ReclamationDashboardController {
             }
         });
     }
+
+
+
 }
