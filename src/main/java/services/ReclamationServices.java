@@ -224,6 +224,32 @@ public class ReclamationServices implements Iservices<Reclamation> {
         return resultats;
     }
 
+    public List<Reclamation> rechercherParStatut(String statut) {
+        List<Reclamation> list = new ArrayList<>();
+        String req = "SELECT * FROM reclamation WHERE status LIKE ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setString(1, "%" + statut + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+                list.add(r);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
 
 }

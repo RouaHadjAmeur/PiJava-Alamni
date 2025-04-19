@@ -34,6 +34,8 @@ public class ReclamationController {
     @FXML private Label roleUtilisateur;
     @FXML private BorderPane rootPane;
     @FXML private AnchorPane mainContentPane;
+    @FXML
+    private ComboBox<String> statusFilterComboBox;
 
     @FXML
     private TextField emailSearchField;
@@ -66,7 +68,14 @@ public class ReclamationController {
         }
 
 
-            emailSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
+        statusFilterComboBox.setValue("Tous");
+        statusFilterComboBox.setItems(FXCollections.observableArrayList(
+                "Tous", "En attente", "En cours", "Résolue"
+        ));
+
+
+
+        emailSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
                 List<Reclamation> filtrées = reclamationService.rechercherParEmail(newVal);
                 reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
         });
@@ -75,6 +84,16 @@ public class ReclamationController {
                 List<Reclamation> filtrées = reclamationService.rechercherParObjet(newVal);
                 reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
             });
+
+        statusFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            String statut = newVal;
+            if ("Tous".equalsIgnoreCase(statut)) {
+                loadData(); // recharge tout
+            } else {
+                List<Reclamation> filtrées = reclamationService.rechercherParStatut(statut);
+                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
+            }
+        });
 
         loadData();
     }
