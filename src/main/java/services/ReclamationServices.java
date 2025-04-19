@@ -251,6 +251,37 @@ public class ReclamationServices implements Iservices<Reclamation> {
         return list;
     }
 
+    public List<Reclamation> trierParDate(String ordre) {
+        List<Reclamation> list = new ArrayList<>();
+        String query = "SELECT * FROM reclamation ORDER BY date_soumission " + ("Plus anciennes".equalsIgnoreCase(ordre) ? "ASC" : "DESC");
+
+        try (PreparedStatement ps = cnx.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Reclamation r = mapResultSetToReclamation(rs);
+                list.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    private Reclamation mapResultSetToReclamation(ResultSet rs) throws SQLException {
+        Reclamation r = new Reclamation();
+        r.setId(rs.getInt("id"));
+        r.setUser_email(rs.getString("user_email"));
+        r.setObjet(rs.getString("objet"));
+        r.setDescription(rs.getString("description"));
+        r.setStatus(rs.getString("status"));
+        r.setDate_soumission(rs.getDate("date_soumission"));
+        r.setAdmin_mail(rs.getString("admin_mail"));
+        return r;
+    }
+
+
 
 }
 

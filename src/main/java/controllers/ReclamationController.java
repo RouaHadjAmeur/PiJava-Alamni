@@ -41,6 +41,8 @@ public class ReclamationController {
     private TextField emailSearchField;
     @FXML
     private TextField objetSearchField;
+    @FXML
+    private ComboBox<String> dateSortComboBox;
 
     private final ReclamationServices reclamationService = new ReclamationServices();
 
@@ -94,6 +96,19 @@ public class ReclamationController {
                 reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
             }
         });
+
+        dateSortComboBox.setItems(FXCollections.observableArrayList(
+                "Plus récentes", "Plus anciennes"
+        ));
+        dateSortComboBox.setValue("Plus récentes");
+
+        dateSortComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                List<Reclamation> triées = reclamationService.trierParDate(newVal);
+                reclamationsListView.setItems(FXCollections.observableArrayList(triées));
+            }
+        });
+
 
         loadData();
     }
