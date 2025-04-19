@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddConversationController">
+    <VBox prefHeight="500.0" prefWidth="600.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Header -->
+        <VBox styleClass="header">
+            <Label styleClass="header-title" text="New Conversation" />
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="Home" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Conversations" />
+            </HBox>
+        </VBox>
+
+        <!-- Form -->
+        <VBox styleClass="conversation-form" spacing="15" VBox.vgrow="ALWAYS">
+            <VBox styleClass="form-field">
+                <Label styleClass="form-label" text="Recipient:" />
+                <ComboBox fx:id="destinataireComboBox" styleClass="form-input" promptText="Select a user" HBox.hgrow="ALWAYS" />
+            </VBox>
+            <VBox styleClass="form-field" VBox.vgrow="ALWAYS">
+                <Label styleClass="form-label" text="Message:" />
+                <TextArea fx:id="contenuTextArea" styleClass="form-input" promptText="Write your message..." wrapText="true" prefHeight="200.0" VBox.vgrow="ALWAYS" />
+            </VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="Back to Home">
+                    <tooltip>
+                        <Tooltip text="Return to Home" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnCancel" onAction="#handleCancel" styleClass="cancel-button" text="Cancel">
+                    <tooltip>
+                        <Tooltip text="Cancel" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnSend" onAction="#handleSend" styleClass="form-button" text="Send">
+                    <tooltip>
+                        <Tooltip text="Send Message" />
+                    </tooltip>
+                </Button>
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>

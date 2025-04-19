@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefHeight="700.0" prefWidth="800.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RepondreConversationController">
+    <VBox prefHeight="700.0" prefWidth="800.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Header -->
+        <VBox styleClass="header">
+            <Label text="Reply to Message" styleClass="header-title" />
+            <HBox styleClass="breadcrumb">
+                <Label styleClass="breadcrumb-item" text="Home" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Conversations" />
+            </HBox>
+        </VBox>
+
+        <!-- Form -->
+        <VBox spacing="15" VBox.vgrow="ALWAYS">
+            <VBox spacing="8">
+                <Label text="Original Message:" styleClass="form-label" />
+                <TextArea fx:id="originalMessageTextArea" editable="false" prefHeight="100.0" wrapText="true" styleClass="form-input" style="-fx-background-color: #E5E7EB;" />
+            </VBox>
+            <VBox spacing="8">
+                <Label text="To:" styleClass="form-label" />
+                <Label fx:id="destinataireLabel" styleClass="info-value" text="destinataire@example.com" />
+            </VBox>
+            <VBox spacing="8">
+                <Label text="Subject:" styleClass="form-label" />
+                <Label fx:id="sujetLabel" styleClass="info-value" text="Re: Original Subject" />
+            </VBox>
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Label text="Your Reply:" styleClass="form-label" />
+                <HBox styleClass="rich-text-toolbar" spacing="5">
+                    <Button text="B" styleClass="icon-button" tooltip="Bold"/>
+                    <Button text="I" styleClass="icon-button" tooltip="Italic"/>
+                    <Button text="U" styleClass="icon-button" tooltip="Underline"/>
+                </HBox>
+                <TextArea fx:id="reponseTextArea" promptText="Write your reply..." wrapText="true" styleClass="rich-text-area" VBox.vgrow="ALWAYS" />
+            </VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Button fx:id="btnCancel" onAction="#handleCancel" styleClass="cancel-button" text="Cancel">
+                    <tooltip>
+                        <Tooltip text="Cancel" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnSend" onAction="#handleSend" styleClass="form-button" text="Send">
+                    <tooltip>
+                        <Tooltip text="Send Reply" />
+                    </tooltip>
+                </Button>
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>

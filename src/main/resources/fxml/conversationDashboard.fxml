@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConversationDashboardController">
+   <top>
+      <VBox styleClass="header">
+         <children>
+            <Label fx:id="dashboardTitleLabel" styleClass="header-title" text="Conversations" />
+            <HBox styleClass="breadcrumb">
+               <children>
+                  <Label styleClass="breadcrumb-item" text="Home" />
+                  <Label styleClass="breadcrumb-separator" text="/" />
+                  <Label styleClass="breadcrumb-item" text="Conversations" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <VBox spacing="15.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <!-- Filter Buttons -->
+            <HBox fx:id="filterButtonsContainer" spacing="10.0">
+               <children>
+                  <Button fx:id="btnAllConversations" mnemonicParsing="false" onAction="#handleAllFilter" text="All Conversations" />
+                  <Button fx:id="btnSentConversations" mnemonicParsing="false" onAction="#handleSentFilter" text="Sent" />
+                  <Button fx:id="btnReceivedConversations" mnemonicParsing="false" onAction="#handleReceivedFilter" text="Received" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+            </HBox>
+            
+            <!-- Search Controls -->
+            <HBox styleClass="search-box">
+               <children>
+                  <TextField fx:id="searchField" prefHeight="36.0" prefWidth="250.0" promptText="Search conversations..." styleClass="search-field">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <ComboBox fx:id="searchTypeComboBox" prefHeight="36.0" prefWidth="150.0" promptText="Search by...">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <DatePicker fx:id="startDatePicker" prefHeight="36.0" promptText="From date" styleClass="date-picker">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <DatePicker fx:id="endDatePicker" prefHeight="36.0" promptText="To date" styleClass="date-picker">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#handleSearch" styleClass="search-button" text="🔍">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnClearSearch" mnemonicParsing="false" onAction="#clearSearch" styleClass="search-button" text="❌">
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+               </padding>
+            </HBox>
+            
+            <!-- Conversation List -->
+            <ListView fx:id="allConversationsListView" prefHeight="450.0" styleClass="list-view" VBox.vgrow="ALWAYS" />
+            
+            <!-- Pagination Controls -->
+            <HBox alignment="CENTER" styleClass="pagination-box">
+               <children>
+                  <Button fx:id="btnPrev" mnemonicParsing="false" onAction="#previousPage" styleClass="pagination-button" text="◀" />
+                  <Label fx:id="pageLabel" styleClass="page-label" text="Page 1 of 1" />
+                  <Button fx:id="btnNext" mnemonicParsing="false" onAction="#nextPage" styleClass="pagination-button" text="▶" />
+                  <ComboBox fx:id="pageSizeComboBox" prefHeight="36.0" prefWidth="100.0" promptText="Page size">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </ComboBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="action-bar" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnBackToHome" mnemonicParsing="false" onAction="#handleBackToHome" styleClass="home-button" text="🏠 Home" />
+            <Button fx:id="btnAddConversation" mnemonicParsing="false" onAction="#handleAddConversation" styleClass="new-conversation-btn" text="✉️ New Conversation" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane> 
