@@ -14,7 +14,7 @@
     import javafx.scene.paint.Color;
     import javafx.scene.shape.SVGPath;
     import javafx.stage.Stage;
-    import dao.DevoirDAO;
+    import service.DevoirDAO;
     import model.Cours;
     import model.Devoir;
     import utils.ImageUtils;

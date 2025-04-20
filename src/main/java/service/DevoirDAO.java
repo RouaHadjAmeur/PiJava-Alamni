@@ -1,4 +1,4 @@
-package dao;
+package service;
 
 import model.Devoir;
 import util.DatabaseConnection;

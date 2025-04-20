@@ -17,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import dao.DevoirDAO;
+import service.DevoirDAO;
 import model.Cours;
 import model.Devoir;
 import utils.ImageUtils;

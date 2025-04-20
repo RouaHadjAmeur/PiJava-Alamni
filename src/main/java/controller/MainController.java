@@ -19,7 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import dao.CoursDAO;
+import service.CoursDAO;
 import model.Cours;
 import utils.ImageUtils;
 import javafx.scene.paint.Color;

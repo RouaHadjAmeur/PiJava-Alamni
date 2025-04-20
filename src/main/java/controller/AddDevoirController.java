@@ -5,9 +5,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import dao.DevoirDAO;
+import service.DevoirDAO;
 import model.Devoir;
-
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;

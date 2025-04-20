@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import dao.CoursDAO;
+import service.CoursDAO;
 import model.Cours;
 
 import java.io.File;
