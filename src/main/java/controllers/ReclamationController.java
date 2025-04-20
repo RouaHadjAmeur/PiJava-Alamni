@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,9 +22,20 @@ import model.Utilisateur;
 import services.ReclamationServices;
 import util.Session;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+//import com.google.gson.JsonObject;
+//import com.google.gson.JsonParser;
+
+
 
 public class ReclamationController {
 
@@ -43,6 +56,10 @@ public class ReclamationController {
     private TextField objetSearchField;
     @FXML
     private ComboBox<String> dateSortComboBox;
+
+    @FXML
+    private PieChart statusPieChart;
+
 
     private final ReclamationServices reclamationService = new ReclamationServices();
 
@@ -265,5 +282,47 @@ public class ReclamationController {
             e.printStackTrace();
         }
     }
+
+//    private void loadStatsFromAPI() {
+//        new Thread(() -> {
+//            try {
+//                URL url = new URL("http://localhost:8080/api/reclamations/stats");
+//                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//                con.setRequestMethod("GET");
+//
+//                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//                String inputLine;
+//                StringBuilder response = new StringBuilder();
+//                while ((inputLine = in.readLine()) != null) {
+//                    response.append(inputLine);
+//                }
+//                in.close();
+//
+//                // Parsing JSON response
+//                Map<String, Integer> stats = new HashMap<>();
+//                //JsonObject json = JsonParser.parseString(response.toString()).getAsJsonObject();
+//                JsonObject json = JsonParser.parseString(response.toString()).getAsJsonObject();
+//
+//                for (Map.Entry<String, com.google.gson.JsonElement> entry : json.entrySet()) {
+//                    stats.put(entry.getKey(), entry.getValue().getAsInt());
+//                }
+//
+//
+//                // Update UI on FX thread
+//                Platform.runLater(() -> {
+//                    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+//                    for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+//                        pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+//                    }
+//                    statusPieChart.setData(pieChartData);
+//                    statusPieChart.setTitle("Réclamations par statut");
+//                });
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
+
 
 }

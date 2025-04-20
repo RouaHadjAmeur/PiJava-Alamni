@@ -19,6 +19,14 @@
                 <Button text="Home" style="-fx-background-color: transparent;"/>
                 <Button text="Élèves" style="-fx-background-color: transparent;"/>
                 <Button text="Contact" style="-fx-background-color: transparent;"/>
+                <MenuButton text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px;">
+
+                    <items>
+                        <MenuItem text="Ajouter Réclamation" onAction="#handleAjouterReclamation"/>
+                        <MenuItem text="Mes Réclamations" onAction="#handleMesReclamations"/>
+                    </items>
+
+                </MenuButton>
             </HBox>
 
             <Region HBox.hgrow="ALWAYS"/>

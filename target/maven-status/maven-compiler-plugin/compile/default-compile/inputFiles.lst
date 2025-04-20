@@ -1,17 +1,40 @@
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\model\Utilisateur.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\Main.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\model\ParentUser.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\util\Session.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\model\Eleve.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\EleveController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\UserController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\AjouterUtilisateurController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\main\MainApp.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\model\Administrateur.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\service\UtilisateurService.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\util\DatabaseConnection.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\ModifierUtilisateurController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\LoginController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\AdminController.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\model\Enseignant.java
-C:\Users\pc malek\OneDrive\Desktop\pi_java\Almani\src\main\java\controller\SignUpController.java
+C:\pijava\crud1\src\main\java\controller\AdminController.java
+C:\pijava\crud1\src\main\java\controller\AjouterUtilisateurController.java
+C:\pijava\crud1\src\main\java\controller\DemandeInscriptionController.java
+C:\pijava\crud1\src\main\java\controller\DetailUtilisateurController.java
+C:\pijava\crud1\src\main\java\controller\EleveController.java
+C:\pijava\crud1\src\main\java\controller\EnseignantController.java
+C:\pijava\crud1\src\main\java\controller\LoginController.java
+C:\pijava\crud1\src\main\java\controller\ModifierUtilisateurController.java
+C:\pijava\crud1\src\main\java\controller\ParentController.java
+C:\pijava\crud1\src\main\java\controller\ProfilUtilisateurController.java
+C:\pijava\crud1\src\main\java\controller\SignUpController.java
+C:\pijava\crud1\src\main\java\controller\UtilisateurController.java
+C:\pijava\crud1\src\main\java\controllers\AddReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\EditReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\MesReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\ReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\ReclamationDashboardController.java
+C:\pijava\crud1\src\main\java\controllers\ReclamationDetailsController.java
+C:\pijava\crud1\src\main\java\controllers\RepondreAAdminController.java
+C:\pijava\crud1\src\main\java\controllers\RepondreReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\voirRepRecController.java
+C:\pijava\crud1\src\main\java\Main.java
+C:\pijava\crud1\src\main\java\Main\DatabaseConnection.java
+C:\pijava\crud1\src\main\java\Main\Main.java
+C:\pijava\crud1\src\main\java\Main\MainApp.java
+C:\pijava\crud1\src\main\java\model\Administrateur.java
+C:\pijava\crud1\src\main\java\model\DiscussionReclamation.java
+C:\pijava\crud1\src\main\java\model\Eleve.java
+C:\pijava\crud1\src\main\java\model\Enseignant.java
+C:\pijava\crud1\src\main\java\model\ParentUser.java
+C:\pijava\crud1\src\main\java\model\Reclamation.java
+C:\pijava\crud1\src\main\java\model\ReponseReclamation.java
+C:\pijava\crud1\src\main\java\model\Utilisateur.java
+C:\pijava\crud1\src\main\java\service\UtilisateurService.java
+C:\pijava\crud1\src\main\java\services\DiscussionReclamationService.java
+C:\pijava\crud1\src\main\java\services\Iservices.java
+C:\pijava\crud1\src\main\java\services\ReclamationServices.java
+C:\pijava\crud1\src\main\java\services\ReponseReclamationService.java
+C:\pijava\crud1\src\main\java\util\DatabaseConnection.java
+C:\pijava\crud1\src\main\java\util\Session.java
