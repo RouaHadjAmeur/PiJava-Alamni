@@ -6,10 +6,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Pos?>
+<?import javafx.scene.chart.PieChart?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.ReclamationController">
+            fx:controller="controllers.ReclamationController"
+            prefWidth="1200" prefHeight="700">
 
     <!-- Sidebar -->
     <left>
@@ -25,41 +27,58 @@
             </VBox>
 
             <VBox spacing="10" alignment="TOP_LEFT">
-                <Button text="Dashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="User" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Demandes d'inscription" wrapText="true" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Cours" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Discussions" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Reclamations" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Club" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
-                <Button text="Planning" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Tableau de bord" onAction="#handleDashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Gestion" onAction="#handleManagement" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Utilisateurs" onAction="#handleUser" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Demandes" onAction="#handleDemandes" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Classes" onAction="#handleClasses" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Réclamations" onAction="#handleReclamations" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
             </VBox>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="10" alignment="TOP_CENTER" style="-fx-background-color: #ffffff; -fx-padding: 0 20 20 20;">
-            <Label text="Liste des Réclamations" style="-fx-font-size: 26px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;" />
+        <ScrollPane fitToWidth="true" fitToHeight="true" 
+                   hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                   style="-fx-background: transparent; -fx-background-color: transparent;">
+            <VBox spacing="5" alignment="TOP_CENTER" style="-fx-background-color: #ffffff; -fx-padding: 20;">
+                <Label text="Tableau de Bord des Réclamations" style="-fx-font-size: 26px; -fx-font-family: 'Lobster Two'; -fx-text-fill: #ff5722;" />
 
-            <!-- Search and Filter Controls -->
-            <HBox spacing="10" style="-fx-padding: 10 0;">
-                <TextField fx:id="emailSearchField" promptText="Rechercher par email" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
-                <TextField fx:id="objetSearchField" promptText="Rechercher par objet" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
-                <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
-                <ComboBox fx:id="dateSortComboBox" promptText="Trier par date" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
-            </HBox>
+                <!-- Statistics Section -->
+                <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20; -fx-background-color: #f3f4f6; -fx-background-radius: 10;">
+                    <PieChart fx:id="statusPieChart" title="Répartition des Réclamations par Statut" 
+                              style="-fx-background-color: transparent; -fx-text-fill: #1f2937;">
+                        <title>
+                            <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                        </title>
+                        <style>
+                            -fx-legend-text-fill: #1f2937;
+                            -fx-legend-side: right;
+                        </style>
+                    </PieChart>
+                </HBox>
 
-            <HBox spacing="20" style="-fx-padding: 10 0 0 0; -fx-font-weight: bold;">
-                <Label text="User Email" prefWidth="160" />
-                <Label text="Objet" prefWidth="160" />
-                <Label text="Description" prefWidth="160" />
-                <Label text="Status" prefWidth="100" />
-                <Label text="Date" prefWidth="100" />
-                <Label text="Actions" prefWidth="160" />
-            </HBox>
-            <ListView fx:id="reclamationsListView" prefHeight="500" style="-fx-background-color: transparent;">
-            </ListView>
-        </VBox>
+                <!-- Search and Filter Controls -->
+                <HBox spacing="10" style="-fx-padding: 10 0;">
+                    <TextField fx:id="emailSearchField" promptText="Rechercher par email" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+                    <TextField fx:id="objetSearchField" promptText="Rechercher par objet" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+                    <ComboBox fx:id="statusFilterComboBox" promptText="Filtrer par statut" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+                    <ComboBox fx:id="dateSortComboBox" promptText="Trier par date" style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+                </HBox>
+
+                <HBox spacing="20" style="-fx-padding: 10 0 0 0; -fx-font-weight: bold;">
+                    <Label text="User Email" prefWidth="160" />
+                    <Label text="Objet" prefWidth="160" />
+                    <Label text="Description" prefWidth="160" />
+                    <Label text="Status" prefWidth="100" />
+                    <Label text="Date" prefWidth="100" />
+                    <Label text="Actions" prefWidth="160" />
+                </HBox>
+                <ListView fx:id="reclamationsListView" prefHeight="400" style="-fx-background-color: transparent;">
+                </ListView>
+            </VBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

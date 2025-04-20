@@ -27,15 +27,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//import com.google.gson.JsonObject;
-//import com.google.gson.JsonParser;
-
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReclamationController {
 
@@ -86,23 +85,28 @@ public class ReclamationController {
             }
         }
 
+        // Initialize the pie chart
+        statusPieChart.setTitle("Répartition des Réclamations par Statut");
+        statusPieChart.setLegendVisible(true);
+        statusPieChart.setLabelsVisible(true);
+        
+        // Load initial statistics
+        loadStatsFromAPI();
 
         statusFilterComboBox.setValue("Tous");
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
                 "Tous", "En attente", "En cours", "Résolue"
         ));
 
-
-
         emailSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
                 List<Reclamation> filtrées = reclamationService.rechercherParEmail(newVal);
                 reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
         });
 
-            objetSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
-                List<Reclamation> filtrées = reclamationService.rechercherParObjet(newVal);
-                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
-            });
+        objetSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            List<Reclamation> filtrées = reclamationService.rechercherParObjet(newVal);
+            reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
+        });
 
         statusFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             String statut = newVal;
@@ -112,6 +116,8 @@ public class ReclamationController {
                 List<Reclamation> filtrées = reclamationService.rechercherParStatut(statut);
                 reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
             }
+            // Reload statistics when filter changes
+            loadStatsFromAPI();
         });
 
         dateSortComboBox.setItems(FXCollections.observableArrayList(
@@ -125,7 +131,6 @@ public class ReclamationController {
                 reclamationsListView.setItems(FXCollections.observableArrayList(triées));
             }
         });
-
 
         loadData();
     }
@@ -273,7 +278,7 @@ public class ReclamationController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
             Parent root = loader.load();
 
-            // Récupère la fenêtre à partir d’un composant quelconque
+            // Récupère la fenêtre à partir d'un composant quelconque
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Connexion");
@@ -283,46 +288,52 @@ public class ReclamationController {
         }
     }
 
-//    private void loadStatsFromAPI() {
-//        new Thread(() -> {
-//            try {
-//                URL url = new URL("http://localhost:8080/api/reclamations/stats");
-//                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//                con.setRequestMethod("GET");
-//
-//                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//                String inputLine;
-//                StringBuilder response = new StringBuilder();
-//                while ((inputLine = in.readLine()) != null) {
-//                    response.append(inputLine);
-//                }
-//                in.close();
-//
-//                // Parsing JSON response
-//                Map<String, Integer> stats = new HashMap<>();
-//                //JsonObject json = JsonParser.parseString(response.toString()).getAsJsonObject();
-//                JsonObject json = JsonParser.parseString(response.toString()).getAsJsonObject();
-//
-//                for (Map.Entry<String, com.google.gson.JsonElement> entry : json.entrySet()) {
-//                    stats.put(entry.getKey(), entry.getValue().getAsInt());
-//                }
-//
-//
-//                // Update UI on FX thread
-//                Platform.runLater(() -> {
-//                    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-//                    for (Map.Entry<String, Integer> entry : stats.entrySet()) {
-//                        pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
-//                    }
-//                    statusPieChart.setData(pieChartData);
-//                    statusPieChart.setTitle("Réclamations par statut");
-//                });
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//    }
+    private void loadStatsFromAPI() {
+        try {
+            // Get all reclamations from the database
+            List<Reclamation> allReclamations = service.afficher();
+            
+            // Count reclamations by status
+            Map<String, Integer> stats = new HashMap<>();
+            stats.put("En attente", 0);
+            stats.put("En cours", 0);
+            stats.put("Résolue", 0);
+            
+            for (Reclamation r : allReclamations) {
+                String status = r.getStatus().toLowerCase();
+                if (status.contains("en cours")) {
+                    stats.put("En cours", stats.get("En cours") + 1);
+                } else if (status.contains("en attente")) {
+                    stats.put("En attente", stats.get("En attente") + 1);
+                } else if (status.contains("résolue")) {
+                    stats.put("Résolue", stats.get("Résolue") + 1);
+                }
+            }
+            
+            // Calculate total
+            int total = stats.values().stream().mapToInt(Integer::intValue).sum();
+            
+            // Update the pie chart with the data
+            Platform.runLater(() -> {
+                statusPieChart.getData().clear();
+                for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+                    if (entry.getValue() > 0) { // Only add non-zero values
+                        double percentage = total > 0 ? (entry.getValue() * 100.0) / total : 0;
+                        String label = String.format("%s (%d - %.1f%%)", 
+                            entry.getKey(), 
+                            entry.getValue(), 
+                            percentage);
+                        statusPieChart.getData().add(new PieChart.Data(
+                            label,
+                            entry.getValue()
+                        ));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
