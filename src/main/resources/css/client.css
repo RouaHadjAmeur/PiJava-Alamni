@@ -1,0 +1,243 @@
+/* Couleurs */
+.root {
+    -fx-primary: #4361ee;
+    -fx-primary-dark: #3f37c9;
+    -fx-primary-light: #4895ef;
+    -fx-accent: #f72585;
+    -fx-light: #f8f9fa;
+    -fx-dark: #212529;
+    -fx-gray: #6c757d;
+}
+
+/* Structure principale */
+.root {
+    -fx-background-color: -fx-light;
+}
+
+.scroll-content {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0 30 30 30;
+}
+
+.main-content {
+    -fx-spacing: 25;
+    -fx-padding: 20 0 0 0;
+}
+
+/* En-tête */
+.banner-overlay {
+    -fx-fill: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.header-content {
+    -fx-padding: 0 0 40 30;
+}
+
+.course-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0.2, 0, 1);
+}
+
+/* Badges */
+.badge-container {
+    -fx-padding: 0;
+}
+
+.info-badge {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 15;
+    -fx-padding: 6 12;
+    -fx-spacing: 6;
+}
+
+.badge-icon {
+    -fx-fill: white;
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+}
+
+.badge-text {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Bouton fermer */
+.close-button {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 15;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+}
+
+.close-button SVGPath {
+    -fx-fill: white;
+}
+
+.close-button:hover {
+    -fx-background-color: rgba(255,255,255,0.3);
+}
+
+/* Sections */
+.content-section {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 0);
+    -fx-padding: 20;
+}
+
+.section-header {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.section-icon {
+    -fx-fill: -fx-primary;
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+}
+
+.section-title {
+    -fx-text-fill: -fx-dark;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.section-text {
+    -fx-text-fill: -fx-dark;
+    -fx-font-size: 14px;
+    -fx-line-spacing: 5px;
+}
+
+/* Support */
+.support-box {
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.support-icon-container {
+    -fx-padding: 5;
+}
+
+.support-circle {
+    -fx-fill: -fx-primary;
+}
+
+.support-icon {
+    -fx-fill: white;
+}
+
+.support-text {
+    -fx-padding: 0 0 0 10;
+}
+
+.support-title {
+    -fx-text-fill: -fx-dark;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.support-subtitle {
+    -fx-text-fill: -fx-gray;
+    -fx-font-size: 13px;
+}
+
+.download-btn {
+    -fx-background-color: -fx-primary;
+    -fx-background-radius: 6;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.download-btn:hover {
+    -fx-background-color: -fx-primary-dark;
+}
+
+.download-icon {
+    -fx-fill: white;
+}
+
+.download-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Tableau */
+.devoirs-table {
+    -fx-background-color: transparent;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.devoirs-table .column-header {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
+}
+
+.devoirs-table .column-header-background {
+    -fx-background-radius: 8 8 0 0;
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 15;
+}
+
+.devoirs-table .table-row-cell {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #e9ecef;
+}
+
+.devoirs-table .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.devoirs-table .table-row-cell:even {
+    -fx-background-color: white;
+}
+
+.devoirs-table .table-row-cell:hover {
+    -fx-background-color: #e9ecef;
+}
+
+/* Footer */
+.footer {
+    -fx-padding: 15 30;
+    -fx-background-color: white;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #e9ecef;
+}
+
+.favorite-btn {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.favorite-btn:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.favorite-icon {
+    -fx-fill: -fx-primary;
+}
+
+.favorite-text {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+.favorite-active {
+    -fx-fill: -fx-accent;
+}

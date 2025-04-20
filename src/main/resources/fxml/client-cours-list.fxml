@@ -36,15 +36,15 @@
                 </HBox>
 
                 <!-- Profil utilisateur -->
-                <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="user-profile">
-                    <StackPane styleClass="avatar-container">
-                        <Circle radius="20" styleClass="avatar-circle"/>
-                        <Label fx:id="userInitialsLabel" text="A" styleClass="avatar-text"/>
-                    </StackPane>
-                    <Label fx:id="usernameLabel" text="aissa" styleClass="username-text"/>
-                    <SVGPath content="M7,10L12,15L17,10H7Z" styleClass="dropdown-icon"/>
-                </HBox>
-            </HBox>
+<!--                <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="user-profile">-->
+<!--                    <StackPane styleClass="avatar-container">-->
+<!--                        <Circle radius="20" styleClass="avatar-circle"/>-->
+<!--                        <Label fx:id="userInitialsLabel" text="A" styleClass="avatar-text"/>-->
+<!--                    </StackPane>-->
+<!--                    <Label fx:id="usernameLabel" text="aissa" styleClass="username-text"/>-->
+<!--                    <SVGPath content="M7,10L12,15L17,10H7Z" styleClass="dropdown-icon"/>-->
+<!--                </HBox>-->
+         </HBox>
 
             <!-- Bannière de titre -->
             <StackPane styleClass="title-banner">
