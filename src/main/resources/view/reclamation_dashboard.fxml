@@ -11,7 +11,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.ReclamationController"
-            prefWidth="1200" prefHeight="700">
+            prefWidth="1366" prefHeight="700">
 
     <!-- Sidebar -->
     <left>

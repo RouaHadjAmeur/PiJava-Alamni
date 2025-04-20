@@ -13,6 +13,7 @@ controllers\ReclamationController.class
 controller\UtilisateurController$1.class
 controllers\ReclamationDetailsController.class
 Main\MainApp.class
+services\EmailService.class
 controllers\ReclamationDashboardController$1.class
 controllers\voirRepRecController.class
 controllers\MesReclamationController.class
@@ -39,6 +40,7 @@ controller\AjouterUtilisateurController.class
 util\DatabaseConnection.class
 controllers\MesReclamationController$1.class
 controllers\RepondreReclamationController.class
+services\EmailService$1.class
 services\ReclamationServices.class
 controller\UtilisateurController$2.class
 controller\DemandeInscriptionController.class

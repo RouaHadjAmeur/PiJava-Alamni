@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/controller/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/AdminController.class" afterDir="false" />
@@ -34,6 +36,8 @@
       <change beforePath="$PROJECT_DIR$/target/classes/service/UtilisateurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/UtilisateurService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/util/DatabaseConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/util/DatabaseConnection.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/util/Session.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/util/Session.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
