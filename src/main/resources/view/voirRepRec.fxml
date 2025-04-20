@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.voirRepRecController">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+            <Label text="📚  ALAMNI"
+                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <HBox spacing="20">
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Home" />
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="About Us" />
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Classes" />
+                <MenuButton style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations">
+                    <items>
+                        <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
+                        <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
+                    </items>
+                </MenuButton>
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Discussion" />
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- Content -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="30" style="-fx-background-color: #fff5f2; -fx-padding: 30;">
+            <Label text="Réclamation"
+                   style="-fx-font-size: 28px; -fx-font-family: 'Lobster Two'; -fx-font-weight: bold; -fx-text-fill: #ff5722;" />
+
+
+            <VBox spacing="5">
+                <Label text="Réclamation" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #374151;" />
+
+                <Label fx:id="objetLabel" style="-fx-font-size: 14px;"/>
+                <Label fx:id="descriptionLabel" style="-fx-font-size: 14px;"/>
+                <Label fx:id="statusLabel" style="-fx-font-size: 14px;"/>
+            </VBox>
+            <CheckBox fx:id="resolueCheckBox"
+                      text="Réclamation résolue ?"
+                      style="-fx-font-size: 14px; -fx-text-fill: #374151;" />
+
+
+            <Label text="Réponses" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #374151;" />
+
+            <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS" prefHeight="250" style="-fx-background-color: transparent;">
+                <VBox fx:id="reponsesContainer" spacing="10" style="-fx-padding: 10; -fx-background-color: #f9f9f9; -fx-background-radius: 8;" />
+            </ScrollPane>
+
+            <Button text="← Retourner" onAction="#handleRetour" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-background-radius: 5;" />
+
+
+        </VBox>
+    </center>
+
+</BorderPane>

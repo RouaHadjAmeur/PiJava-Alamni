@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import model.Utilisateur;
 import service.UtilisateurService;
 import util.Session;
@@ -17,6 +20,30 @@ public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    @FXML private Button logInButton;
+
+    @FXML
+    public void initialize() {
+        // Add Enter key handler to password field
+        passwordField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    logInButton.fire();
+                }
+            }
+        });
+
+        // Add Enter key handler to email field
+        emailField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    passwordField.requestFocus();
+                }
+            }
+        });
+    }
 
     // Connexion
     @FXML
@@ -96,7 +123,7 @@ public class LoginController {
     // Mot de passe oublié
     @FXML
     private void handleForgotPassword(ActionEvent event) {
-        showAlert(Alert.AlertType.INFORMATION, "Mot de passe oublié", "Veuillez contacter l’administrateur.");
+        showAlert(Alert.AlertType.INFORMATION, "Mot de passe oublié", "Veuillez contacter l'administrateur.");
     }
 
     // Alerte réutilisable

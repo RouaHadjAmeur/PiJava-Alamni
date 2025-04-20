@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MesReclamationController"
+            prefHeight="687" prefWidth="1022">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+            <Label text="📚  ALAMNI"
+                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <HBox spacing="20">
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Home" />
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="About Us" />
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Classes" />
+                <MenuButton style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations">
+                    <items>
+                        <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
+                        <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
+                    </items>
+                </MenuButton>
+                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Discussion" />
+            </HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <ImageView fx:id="profileImage" fitWidth="40" fitHeight="40"/>
+
+            <MenuButton fx:id="userMenu" text="Mon Compte"
+                        style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;">
+                <items>
+                    <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
+                    <MenuItem text="📄 Bulletin" onAction="#handleMesBulletins"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="🚪 Déconnexion" onAction="#handleLogout"/>
+                </items>
+            </MenuButton>
+        </HBox>
+    </top>
+
+    <!-- Content -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="30" style="-fx-background-color: #fff5f2; -fx-padding: 30;">
+            <Label text="Mes Réclamations"
+                   style="-fx-font-size: 28px; -fx-font-family: 'Lobster Two'; -fx-font-weight: bold; -fx-text-fill: #ff5722;" />
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Label text="Filtrer par statut :" style="-fx-font-size: 13px; -fx-text-fill: #374151;"/>
+                <ComboBox fx:id="filterComboBox" promptText="Tous" onAction="#filterByStatus" />
+            </HBox>
+
+            <ListView fx:id="reclamationsListView" prefWidth="900" style="-fx-background-color: transparent;">
+            </ListView>
+
+        </VBox>
+    </center>
+
+</BorderPane>

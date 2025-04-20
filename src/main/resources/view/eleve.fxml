@@ -20,6 +20,8 @@
                 <Button text="Home" style="-fx-background-color: transparent;" />
                 <Button text="Cours" style="-fx-background-color: transparent;" />
                 <Button text="Notes" style="-fx-background-color: transparent;" />
+                <Button text="Réclamations" style="-fx-background-color: transparent;" onAction="#handleAjouterReclamation"/>
+                <Button text="Mes Réclamations" style="-fx-background-color: transparent;" onAction="#handleMesReclamations"/>
                 <Button text="Contact" style="-fx-background-color: transparent;" />
             </HBox>
 

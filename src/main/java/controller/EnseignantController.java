@@ -48,7 +48,7 @@ public class EnseignantController {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen(); // ✅ centrer
+            stage.centerOnScreen();
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,11 +57,10 @@ public class EnseignantController {
 
     @FXML
     private void handleMesClasses() {
-        // À compléter : ouvrir une nouvelle page FXML ou afficher une boîte d'information
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Mes classes");
         alert.setHeaderText(null);
-        alert.setContentText("Cette section affichera les classes assignées à l’enseignant.");
+        alert.setContentText("Cette section affichera les classes assignées à l'enseignant.");
         alert.showAndWait();
     }
 
@@ -70,21 +69,41 @@ public class EnseignantController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
-
-            controllers.AddReclamationController controller = loader.getController();
-
             Stage stage = new Stage();
-            stage.setTitle("Ajouter Réclamation");
             stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter Réclamation");
+            stage.setWidth(800);
+            stage.setHeight(600);
+            stage.centerOnScreen();
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @FXML
-    private void handleMesReclamations() {
 
+    @FXML
+    private void handleMesReclamations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes Réclamations");
+            stage.setWidth(800);
+            stage.setHeight(600);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

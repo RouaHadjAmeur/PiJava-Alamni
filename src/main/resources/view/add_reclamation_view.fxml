@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddReclamationController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddReclamationController" prefWidth="800" prefHeight="600">
 
     <!-- Header -->
     <top>
@@ -25,19 +26,14 @@
                 </image>
             </ImageView>
             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-            <HBox spacing="20">
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Home" />
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="About Us" />
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Classes" />
-                <MenuButton style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations" textAlignment="CENTER">
+            <HBox spacing="20" alignment="CENTER_RIGHT">
+                <ImageView fx:id="profileImage" fitHeight="40" fitWidth="40" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+                <MenuButton fx:id="userMenu" style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations" textAlignment="CENTER">
                     <items>
                         <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
                         <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
                     </items>
-
                 </MenuButton>
-
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Discussion" />
             </HBox>
         </HBox>
     </top>
@@ -47,27 +43,19 @@
         <VBox alignment="CENTER" spacing="30" style="-fx-background-color: #fff5f2; -fx-padding: 15;">
             <Label style="-fx-font-size: 28px; -fx-font-family: 'Lobster Two';-fx-font-weight: bold; -fx-text-fill: #ff5722;" text="Envoyer une Réclamation" />
 
-            <VBox alignment="CENTER_LEFT" maxWidth="500" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 15; -fx-background-radius: 12;              -fx-border-color: #e5e7eb; -fx-border-radius: 12;              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 4);">
-
-                <!-- Email -->
+            <VBox alignment="CENTER_LEFT" maxWidth="500" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 15; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 4);">
+                <!-- User Info -->
                 <VBox spacing="3">
                     <Label style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;" text="Votre Email" />
-                    <TextField fx:id="emailField" promptText="Ex : example@gmail.com" style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;" />
-                    <Label fx:id="emailErrorLabel" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
-                </VBox>
-
-                <!-- Rôle -->
-                <VBox spacing="3">
+                    <Label fx:id="userEmailLabel" style="-fx-font-size: 14px; -fx-text-fill: #374151;" />
                     <Label style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;" text="Votre Rôle" />
-                    <TextField fx:id="roleField" promptText="Ex : Étudiant(e)" style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;" />
-                    <Label fx:id="roleErrorLabel" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
-
+                    <Label fx:id="userRoleLabel" style="-fx-font-size: 14px; -fx-text-fill: #374151;" />
                 </VBox>
 
                 <!-- Email Admin -->
                 <VBox spacing="3">
                     <Label style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;" text="Email de l'Administrateur" />
-                    <TextField fx:id="adminMailField" promptText="Ex : admin@gmail.com" style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;" />
+                    <ComboBox fx:id="adminComboBox" promptText="Sélectionner un administrateur" style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;" />
                     <Label fx:id="adminEmailErrorLabel" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
                 </VBox>
 
@@ -76,7 +64,6 @@
                     <Label style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;" text="Objet" />
                     <TextField fx:id="objetField" promptText="Ex : Problème d'accès" style="-fx-background-radius: 30; -fx-padding: 5 10; -fx-border-color: #e5e7eb; -fx-border-radius: 30;" />
                     <Label fx:id="objetErrorLabel" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
-
                 </VBox>
 
                 <!-- Description -->
@@ -84,16 +71,11 @@
                     <Label style="-fx-font-size: 10px; -fx-text-fill: #9ca3af; -fx-font-weight: bold;" text="Description" />
                     <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Expliquer votre problème..." style="-fx-background-radius: 12; -fx-background-color: #ffffff; -fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 12;" />
                     <Label fx:id="descriptionErrorLabel" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
-
                 </VBox>
 
                 <!-- Button -->
-                <Button maxWidth="Infinity" onAction="#handleSave" style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold;                    -fx-background-radius: 30; -fx-padding: 10 0;" text="Soumettre" />
+                <Button maxWidth="Infinity" onAction="#handleSave" style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 30; -fx-padding: 10 0;" text="Soumettre" />
             </VBox>
-
-
         </VBox>
-
     </center>
-
 </BorderPane>

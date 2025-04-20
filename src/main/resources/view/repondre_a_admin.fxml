@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.RepondreAAdminController"
+            prefWidth="700" prefHeight="500"
+            style="-fx-background-color: #fff5f2;">
+
+    <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10"
+          style="-fx-padding: 20;">
+
+        <Label text="📬 Discussion de la Réclamation"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ff5722;" />
+
+        <!-- Zone d'affichage des messages -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" fx:id="scrollPane">
+            <VBox fx:id="messagesContainer" spacing="10" style="-fx-padding: 10;" />
+        </ScrollPane>
+
+        <!-- Zone de réponse -->
+        <VBox spacing="6" style="-fx-background-color: #ffffff; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #e5e7eb;">
+            <Label text="Écrire une réponse :" style="-fx-font-weight: bold;" />
+            <TextArea fx:id="reponseArea" promptText="Votre réponse ici..." wrapText="true" prefRowCount="4"
+                      style="-fx-background-radius: 6; -fx-border-color: #e5e7eb; -fx-border-radius: 6; -fx-padding: 10;" />
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Annuler" onAction="#handleAnnuler"
+                        style="-fx-background-color: #9ca3af; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 20;" />
+                <Button text="Envoyer" onAction="#handleEnvoyer"
+                        style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 20;" />
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>

@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="687" prefWidth="1022"
-            fx:controller="controller.EleveController">
+            fx:controller="controller.EnseignantController">
 
     <!-- Barre supérieure -->
     <top>
@@ -19,6 +19,8 @@
                 <Button text="Home" style="-fx-background-color: transparent;" />
                 <Button text="Cours" style="-fx-background-color: transparent;" />
                 <Button text="Notes" style="-fx-background-color: transparent;" />
+                <Button text="Réclamations" style="-fx-background-color: transparent;" onAction="#handleAjouterReclamation"/>
+                <Button text="Mes Réclamations" style="-fx-background-color: transparent;" onAction="#handleMesReclamations"/>
                 <Button text="Contact" style="-fx-background-color: transparent;" />
             </HBox>
 
@@ -30,7 +32,7 @@
                         style="-fx-font-size: 16px; -fx-text-fill: #333;">
                 <items>
                     <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
-                    <MenuItem text="📝 Mes Résultats" onAction="#handleMesNotes"/>
+                    <MenuItem text="📝 Mes Résultats" onAction="#handleMesClasses"/>
                     <SeparatorMenuItem/>
                     <MenuItem text="🚪 Déconnexion" onAction="#handleLogout"/>
                 </items>
@@ -39,7 +41,7 @@
     </top>
 
     <center>
-        <Label text="Bienvenue dans l'espace élève 👨‍🎓"
+        <Label text="Bienvenue dans l'espace enseignant 👨‍🏫"
                style="-fx-font-size: 18px; -fx-font-weight: bold;" />
     </center>
 </BorderPane>

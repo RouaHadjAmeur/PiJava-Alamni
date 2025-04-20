@@ -67,7 +67,7 @@ public class EleveController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Mes Résultats");
         alert.setHeaderText(null);
-        alert.setContentText("Page des résultats de l’élève ici...");
+        alert.setContentText("Page des résultats de l'élève ici...");
         alert.showAndWait();
     }
 
@@ -76,33 +76,30 @@ public class EleveController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
-
-            controllers.AddReclamationController controller = loader.getController();
-
             Stage stage = new Stage();
-            stage.setTitle("Ajouter Réclamation");
             stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter Réclamation");
+            stage.setWidth(800);
+            stage.setHeight(600);
+            stage.centerOnScreen();
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleMesReclamations(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
             Parent root = loader.load();
-
-            // Récupérer le Stage courant proprement
-            //Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-
-
+            Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Mes Réclamations");
+            stage.setWidth(800);
+            stage.setHeight(600);
+            stage.centerOnScreen();
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");

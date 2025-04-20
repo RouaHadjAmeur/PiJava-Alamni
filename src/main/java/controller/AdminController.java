@@ -103,7 +103,7 @@ public class AdminController {
     }
 
     @FXML
-    private void handleReclamations(ActionEvent event) {
+    private void handleReclamation(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reclamation_dashboard.fxml"));
             Parent root = loader.load();
