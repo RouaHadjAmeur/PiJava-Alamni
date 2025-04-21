@@ -1,0 +1,11 @@
+.chart-title {
+    -fx-text-fill: black;
+}
+
+.chart-legend-item {
+    -fx-text-fill: black;
+}
+
+.chart-pie-label {
+    -fx-fill: black;
+}
