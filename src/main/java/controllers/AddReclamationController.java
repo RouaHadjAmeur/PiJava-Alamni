@@ -17,6 +17,7 @@ import model.Utilisateur;
 import services.ReclamationServices;
 import service.UtilisateurService;
 import util.Session;
+import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,8 @@ public class AddReclamationController implements Initializable {
     @FXML private ComboBox<String> adminComboBox;
     @FXML private Label userEmailLabel;
     @FXML private Label userRoleLabel;
-
+    @FXML
+    private Label alamniLogo;
     @FXML private Label objetErrorLabel;
     @FXML private Label descriptionErrorLabel;
     @FXML private Label adminEmailErrorLabel;
@@ -64,6 +66,31 @@ public class AddReclamationController implements Initializable {
         // Load admin emails
         loadAdminEmails();
     }
+
+    @FXML
+    private void handleAlamniClick(MouseEvent event) {
+        try {
+            // Charger la nouvelle scène
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/parent.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle fenêtre
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Espace Parent");
+            stage.setResizable(false); // pour garder la même taille
+
+            // Fermer l'ancienne fenêtre
+            Stage currentStage = (Stage) alamniLogo.getScene().getWindow();
+            currentStage.close();
+
+            // Afficher la nouvelle fenêtre
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void loadAdminEmails() {
         List<Utilisateur> admins = UtilisateurService.getAdmins();
@@ -149,45 +176,101 @@ public class AddReclamationController implements Initializable {
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleAjouterReclamation(ActionEvent event) {
+//    @FXML
+//    private void handleAjouterReclamation(ActionEvent event) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
+//            Parent root = loader.load();
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//            stage.setTitle("Ajouter Réclamation");
+//            stage.setWidth(800);
+//            stage.setHeight(600);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//
+//    @FXML
+//    private void handleMesReclamations(ActionEvent event) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
+//            Parent root = loader.load();
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//            stage.setTitle("Mes Réclamations");
+//            stage.setWidth(800);
+//            stage.setHeight(600);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+//        }
+//    }
+
+    private void switchScene(String fxmlPath, String windowTitle, Window currentWindow) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Ajouter Réclamation");
-            stage.setWidth(800);
-            stage.setHeight(600);
-            stage.centerOnScreen();
-            stage.show();
+
+            Scene newScene = new Scene(root, 1022, 687); // taille uniforme
+            Stage newStage = new Stage();
+            newStage.setScene(newScene);
+            newStage.setTitle(windowTitle);
+            newStage.setResizable(false);
+
+            // Positionner la nouvelle fenêtre à l’endroit exact de l’ancienne
+            if (currentWindow instanceof Stage oldStage) {
+                newStage.setX(oldStage.getX());
+                newStage.setY(oldStage.getY());
+                oldStage.close(); // fermeture rapide de l’ancienne
+            }
+
+            newStage.show(); // ouverture immédiate
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur lors du chargement de la fenêtre.");
         }
     }
+
+
+    @FXML
+    private void handleAjouterReclamation(ActionEvent event) {
+        Window currentWindow;
+        if (event.getSource() instanceof MenuItem) {
+            currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        } else {
+            currentWindow = ((Node) event.getSource()).getScene().getWindow();
+        }
+
+        switchScene("/view/add_reclamation_view.fxml", "Ajouter Réclamation", currentWindow);
+    }
+
+
 
 
     @FXML
     private void handleMesReclamations(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Mes Réclamations");
-            stage.setWidth(800);
-            stage.setHeight(600);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        Window currentWindow;
+
+        if (event.getSource() instanceof MenuItem) {
+            currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        } else {
+            currentWindow = ((Node) event.getSource()).getScene().getWindow();
         }
+
+        switchScene("/view/MesReclamations.fxml", "Mes Réclamations", currentWindow);
     }
 
 
 
-//----------------------------------profile-----------------------------------------------
+
+
+    //----------------------------------profile-----------------------------------------------
 @FXML
 private void handleMonProfil() {
     try {

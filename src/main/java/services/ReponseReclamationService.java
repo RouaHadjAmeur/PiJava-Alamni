@@ -9,7 +9,9 @@ import service.UtilisateurService;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReponseReclamationService implements Iservices<ReponseReclamation> {
 
@@ -172,4 +174,59 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
             throw new RuntimeException("Erreur lors de la mise à jour de la réponse utilisateur : " + e.getMessage());
         }
     }
+
+    public int countUnreadResponsesByUserEmail(String userEmail) {
+        int count = 0;
+        String sql = "SELECT COUNT(r.id) " +
+                "FROM reponsereclamation r " +
+                "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
+                "WHERE rec.user_email = ? AND r.is_read = false";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, userEmail);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public void markResponsesAsRead(String userEmail) {
+        String sql = "UPDATE reponsereclamation r " +
+                "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
+                "SET r.is_read = true " +
+                "WHERE rec.user_email = ? AND r.is_read = false";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, userEmail);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  Map<Integer, Integer> getUnreadCountPerReclamation(String userEmail) {
+        Map<Integer, Integer> map = new HashMap<>();
+        String sql = "SELECT r.reclamation_id_id, COUNT(*) as total " +
+                "FROM reponsereclamation r " +
+                "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
+                "WHERE rec.user_email = ? AND r.is_read = false " +
+                "GROUP BY r.reclamation_id_id";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, userEmail);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                map.put(rs.getInt("reclamation_id_id"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return map;
+    }
+
 }

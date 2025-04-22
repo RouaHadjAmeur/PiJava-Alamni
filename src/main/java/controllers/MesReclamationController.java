@@ -16,30 +16,35 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Reclamation;
 import model.Utilisateur;
 import services.ReclamationServices;
+import services.ReponseReclamationService;
 import util.Session;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.scene.input.MouseEvent;
 
 public class MesReclamationController implements Initializable {
-
+    @FXML private Label alamniLogo;
     @FXML private ListView<Reclamation> reclamationsListView;
     @FXML private MenuButton userMenu;
     @FXML private ImageView profileImage;
     @FXML private Label statusLabel;
 
     private final ReclamationServices service = new ReclamationServices();
+    private final ReponseReclamationService reponseService = new ReponseReclamationService();
+    private Utilisateur user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        afficherMesReclamations();
+        user = Session.getUtilisateurConnecte();
 
-        Utilisateur user = Session.getUtilisateurConnecte();
         if (user != null) {
             userMenu.setText(user.getPrenom() + " " + user.getNom());
 
@@ -50,13 +55,33 @@ public class MesReclamationController implements Initializable {
                     profileImage.setImage(image);
                 }
             }
+
+            afficherMesReclamations(user.getEmail());
         }
     }
 
-    private void afficherMesReclamations() {
-        ObservableList<Reclamation> list = FXCollections.observableArrayList(service.getMesReclamations());
-        reclamationsListView.setItems(list);
+    @FXML
+    private void handleAlamniClick(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/parent.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Espace Parent");
+            stage.setResizable(false);
+            Stage currentStage = (Stage) alamniLogo.getScene().getWindow();
+            currentStage.close();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void afficherMesReclamations(String userEmail) {
+        ObservableList<Reclamation> list = FXCollections.observableArrayList(service.getMesReclamations());
+        Map<Integer, Integer> unreadResponseCounts = reponseService.getUnreadCountPerReclamation(userEmail);
+
+        reclamationsListView.setItems(list);
         reclamationsListView.setCellFactory(listView -> new ListCell<>() {
             @Override
             protected void updateItem(Reclamation r, boolean empty) {
@@ -80,98 +105,86 @@ public class MesReclamationController implements Initializable {
                     Label status = new Label("Statut : " + r.getStatus());
                     status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) + "; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 5;");
 
+                    HBox header = new HBox(10, objet);
+
+                    // ✅ Ajout du badge SI nécessaire
+                    Integer count = unreadResponseCounts.getOrDefault(r.getId(), 0);
+                    if (count > 0) {
+                        Label badge = new Label(String.valueOf(count));
+                        badge.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 2 6; -fx-font-weight: bold; -fx-background-radius: 20;");
+                        header.getChildren().add(badge);
+                    }
+
                     Button btnVoirReponses = new Button("Voir Réponses");
                     btnVoirReponses.setStyle("-fx-background-color: #ff5722; -fx-text-fill: white; -fx-background-radius: 5;");
                     btnVoirReponses.setOnAction(e -> openReponse(r));
 
                     HBox actions = new HBox(10, btnVoirReponses);
-                    card.getChildren().addAll(objet, description, date, status, actions);
+                    card.getChildren().addAll(header, description, date, status, actions);
                     setGraphic(card);
                 }
             }
         });
     }
 
-//    private void openReponse(Reclamation reclamation) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/voirRepRec.fxml"));
-//            Parent root = loader.load();
-//
-//            controllers.voirRepRecController controller = loader.getController();
-//            controller.setReclamation(reclamation); // passer la réclamation
-//
-//            Stage stage = new Stage();
-//            stage.setTitle("Réponses de la Réclamation");
-//            stage.setScene(new Scene(root));
-//            stage.setResizable(false);
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.centerOnScreen();
-//            stage.showAndWait();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void openReponse(Reclamation reclamation) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/voirRepRec.fxml"));
             Parent root = loader.load();
-
             voirRepRecController controller = loader.getController();
             controller.setReclamation(reclamation);
-
-            // Récupérer le stage actuel depuis un composant
             Stage currentStage = (Stage) reclamationsListView.getScene().getWindow();
-
-            // Changer la scène de la même fenêtre
             Scene newScene = new Scene(root, currentStage.getWidth(), currentStage.getHeight());
             currentStage.setScene(newScene);
             currentStage.setTitle("Réponses de la Réclamation");
-            currentStage.centerOnScreen(); // recentre proprement
-
+            currentStage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
+    private void switchScene(String fxmlPath, String windowTitle, Window currentWindow) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Scene newScene = new Scene(root, 900, 600);
+            Stage newStage = new Stage();
+            newStage.setScene(newScene);
+            newStage.setTitle(windowTitle);
+            newStage.setResizable(false);
+            if (currentWindow instanceof Stage oldStage) {
+                newStage.setX(oldStage.getX());
+                newStage.setY(oldStage.getY());
+                oldStage.close();
+            }
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur lors du chargement de la fenêtre.");
+        }
+    }
 
     @FXML
     private void handleAjouterReclamation(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
-            Parent root = loader.load();
-
-            // Récupérer la fenêtre depuis le MenuItem
-            MenuItem menuItem = (MenuItem) event.getSource();
-            Stage currentStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
-            Scene newScene = new Scene(root, currentStage.getWidth(), currentStage.getHeight());
-            currentStage.setScene(newScene);
-            currentStage.setTitle("Ajouter Réclamation");
-            currentStage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        Window currentWindow;
+        if (event.getSource() instanceof MenuItem) {
+            currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        } else {
+            currentWindow = ((Node) event.getSource()).getScene().getWindow();
         }
+        switchScene("/view/add_reclamation_view.fxml", "Ajouter Réclamation", currentWindow);
     }
-
 
     @FXML
     private void handleMesReclamations(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MesReclamations.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Mes Réclamations");
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Impossible de charger Mes Réclamations.");
+        Window currentWindow;
+        if (event.getSource() instanceof MenuItem) {
+            currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        } else {
+            currentWindow = ((Node) event.getSource()).getScene().getWindow();
         }
+        switchScene("/view/MesReclamations.fxml", "Mes Réclamations", currentWindow);
     }
 
     @FXML

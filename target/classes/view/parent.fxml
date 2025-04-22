@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 
+<?import javafx.scene.image.Image?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="687" prefWidth="1022"
@@ -12,14 +13,15 @@
     <!-- 🔝 Barre supérieure -->
     <top>
         <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #fff;">
-            <Label text="📚 ALAMNI"
-                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label fx:id="alamniLogo" text="📚 ALAMNI"
+                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;"
+                   onMouseClicked="#handleAlamniClick"/>
 
             <HBox spacing="20">
                 <Button text="Home" style="-fx-background-color: transparent;"/>
                 <Button text="Élèves" style="-fx-background-color: transparent;"/>
                 <Button text="Contact" style="-fx-background-color: transparent;"/>
-                <MenuButton text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px;">
+                <MenuButton text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #ffffff;">
 
                     <items>
                         <MenuItem text="Ajouter Réclamation" onAction="#handleAjouterReclamation"/>
@@ -29,12 +31,32 @@
                 </MenuButton>
             </HBox>
 
+            <StackPane fx:id="notificationPane">
+                <ImageView fx:id="notificationIcon"
+                           fitWidth="24" fitHeight="24"
+                           pickOnBounds="true"
+                           onMouseClicked="#handleNotificationsClick"
+                           style="-fx-cursor: hand;">
+                    <image>
+                        <Image url="@/img/notification.png"/>
+                    </image>
+                </ImageView>
+
+                <Label fx:id="notificationBadge"
+                       text="0"
+                       style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 10px; -fx-padding: 2px 6px; -fx-background-radius: 10;"
+                       visible="false"
+                       StackPane.alignment="TOP_RIGHT"/>
+            </StackPane>
+
+
+
             <Region HBox.hgrow="ALWAYS"/>
 
             <ImageView fx:id="profileImage" fitWidth="40" fitHeight="40"/>
 
             <MenuButton fx:id="userMenu" text="Mon Compte"
-                        style="-fx-font-size: 16; -fx-text-fill: #333;">
+                        style="-fx-font-size: 16; -fx-text-fill: #333; -fx-background-color: #ffffff;">
                 <items>
                     <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
                     <MenuItem text="📄 Bulletin" onAction="#handleMesBulletins"/>

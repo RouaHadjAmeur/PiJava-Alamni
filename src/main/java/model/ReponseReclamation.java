@@ -9,25 +9,29 @@ public class ReponseReclamation {
     private String contenue;
     private Date dateReponse;
     private String userReponse;
+    private boolean isRead;
 
 
     public ReponseReclamation() {}
 
-    public ReponseReclamation(Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse) {
+    public ReponseReclamation(Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse, boolean isRead) {
         this.reclamation = reclamation;
         this.admin = admin;
         this.contenue = contenue;
         this.dateReponse = dateReponse;
         this.userReponse = userReponse;
+        this.isRead = isRead;
     }
 
-    public ReponseReclamation(int id, Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse) {
+    public ReponseReclamation(int id, Reclamation reclamation, Administrateur admin, String contenue, Date dateReponse, String userReponse, boolean isRead) {
         this.id = id;
         this.reclamation = reclamation;
         this.admin = admin;
         this.contenue = contenue;
         this.dateReponse = dateReponse;
         this.userReponse = userReponse;
+        this.isRead = isRead;
+
 
     }
 
@@ -63,5 +67,13 @@ public class ReponseReclamation {
 
     public void setUserReponse(String userReponse) {
         this.userReponse = userReponse;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 }

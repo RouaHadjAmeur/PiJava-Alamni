@@ -15,26 +15,44 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddReclamationController" prefWidth="800" prefHeight="600">
+<?import javafx.scene.control.SeparatorMenuItem?>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddReclamationController"  prefHeight="687" prefWidth="1022">
 
     <!-- Header -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
-            <ImageView fitHeight="60" fitWidth="90">
-                <image>
-                    <Image url="@/img/logo.png" />
-                </image>
-            </ImageView>
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-            <HBox spacing="20" alignment="CENTER_RIGHT">
-                <ImageView fx:id="profileImage" fitHeight="40" fitWidth="40" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
-                <MenuButton fx:id="userMenu" style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations" textAlignment="CENTER">
+        <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #fff;">
+            <Label fx:id="alamniLogo" text="📚 ALAMNI"
+                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;"
+                   onMouseClicked="#handleAlamniClick"/>
+
+
+            <HBox spacing="20">
+                <Button text="Home" style="-fx-background-color: transparent;"/>
+                <Button text="Élèves" style="-fx-background-color: transparent;"/>
+                <Button text="Contact" style="-fx-background-color: transparent;"/>
+                <MenuButton text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #ffffff;">
+
                     <items>
-                        <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
-                        <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
+                        <MenuItem text="Ajouter Réclamation" onAction="#handleAjouterReclamation"/>
+                        <MenuItem text="Mes Réclamations" onAction="#handleMesReclamations"/>
                     </items>
+
                 </MenuButton>
             </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <ImageView fx:id="profileImage" fitWidth="40" fitHeight="40"/>
+
+            <MenuButton fx:id="userMenu" text="Mon Compte"
+                        style="-fx-font-size: 16; -fx-text-fill: #333; -fx-background-color: #ffffff;">
+                <items>
+                    <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
+                    <MenuItem text="📄 Bulletin" onAction="#handleMesBulletins"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="🚪 Déconnexion" onAction="#handleLogout"/>
+                </items>
+            </MenuButton>
         </HBox>
     </top>
 

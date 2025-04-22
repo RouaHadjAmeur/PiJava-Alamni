@@ -11,8 +11,10 @@
     <!-- Header -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
-            <Label text="📚  ALAMNI"
-                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Label fx:id="alamniLogo" text="📚 ALAMNI"
+                   style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;"
+                   onMouseClicked="#handleAlamniClick"/>
+
             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
             <HBox spacing="20">
                 <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Home" />
