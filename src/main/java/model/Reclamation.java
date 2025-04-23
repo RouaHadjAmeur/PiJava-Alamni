@@ -13,8 +13,9 @@ public class Reclamation {
     private String admin_mail;
     private String role;
     private int user_id;
+    private int rating;
 
-    public Reclamation(String mail, String aaa, String aaaa, String enAttente, String s, String mail1, String etudiant, int userId) {
+    public Reclamation(String mail, String aaa, String aaaa, String enAttente, String s, String mail1, String etudiant, int userId, int rating) {
     }
 
 
@@ -90,6 +91,14 @@ public class Reclamation {
         this.user_id = user_id;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
     @Override
     public String toString() {
         return "Reclamation{" +
@@ -102,10 +111,11 @@ public class Reclamation {
                 ", admin_mail='" + admin_mail + '\'' +
                 ", role='" + role + '\'' +
                 ", user_id='" + user_id + '\'' +
+                ", rating=" + rating +
                 '}';
     }
 
-    public Reclamation(int id, String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id) {
+    public Reclamation(int id, String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating) {
         this.id = id;
         this.user_email = user_email;
         this.objet = objet;
@@ -115,6 +125,7 @@ public class Reclamation {
         this.admin_mail = admin_mail;
         this.role = role;
         this.user_id = user_id;
+        this.rating = rating;
     }
 
     public Reclamation(String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id) {
@@ -126,6 +137,19 @@ public class Reclamation {
         this.admin_mail = admin_mail;
         this.role = role;
         this.user_id = user_id;
+
+    }
+
+    public Reclamation(String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating) {
+        this.user_email = user_email;
+        this.objet = objet;
+        this.description = description;
+        this.status = status;
+        this.date_soumission = date_soumission;
+        this.admin_mail = admin_mail;
+        this.role = role;
+        this.user_id = user_id;
+        this.rating = rating;
 
     }
 

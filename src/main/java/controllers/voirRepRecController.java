@@ -39,6 +39,13 @@ public class voirRepRecController implements Initializable {
         descriptionLabel.setText("Description : " + reclamation.getDescription());
         statusLabel.setText("Statut : " + reclamation.getStatus());
 
+        // Add rating display
+        if (reclamation.getRating() > 0) {
+            Label ratingLabel = new Label("Note : " + getRatingStars(reclamation.getRating()));
+            ratingLabel.setStyle("-fx-text-fill: #FFD700; -fx-font-size: 14px;");
+            reponsesContainer.getChildren().add(0, ratingLabel);
+        }
+
         resolueCheckBox.setSelected("Résolue".equalsIgnoreCase(reclamation.getStatus()));
 
 // Empêcher l'exécution du listener lors de l'initialisation
@@ -62,6 +69,21 @@ public class voirRepRecController implements Initializable {
 
                         // Appel du service pour enregistrer le changement
                         new services.ReclamationServices().update(reclamation);
+
+                        // Show rating window
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/rating.fxml"));
+                            Parent root = loader.load();
+                            RatingController controller = loader.getController();
+                            controller.setReclamation(reclamation);
+                            
+                            Stage stage = new Stage();
+                            stage.setTitle("Évaluation");
+                            stage.setScene(new Scene(root));
+                            stage.show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         resolueCheckBox.setSelected(false);
                     }
@@ -73,6 +95,17 @@ public class voirRepRecController implements Initializable {
         afficherReponses();
     }
 
+    private String getRatingStars(int rating) {
+        if (rating == 0) return "Non évalué";
+        StringBuilder stars = new StringBuilder();
+        for (int i = 0; i < rating; i++) {
+            stars.append("★");
+        }
+        for (int i = rating; i < 5; i++) {
+            stars.append("☆");
+        }
+        return stars.toString() + " (" + rating + "/5)";
+    }
 
     private void afficherReponses() {
         reponsesContainer.getChildren().clear();

@@ -107,7 +107,6 @@ public class MesReclamationController implements Initializable {
 
                     HBox header = new HBox(10, objet);
 
-                    // ✅ Ajout du badge SI nécessaire
                     Integer count = unreadResponseCounts.getOrDefault(r.getId(), 0);
                     if (count > 0) {
                         Label badge = new Label(String.valueOf(count));

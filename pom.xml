@@ -37,12 +37,33 @@
             <version>21.0.2</version>
         </dependency>
 
+        <!-- JavaFX WebView -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
         <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- JavaMail API -->
+<!--        <dependency>-->
+<!--            <groupId>com.sun.mail</groupId>-->
+<!--            <artifactId>javax.mail</artifactId>-->
+<!--            <version>1.6.2</version>-->
+<!--        </dependency>-->
+
+        <!-- RatingWidget API -->
+        <dependency>
+            <groupId>com.ratingwidget</groupId>
+            <artifactId>ratingwidget-java</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

@@ -2,6 +2,8 @@ package services;
 
 import Main.DatabaseConnection;
 import model.DiscussionReclamation;
+import model.Reclamation;
+import services.ReclamationServices;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,9 +12,11 @@ import java.util.List;
 public class DiscussionReclamationService {
 
     private final Connection cnx;
+    private final ReclamationServices reclamationService;
 
     public DiscussionReclamationService() {
         cnx = DatabaseConnection.getInstance().getCnx();
+        reclamationService = new ReclamationServices();
     }
 
     // ✅ Ajouter un message (admin ou user)
@@ -27,9 +31,43 @@ public class DiscussionReclamationService {
             ps.setString(5, dr.getContenu());
             ps.setDate(6, dr.getDateReponse());
 
-
             ps.executeUpdate();
             System.out.println("Message de discussion ajouté avec succès !");
+
+            // Get the reclamation details
+            Reclamation reclamation = reclamationService.getOne(dr.getReclamationId());
+            if (reclamation != null) {
+                // If the response is from admin, notify the user
+                if (dr.getAuteurRole().equals("ADMINISTRATEUR")) {
+                    String subject = "Réponse à votre réclamation";
+                    String content = String.format(
+                        "<h2>Réponse à votre réclamation</h2>" +
+                        "<p><strong>Objet:</strong> %s</p>" +
+                        "<p><strong>Réponse:</strong> %s</p>" +
+                        "<p><strong>Date:</strong> %s</p>",
+                        reclamation.getObjet(),
+                        dr.getContenu(),
+                        dr.getDateReponse()
+                    );
+                    EmailService.sendEmail(reclamation.getUser_email(), subject, content);
+                }
+                // If the response is from user, notify the admin
+                else {
+                    String subject = "Nouvelle réponse à la réclamation";
+                    String content = String.format(
+                        "<h2>Nouvelle réponse à la réclamation</h2>" +
+                        "<p><strong>De:</strong> %s</p>" +
+                        "<p><strong>Objet:</strong> %s</p>" +
+                        "<p><strong>Réponse:</strong> %s</p>" +
+                        "<p><strong>Date:</strong> %s</p>",
+                        dr.getAuteurEmail(),
+                        reclamation.getObjet(),
+                        dr.getContenu(),
+                        dr.getDateReponse()
+                    );
+                    EmailService.sendEmail(reclamation.getAdmin_mail(), subject, content);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'ajout : " + e.getMessage());
         }

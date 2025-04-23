@@ -72,72 +72,6 @@ public class ReclamationController {
     }
 
     @FXML
-//    public void initialize() {
-//        Utilisateur currentUser = Session.getUtilisateurConnecte();
-//        if (currentUser != null) {
-//            nomUtilisateur.setText(currentUser.getNom() + " " + currentUser.getPrenom());
-//            roleUtilisateur.setText(currentUser.getRole());
-//
-//            if (currentUser.getPhoto() != null) {
-//                File photoFile = new File(currentUser.getPhoto());
-//                if (photoFile.exists()) {
-//                    Image image = new Image(photoFile.toURI().toString());
-//                    photoView.setImage(image);
-//                }
-//            }
-//        }
-//        statusPieChart.getStylesheets().add(
-//                getClass().getResource("/css/chart.css").toExternalForm()
-//        );
-//
-//
-//        statusPieChart.setTitle("Répartition des Réclamations par Statut");
-//        statusPieChart.setLegendVisible(true);
-//        statusPieChart.setLabelsVisible(true);
-//
-//        loadStatsFromAPI();
-//
-//        statusFilterComboBox.setValue("Tous");
-//        statusFilterComboBox.setItems(FXCollections.observableArrayList(
-//                "Tous", "En attente", "En cours", "Résolue"
-//        ));
-//
-//        emailSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
-//                List<Reclamation> filtrées = reclamationService.rechercherParEmail(newVal);
-//                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
-//        });
-//
-//        objetSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
-//            List<Reclamation> filtrées = reclamationService.rechercherParObjet(newVal);
-//            reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
-//        });
-//
-//        statusFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-//            String statut = newVal;
-//            if ("Tous".equalsIgnoreCase(statut)) {
-//                loadData(); // recharge tout
-//            } else {
-//                List<Reclamation> filtrées = reclamationService.rechercherParStatut(statut);
-//                reclamationsListView.setItems(FXCollections.observableArrayList(filtrées));
-//            }
-//            // Reload statistics when filter changes
-//            loadStatsFromAPI();
-//        });
-//
-//        dateSortComboBox.setItems(FXCollections.observableArrayList(
-//                "Plus récentes", "Plus anciennes"
-//        ));
-//        dateSortComboBox.setValue("Plus récentes");
-//
-//        dateSortComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-//            if (newVal != null) {
-//                List<Reclamation> triées = reclamationService.trierParDate(newVal);
-//                reclamationsListView.setItems(FXCollections.observableArrayList(triées));
-//            }
-//        });
-//
-//        loadData();
-//    }
     public void initialize() {
         Utilisateur currentUser = Session.getUtilisateurConnecte();
         if (currentUser != null) {
@@ -216,182 +150,28 @@ public class ReclamationController {
     }
 
 
-//    private void loadData() {
-//        List<Reclamation> allReclamations = service.afficher();
-//
-//        // Group reclamations by user email
-//        Map<String, List<Reclamation>> reclamationsByUser = allReclamations.stream()
-//                .collect(Collectors.groupingBy(Reclamation::getUser_email));
-//
-//        ObservableList<Reclamation> displayList = FXCollections.observableArrayList();
-//
-//        // Create table headers
-//        HBox headerRow = new HBox(15);
-//        headerRow.setStyle("-fx-padding: 10; -fx-background-color: #f3f4f6; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
-//
-//        Label emailHeader = new Label("Email");
-//        emailHeader.setPrefWidth(150);
-//        Label dateHeader = new Label("Date");
-//        dateHeader.setPrefWidth(100);
-//        Label countHeader = new Label("Réclamations");
-//        countHeader.setPrefWidth(120);
-//
-//        headerRow.getChildren().addAll(emailHeader, dateHeader, countHeader);
-//        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-//
-//        // Add header to the list view
-//        reclamationsListView.setPlaceholder(headerRow);
-//
-//        reclamationsListView.setCellFactory(param -> new ListCell<>() {
-//            @Override
-//            protected void updateItem(Reclamation r, boolean empty) {
-//                super.updateItem(r, empty);
-//
-//                if (empty || r == null) {
-//                    setGraphic(null);
-//                } else {
-//                    String userEmail = r.getUser_email();
-//                    List<Reclamation> userReclamations = reclamationsByUser.get(userEmail);
-//                    int reclamationCount = userReclamations.size();
-//
-//                    // Main row content
-//                    Label email = new Label(userEmail);
-//                    email.setPrefWidth(150);
-//
-//                    Label date = new Label(r.getDate_soumission().toString());
-//                    date.setPrefWidth(100);
-//
-//                    // Reclamation count with dropdown button
-//                    Button countButton = new Button(reclamationCount + " réclamation(s)");
-//                    countButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-background-radius: 5;");
-//                    countButton.setPrefWidth(120);
-//
-//                    // Main row container
-//                    HBox mainRow = new HBox(15, email, date, countButton);
-//                    mainRow.setStyle("-fx-padding: 10; -fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
-//                    mainRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-//
-//                    // Create dropdown content
-//                    VBox dropdownContent = new VBox(5);
-//                    dropdownContent.setStyle("-fx-background-color: #f3f4f6; -fx-padding: 10; -fx-background-radius: 5;");
-//                    dropdownContent.setVisible(false);
-//                    dropdownContent.setManaged(false);
-//
-//                    // Create headers for reclamation rows
-//                    HBox reclamationHeader = new HBox(10);
-//                    reclamationHeader.setStyle("-fx-background-color: #e5e7eb; -fx-padding: 5; -fx-background-radius: 5;");
-//
-//                    Label recObjetHeader = new Label("Objet");
-//                    recObjetHeader.setPrefWidth(150);
-//                    Label recStatusHeader = new Label("Statut");
-//                    recStatusHeader.setPrefWidth(100);
-//                    Label recDateHeader = new Label("Date");
-//                    recDateHeader.setPrefWidth(100);
-//                    Label recDescHeader = new Label("Description");
-//                    recDescHeader.setPrefWidth(200);
-//                    Label recActionsHeader = new Label("Actions");
-//                    recActionsHeader.setPrefWidth(120);
-//
-//                    reclamationHeader.getChildren().addAll(recObjetHeader, recStatusHeader, recDateHeader, recDescHeader, recActionsHeader);
-//                    dropdownContent.getChildren().add(reclamationHeader);
-//
-//                    for (Reclamation userReclamation : userReclamations) {
-//                        HBox reclamationRow = new HBox(10);
-//                        reclamationRow.setStyle("-fx-background-color: white; -fx-padding: 5; -fx-background-radius: 5;");
-//
-//                        Label recObjet = new Label(userReclamation.getObjet());
-//                        recObjet.setPrefWidth(150);
-//
-//                        Label recStatus = new Label(userReclamation.getStatus());
-//                        recStatus.setStyle("-fx-background-color: " + getStatusColor(userReclamation.getStatus())
-//                                + "; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 10;");
-//                        recStatus.setPrefWidth(100);
-//
-//                        Label recDate = new Label(userReclamation.getDate_soumission().toString());
-//                        recDate.setPrefWidth(100);
-//
-//                        Label recDescription = new Label(userReclamation.getDescription());
-//                        recDescription.setPrefWidth(200);
-//                        recDescription.setWrapText(true);
-//
-//                        // Action buttons for each reclamation
-//                        ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream("/img/voir.png")));
-//                        iconView.setFitWidth(16);
-//                        iconView.setFitHeight(16);
-//                        Button btnView = new Button("", iconView);
-//                        btnView.setStyle("-fx-background-color: #3B82F6; -fx-background-radius: 5;");
-//                        btnView.setOnAction(e -> openViewReclamation(userReclamation));
-//
-//                        ImageView iconRepondre = new ImageView(new Image(getClass().getResourceAsStream("/img/repondre.png")));
-//                        iconRepondre.setFitWidth(16);
-//                        iconRepondre.setFitHeight(16);
-//                        Button btnRepondre = new Button("", iconRepondre);
-//                        btnRepondre.setStyle("-fx-background-color: #10B981; -fx-background-radius: 5;");
-//                        btnRepondre.setOnAction(e -> openRepondreReclamation(userReclamation));
-//
-//                        ImageView iconDelete = new ImageView(new Image(getClass().getResourceAsStream("/img/supprimer.png")));
-//                        iconDelete.setFitWidth(16);
-//                        iconDelete.setFitHeight(16);
-//                        Button btnDelete = new Button("", iconDelete);
-//                        btnDelete.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 5;");
-//                        btnDelete.setOnAction(e -> {
-//                            // Boîte de confirmation avant suppression
-//                            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-//                            confirm.setTitle("Confirmation de suppression");
-//                            confirm.setHeaderText("Êtes-vous sûr(e) de vouloir supprimer cette réclamation ?");
-//                            confirm.setContentText("Cette action est irréversible.");
-//
-//                            Optional<ButtonType> result = confirm.showAndWait();
-//                            if (result.isPresent() && result.get() == ButtonType.OK) {
-//                                // Suppression
-//                                service.delete(userReclamation.getId());
-//
-//                                // Message d'information
-//                                Alert info = new Alert(Alert.AlertType.INFORMATION);
-//                                info.setTitle("Suppression réussie");
-//                                info.setHeaderText(null);
-//                                info.setContentText("La réclamation a été supprimée avec succès !");
-//                                info.show();
-//
-//                                // Mise à jour du PieChart et des données
-//                                loadStatsFromAPI();
-//                                loadData(); // ou refreshTable(), selon le nom de ta méthode
-//                            }
-//                        });
-//
-//                        HBox actions = new HBox(10, btnView, btnRepondre, btnDelete);
-//                        actions.setPrefWidth(120);
-//
-//                        reclamationRow.getChildren().addAll(recObjet, recStatus, recDate, recDescription, actions);
-//                        dropdownContent.getChildren().add(reclamationRow);
-//                    }
-//
-//                    // Toggle dropdown visibility
-//                    countButton.setOnAction(e -> {
-//                        dropdownContent.setVisible(!dropdownContent.isVisible());
-//                        dropdownContent.setManaged(dropdownContent.isVisible());
-//                    });
-//
-//                    VBox mainContainer = new VBox(0);
-//                    mainContainer.getChildren().addAll(mainRow, dropdownContent);
-//                    setGraphic(mainContainer);
-//                }
-//            }
-//        });
-//
-//        // Add only one reclamation per user to the list
-//        reclamationsListView.setItems(FXCollections.observableArrayList(
-//                reclamationsByUser.values().stream()
-//                        .map(list -> list.get(0))
-//                        .collect(Collectors.toList())
-//        ));
-//    }
-
     private void loadData(List<Reclamation> reclamations) {
         Map<String, List<Reclamation>> reclamationsByUser = reclamations.stream()
                 .collect(Collectors.groupingBy(Reclamation::getUser_email));
 
         ObservableList<Reclamation> displayList = FXCollections.observableArrayList();
+
+        // Create table headers
+        HBox headerRow = new HBox(15);
+        headerRow.setStyle("-fx-padding: 10; -fx-background-color: #f3f4f6; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
+
+        Label emailHeader = new Label("Email");
+        emailHeader.setPrefWidth(150);
+        Label dateHeader = new Label("Date");
+        dateHeader.setPrefWidth(100);
+        Label countHeader = new Label("Réclamations");
+        countHeader.setPrefWidth(120);
+
+        headerRow.getChildren().addAll(emailHeader, dateHeader, countHeader);
+        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        // Add header to the list view
+        reclamationsListView.setPlaceholder(headerRow);
 
         reclamationsListView.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -411,27 +191,33 @@ public class ReclamationController {
 
                     int reclamationCount = userReclamations.size();
 
+                    // Main row content
                     Label email = new Label(userEmail);
                     email.setPrefWidth(150);
 
                     Label date = new Label(r.getDate_soumission().toString());
                     date.setPrefWidth(100);
 
+                    // Reclamation count with dropdown button
                     Button countButton = new Button(reclamationCount + " réclamation(s)");
                     countButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-background-radius: 5;");
                     countButton.setPrefWidth(120);
 
+                    // Main row container
                     HBox mainRow = new HBox(15, email, date, countButton);
                     mainRow.setStyle("-fx-padding: 10; -fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
                     mainRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
+                    // Create dropdown content
                     VBox dropdownContent = new VBox(5);
                     dropdownContent.setStyle("-fx-background-color: #f3f4f6; -fx-padding: 10; -fx-background-radius: 5;");
                     dropdownContent.setVisible(false);
                     dropdownContent.setManaged(false);
 
+                    // Create headers for reclamation rows
                     HBox reclamationHeader = new HBox(10);
                     reclamationHeader.setStyle("-fx-background-color: #e5e7eb; -fx-padding: 5; -fx-background-radius: 5;");
+
                     Label recObjetHeader = new Label("Objet");
                     recObjetHeader.setPrefWidth(150);
                     Label recStatusHeader = new Label("Statut");
@@ -440,9 +226,15 @@ public class ReclamationController {
                     recDateHeader.setPrefWidth(100);
                     Label recDescHeader = new Label("Description");
                     recDescHeader.setPrefWidth(200);
+                    Label recRatingHeader = new Label("Rating");
+                    recRatingHeader.setPrefWidth(100);
                     Label recActionsHeader = new Label("Actions");
                     recActionsHeader.setPrefWidth(120);
-                    reclamationHeader.getChildren().addAll(recObjetHeader, recStatusHeader, recDateHeader, recDescHeader, recActionsHeader);
+
+                    reclamationHeader.getChildren().addAll(
+                        recObjetHeader, recStatusHeader, recDateHeader, 
+                        recDescHeader, recRatingHeader, recActionsHeader
+                    );
                     dropdownContent.getChildren().add(reclamationHeader);
 
                     for (Reclamation userReclamation : userReclamations) {
@@ -464,6 +256,16 @@ public class ReclamationController {
                         recDescription.setPrefWidth(200);
                         recDescription.setWrapText(true);
 
+                        // Rating display
+                        int rating = userReclamation.getRating();
+                        Label recRating = new Label(getRatingStars(rating));
+                        recRating.setStyle("-fx-text-fill: #FFD700; -fx-font-size: 14px;"); // Gold color for stars
+                        recRating.setPrefWidth(100);
+
+                        HBox actionsBox = new HBox(5);
+                        actionsBox.setPrefWidth(120);
+                        actionsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
                         ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream("/img/voir.png")));
                         iconView.setFitWidth(16);
                         iconView.setFitHeight(16);
@@ -483,46 +285,30 @@ public class ReclamationController {
                         iconDelete.setFitHeight(16);
                         Button btnDelete = new Button("", iconDelete);
                         btnDelete.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 5;");
-                        btnDelete.setOnAction(e -> {
+                        btnDelete.setOnAction(e -> handleDeleteReclamation(userReclamation));
 
-                            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-                            confirm.setTitle("Confirmation de suppression");
-                            confirm.setHeaderText("Êtes-vous sûr(e) de vouloir supprimer cette réclamation ?");
-                            confirm.setContentText("Cette action est irréversible.");
+                        actionsBox.getChildren().addAll(btnView, btnRepondre, btnDelete);
 
-                            Optional<ButtonType> result = confirm.showAndWait();
-                            if (result.isPresent() && result.get() == ButtonType.OK) {
-                                service.delete(userReclamation.getId());
-                                Alert info = new Alert(Alert.AlertType.INFORMATION);
-                                info.setTitle("Suppression réussie");
-                                info.setHeaderText(null);
-                                info.setContentText("La réclamation a été supprimée avec succès !");
-                                info.show();
-                                loadStatsFromAPI();
-                                loadData(service.afficher()); // Recharger les données depuis la base
-                            }
-                        });
-
-                        HBox actions = new HBox(10, btnView, btnRepondre, btnDelete);
-                        actions.setPrefWidth(120);
-
-                        reclamationRow.getChildren().addAll(recObjet, recStatus, recDate, recDescription, actions);
+                        reclamationRow.getChildren().addAll(
+                            recObjet, recStatus, recDate, recDescription, recRating, actionsBox
+                        );
                         dropdownContent.getChildren().add(reclamationRow);
                     }
 
+                    // Toggle dropdown visibility
                     countButton.setOnAction(e -> {
                         dropdownContent.setVisible(!dropdownContent.isVisible());
-                        dropdownContent.setManaged(dropdownContent.isVisible());
+                        dropdownContent.setManaged(!dropdownContent.isManaged());
                     });
 
-                    VBox mainContainer = new VBox(0);
-                    mainContainer.getChildren().addAll(mainRow, dropdownContent);
-                    setGraphic(mainContainer);
+                    VBox container = new VBox(5);
+                    container.getChildren().addAll(mainRow, dropdownContent);
+                    setGraphic(container);
                 }
             }
         });
 
-        // Affiche une seule réclamation par utilisateur
+        // Add only one reclamation per user to the list
         reclamationsListView.setItems(FXCollections.observableArrayList(
                 reclamationsByUser.values().stream()
                         .map(list -> list.get(0))
@@ -530,6 +316,18 @@ public class ReclamationController {
         ));
     }
 
+    private String getRatingStars(int rating) {
+        StringBuilder stars = new StringBuilder();
+        // Add filled stars
+        for (int i = 0; i < rating; i++) {
+            stars.append("★");
+        }
+        // Add empty stars
+        for (int i = rating; i < 5; i++) {
+            stars.append("☆");
+        }
+        return stars.toString() + " (" + rating + ")";
+    }
 
     private Button createActionButton(String text, String color) {
         Button btn = new Button(text);
@@ -576,8 +374,24 @@ public class ReclamationController {
         }
     }
 
+    private void handleDeleteReclamation(Reclamation r) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmation de suppression");
+        confirm.setHeaderText("Êtes-vous sûr(e) de vouloir supprimer cette réclamation ?");
+        confirm.setContentText("Cette action est irréversible.");
 
-
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.delete(r.getId());
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Suppression réussie");
+            info.setHeaderText(null);
+            info.setContentText("La réclamation a été supprimée avec succès !");
+            info.show();
+            loadStatsFromAPI();
+            loadData(service.afficher());
+        }
+    }
 
     // Navigation
     @FXML private void handleDashboard() { loadView("/view/dashboard.fxml"); }
@@ -656,6 +470,5 @@ public class ReclamationController {
             e.printStackTrace();
         }
     }
-
 
 }

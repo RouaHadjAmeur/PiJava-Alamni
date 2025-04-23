@@ -150,7 +150,12 @@ public class AddReclamationController implements Initializable {
             service.add(r);
 
             showAlert(Alert.AlertType.INFORMATION, "Réclamation ajoutée avec succès !");
-            ((Stage) objetField.getScene().getWindow()).close();
+            
+            // Clear the fields instead of closing the window
+            objetField.clear();
+            descriptionArea.clear();
+            adminComboBox.setValue(null);
+            clearErrors();
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erreur : " + e.getMessage());
@@ -223,11 +228,11 @@ public class AddReclamationController implements Initializable {
             newStage.setTitle(windowTitle);
             newStage.setResizable(false);
 
-            // Positionner la nouvelle fenêtre à l’endroit exact de l’ancienne
+            // Positionner la nouvelle fenêtre à l'endroit exact de l'ancienne
             if (currentWindow instanceof Stage oldStage) {
                 newStage.setX(oldStage.getX());
                 newStage.setY(oldStage.getY());
-                oldStage.close(); // fermeture rapide de l’ancienne
+                oldStage.close(); // fermeture rapide de l'ancienne
             }
 
             newStage.show(); // ouverture immédiate

@@ -7,9 +7,13 @@ import util.Session;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ReclamationServices implements Iservices<Reclamation> {
+
+    private static final Logger LOGGER = Logger.getLogger(ReclamationServices.class.getName());
 
     Connection cnx;
 
@@ -19,6 +23,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
 
     @Override
     public void add(Reclamation reclamation) {
+
         String req="INSERT INTO pijava.reclamation (user_email, objet, description, status, date_soumission, admin_mail, role, user_id) VALUES (?, ?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm=cnx.prepareStatement(req);
@@ -30,15 +35,37 @@ public class ReclamationServices implements Iservices<Reclamation> {
             stm.setString(6, reclamation.getAdmin_mail());
             stm.setString(7, reclamation.getRole());
             stm.setInt(8, reclamation.getUser_id());
-            System.out.println("Ajoutée : " + reclamation);
+            
             stm.executeUpdate();
+            LOGGER.info("Reclamation added: " + reclamation);
+
+            // Send email notification to admin
+            try {
+                String subject = "Nouvelle réclamation reçue";
+                String content = String.format(
+                    "<h2>Nouvelle réclamation</h2>" +
+                    "<p><strong>De:</strong> %s</p>" +
+                    "<p><strong>Objet:</strong> %s</p>" +
+                    "<p><strong>Description:</strong> %s</p>" +
+                    "<p><strong>Date:</strong> %s</p>",
+                    reclamation.getUser_email(),
+                    reclamation.getObjet(),
+                    reclamation.getDescription(),
+                    reclamation.getDate_soumission()
+                );
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Failed to send email notification for new reclamation", e);
+                // Continue execution even if email fails
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "Error adding reclamation", e);
+            throw new RuntimeException("Failed to add reclamation", e);
         }
     }
 
     @Override
     public void modify(Reclamation reclamation) {
+
         String req = "UPDATE reclamation SET user_email=?, objet=?, description=?, status=?, date_soumission=?, admin_mail=?, role=? WHERE id=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
@@ -52,8 +79,33 @@ public class ReclamationServices implements Iservices<Reclamation> {
             stm.setInt(8, reclamation.getId());
 
             stm.executeUpdate();
+            LOGGER.info("Reclamation updated: " + reclamation);
+
+            // Send email notification to admin if the update is from user
+            if (!Session.getUtilisateurConnecte().getRole().equals("ADMINISTRATEUR")) {
+                try {
+                    String subject = "Mise à jour de réclamation";
+                    String content = String.format(
+                        "<h2>Mise à jour de réclamation</h2>" +
+                        "<p><strong>De:</strong> %s</p>" +
+                        "<p><strong>Objet:</strong> %s</p>" +
+                        "<p><strong>Description:</strong> %s</p>" +
+                        "<p><strong>Nouveau statut:</strong> %s</p>" +
+                        "<p><strong>Date:</strong> %s</p>",
+                        reclamation.getUser_email(),
+                        reclamation.getObjet(),
+                        reclamation.getDescription(),
+                        reclamation.getStatus(),
+                        reclamation.getDate_soumission()
+                    );
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Failed to send email notification for reclamation update", e);
+                    // Continue execution even if email fails
+                }
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "Error updating reclamation", e);
+            throw new RuntimeException("Failed to update reclamation", e);
         }
     }
 
@@ -75,12 +127,9 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 rec.setStatus(rs.getString("status"));
                 rec.setDate_soumission(rs.getDate("date_soumission"));
                 rec.setAdmin_mail(rs.getString("admin_mail"));
-                rec.setStatus(rs.getString("status"));
                 rec.setRole(rs.getString("role"));
                 rec.setUser_id(rs.getInt("user_id"));
-
-
-
+                rec.setRating(rs.getInt("rating"));
 
                 reclamations.add(rec);
             }
@@ -122,7 +171,8 @@ public class ReclamationServices implements Iservices<Reclamation> {
                         rs.getDate("date_soumission"),
                         rs.getString("admin_mail"),
                         rs.getString("role"),
-                        rs.getInt("user_id")
+                        rs.getInt("user_id"),
+                        rs.getInt("rating")
                                 );
             }
         } catch (SQLException e) {
@@ -164,6 +214,9 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setStatus(rs.getString("status"));
                 r.setDate_soumission(rs.getDate("date_soumission"));
                 r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
 
                 list.add(r);
             }
@@ -191,6 +244,10 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setDescription(rs.getString("description"));
                 r.setStatus(rs.getString("status"));
                 r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
                 resultats.add(r);
             }
         } catch (SQLException e) {
@@ -216,6 +273,10 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setDescription(rs.getString("description"));
                 r.setStatus(rs.getString("status"));
                 r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
                 resultats.add(r);
             }
         } catch (SQLException e) {
@@ -241,6 +302,9 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setStatus(rs.getString("status"));
                 r.setDate_soumission(rs.getDate("date_soumission"));
                 r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
                 list.add(r);
             }
 
@@ -278,10 +342,25 @@ public class ReclamationServices implements Iservices<Reclamation> {
         r.setStatus(rs.getString("status"));
         r.setDate_soumission(rs.getDate("date_soumission"));
         r.setAdmin_mail(rs.getString("admin_mail"));
+        r.setRole(rs.getString("role"));
+        r.setUser_id(rs.getInt("user_id"));
+        r.setRating(rs.getInt("rating"));
         return r;
     }
 
-
+    public void updateRating(Reclamation reclamation) {
+        String req = "UPDATE reclamation SET rating = ? WHERE id = ?";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(req);
+            stm.setInt(1, reclamation.getRating());
+            stm.setInt(2, reclamation.getId());
+            stm.executeUpdate();
+            LOGGER.info("Rating updated for reclamation: " + reclamation.getId());
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating rating", e);
+            throw new RuntimeException("Failed to update rating", e);
+        }
+    }
 
 }
 
