@@ -10,7 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,7 +23,6 @@ import Main.DatabaseConnection;
 import util.Session;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +30,8 @@ public class ConversationDashboardController {
 
     @FXML private ListView<Conversation> allConversationsListView;
     @FXML private Button btnAddConversation;
-    @FXML private ToggleButton btnAllConversations;
-    @FXML private ToggleButton btnSentConversations;
-    @FXML private ToggleButton btnReceivedConversations;
+    @FXML private Button btnAllConversation; 
+    @FXML private Button btnFavoriteConversation; 
     @FXML private Button btnBackToHome;
     @FXML private AnchorPane mainContentPane;
     @FXML private Label dashboardTitleLabel;
@@ -44,8 +42,6 @@ public class ConversationDashboardController {
     @FXML private ComboBox<String> searchTypeComboBox;
     @FXML private Button btnSearch;
     @FXML private Button btnClearSearch;
-    @FXML private DatePicker startDatePicker;
-    @FXML private DatePicker endDatePicker;
     @FXML private Button btnPrev;
     @FXML private Label pageLabel;
     @FXML private Button btnNext;
@@ -63,8 +59,7 @@ public class ConversationDashboardController {
     // Search state
     private String currentFilterType = "TOUS";
     private String searchQuery = "";
-    private LocalDate startDate = null;
-    private LocalDate endDate = null;
+    private boolean showFavoritesOnly = false;
 
     public ConversationDashboardController() {
         DatabaseConnection.getInstance();
@@ -72,6 +67,9 @@ public class ConversationDashboardController {
 
     @FXML
     public void initialize() {
+        // Check if the current user is an admin and redirect to admin dashboard if needed
+        checkUserRoleAndRedirect();
+        
         try {
             setupDashboardBasedOnRole();
 
@@ -100,7 +98,30 @@ public class ConversationDashboardController {
     }
 
     private void initializeSearchComponents() {
-        if (searchField == null || searchTypeComboBox == null) {
+        // Set up search components from FXML or create them if they don't exist
+        if (searchTypeComboBox != null) {
+            // Initialize the search type combo box with options
+            searchTypeComboBox.getItems().clear();
+            searchTypeComboBox.getItems().addAll(
+                "Tout",
+                "Sujet", 
+                "Expéditeur", 
+                "Destinataire", 
+                "Contenu"
+            );
+            searchTypeComboBox.setValue("Tout");
+            
+            // Add listener for real-time search as user types
+            if (searchField != null) {
+                searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                    // Only trigger search if text is 3 or more characters, or if it's empty (to reset)
+                    if (newValue.length() >= 3 || newValue.isEmpty()) {
+                        searchQuery = newValue;
+                        applyFilters();
+                    }
+                });
+            }
+        } else {
             // Create search components if they don't exist in FXML
             HBox searchBox = new HBox(10);
             searchBox.setAlignment(Pos.CENTER_LEFT);
@@ -111,8 +132,14 @@ public class ConversationDashboardController {
             searchField.setPrefWidth(250);
 
             searchTypeComboBox = new ComboBox<>();
-            searchTypeComboBox.getItems().addAll("Sujet", "Expéditeur", "Destinataire", "Contenu");
-            searchTypeComboBox.setValue("Sujet");
+            searchTypeComboBox.getItems().addAll(
+                "Tout",
+                "Sujet", 
+                "Expéditeur", 
+                "Destinataire", 
+                "Contenu"
+            );
+            searchTypeComboBox.setValue("Tout");
 
             btnSearch = new Button("🔍");
             Tooltip searchTooltip = new Tooltip("Rechercher");
@@ -126,31 +153,7 @@ public class ConversationDashboardController {
             btnClearSearch.setStyle("-fx-background-color: #6B7280; -fx-text-fill: white; -fx-min-width: 36px; -fx-min-height: 36px; -fx-background-radius: 4px;");
             btnClearSearch.setOnAction(e -> clearSearch());
 
-            Label dateRangeLabel = new Label("Période:");
-            dateRangeLabel.setStyle("-fx-font-weight: bold;");
-
-            startDatePicker = new DatePicker();
-            startDatePicker.setPromptText("Date début");
-            startDatePicker.setPrefWidth(130);
-            startDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-                startDate = newVal;
-                if (searchField.getText().isEmpty() && startDate != null) {
-                    handleSearch();
-                }
-            });
-
-            endDatePicker = new DatePicker();
-            endDatePicker.setPromptText("Date fin");
-            endDatePicker.setPrefWidth(130);
-            endDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
-                endDate = newVal;
-                if (searchField.getText().isEmpty() && endDate != null) {
-                    handleSearch();
-                }
-            });
-
-            searchBox.getChildren().addAll(searchField, searchTypeComboBox, btnSearch, btnClearSearch,
-                    new Separator(javafx.geometry.Orientation.VERTICAL), dateRangeLabel, startDatePicker, endDatePicker);
+            searchBox.getChildren().addAll(searchField, searchTypeComboBox, btnSearch, btnClearSearch);
 
             // Insert search box below filter buttons
             VBox contentPane = (VBox) filterButtonsContainer.getParent();
@@ -202,31 +205,33 @@ public class ConversationDashboardController {
             return;
         }
 
-        // Set dashboard title based on user role
-        String role = currentUser.getRole();
-        if ("ADMINISTRATEUR".equalsIgnoreCase(role)) {
-            dashboardTitleLabel.setText("Toutes les conversations (Vue administrateur)");
-
-            // Update with icon buttons for admin
-            btnAllConversations.setText("👥 Toutes les conversations");
-            btnSentConversations.setText("📤 Envoyées");
-            btnReceivedConversations.setText("📥 Reçues");
-        } else {
-            dashboardTitleLabel.setText("Mes conversations");
-
-            // Update with icon buttons for non-admin users
-            btnAllConversations.setText("👥 Mes conversations");
-            btnSentConversations.setText("📤 Envoyées");
-            btnReceivedConversations.setText("📥 Reçues");
+        // Safely handle UI elements that might be null
+        if (dashboardTitleLabel != null) {
+            // Set dashboard title based on user role
+            String role = currentUser.getRole();
+            if ("ADMINISTRATEUR".equalsIgnoreCase(role)) {
+                dashboardTitleLabel.setText("Toutes les conversations (Vue administrateur)");
+            } else {
+                dashboardTitleLabel.setText("Mes conversations");
+            }
         }
 
-        // Update the "Add Conversation" button to use an icon
-        btnAddConversation.setText("✉️ Nouvelle Conversation");
-        btnAddConversation.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold;");
-
-        // Update the "Back to Home" button to use an icon
-        btnBackToHome.setText("🏠 Accueil");
-        btnBackToHome.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        // Style the buttons if they exist
+        if (btnAddConversation != null) {
+            btnAddConversation.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold;");
+        }
+        
+        if (btnBackToHome != null) {
+            btnBackToHome.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        }
+        
+        if (btnFavoriteConversation != null) {
+            btnFavoriteConversation.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white;");
+        }
+        
+        if (btnAllConversation != null) {
+            btnAllConversation.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white;");
+        }
     }
 
     @FXML
@@ -264,6 +269,27 @@ public class ConversationDashboardController {
             showErrorAlert("Erreur lors du filtrage de toutes les conversations: " + e.getMessage());
         }
     }
+    
+    @FXML
+    public void handleFavoriteFilter() {
+        try {
+            showFavoritesOnly = !showFavoritesOnly;
+            currentPage = 1; // Reset to first page when changing filter
+            applyFilters();
+            
+            // Update button style based on filter state
+            if (btnFavoriteConversation != null) {
+                if (showFavoritesOnly) {
+                    btnFavoriteConversation.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold;");
+                } else {
+                    btnFavoriteConversation.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white;");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur lors du filtrage des conversations favorites: " + e.getMessage());
+        }
+    }
 
     @FXML
     public void handleSearch() {
@@ -276,10 +302,6 @@ public class ConversationDashboardController {
     public void clearSearch() {
         searchField.clear();
         searchQuery = "";
-        startDatePicker.setValue(null);
-        endDatePicker.setValue(null);
-        startDate = null;
-        endDate = null;
         currentPage = 1; // Reset to first page when clearing search
         applyFilters();
     }
@@ -352,56 +374,42 @@ public class ConversationDashboardController {
                     break;
             }
 
-            // Search query filter
+            // Search filter
             boolean matchesSearch = true;
-            if (searchQuery != null && !searchQuery.isEmpty()) {
-                String query = searchQuery.toLowerCase();
+            if (!searchQuery.isEmpty()) {
                 String searchType = searchTypeComboBox.getValue();
+                String lowerCaseQuery = searchQuery.toLowerCase();
 
-                if (searchType == null) {
-                    searchType = "Sujet";
-                }
-
-                switch (searchType) {
-                    case "Sujet":
-                        matchesSearch = conversation.getSujet() != null &&
-                                conversation.getSujet().toLowerCase().contains(query);
-                        break;
-                    case "Expéditeur":
-                        matchesSearch = conversation.getExpediteur_email() != null &&
-                                conversation.getExpediteur_email().toLowerCase().contains(query);
-                        break;
-                    case "Destinataire":
-                        matchesSearch = conversation.getDestinataire_email() != null &&
-                                conversation.getDestinataire_email().toLowerCase().contains(query);
-                        break;
-                    case "Contenu":
-                        if (conversation.getMessages() != null) {
-                            matchesSearch = conversation.getMessages().stream()
-                                    .anyMatch(m -> m.getContenu() != null &&
-                                            m.getContenu().toLowerCase().contains(query));
-                        }
-                        break;
-                    default:
-                        matchesSearch = true;
+                if ("Tout".equals(searchType)) {
+                    // Search in all fields
+                    matchesSearch = (conversation.getSujet() != null && conversation.getSujet().toLowerCase().contains(lowerCaseQuery)) ||
+                                   (conversation.getExpediteur_email() != null && conversation.getExpediteur_email().toLowerCase().contains(lowerCaseQuery)) ||
+                                   (conversation.getDestinataire_email() != null && conversation.getDestinataire_email().toLowerCase().contains(lowerCaseQuery));
+                } else if ("Sujet".equals(searchType)) {
+                    matchesSearch = conversation.getSujet() != null && conversation.getSujet().toLowerCase().contains(lowerCaseQuery);
+                } else if ("Expéditeur".equals(searchType)) {
+                    matchesSearch = conversation.getExpediteur_email() != null && conversation.getExpediteur_email().toLowerCase().contains(lowerCaseQuery);
+                } else if ("Destinataire".equals(searchType)) {
+                    matchesSearch = conversation.getDestinataire_email() != null && conversation.getDestinataire_email().toLowerCase().contains(lowerCaseQuery);
+                } else if ("Contenu".equals(searchType)) {
+                    // Search in message content if available
+                    if (conversation.getMessages() != null) {
+                        matchesSearch = conversation.getMessages().stream()
+                                .anyMatch(m -> m.getContenu() != null &&
+                                        m.getContenu().toLowerCase().contains(lowerCaseQuery));
+                    } else {
+                        matchesSearch = false;
+                    }
                 }
             }
 
-            // Date range filter
-            boolean matchesDateRange = true;
-            if (conversation.getDate_creation() != null && (startDate != null || endDate != null)) {
-                java.time.LocalDate conversationDate = conversation.getDate_creation().toLocalDate();
-
-                if (startDate != null && endDate != null) {
-                    matchesDateRange = !conversationDate.isBefore(startDate) && !conversationDate.isAfter(endDate);
-                } else if (startDate != null) {
-                    matchesDateRange = !conversationDate.isBefore(startDate);
-                } else if (endDate != null) {
-                    matchesDateRange = !conversationDate.isAfter(endDate);
-                }
+            // Favorites filter
+            boolean matchesFavorites = true;
+            if (showFavoritesOnly) {
+                matchesFavorites = conversation.isFavorite();
             }
 
-            return matchesType && matchesSearch && matchesDateRange;
+            return matchesType && matchesSearch && matchesFavorites;
         });
 
         updatePagedItems();
@@ -410,22 +418,24 @@ public class ConversationDashboardController {
     private void updatePagedItems() {
         // Calculate total pages
         int totalItems = filteredConversations.size();
-        totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        totalPages = totalItems > 0 ? (int) Math.ceil((double) totalItems / pageSize) : 1;
 
-        if (totalPages == 0) totalPages = 1; // At least one page even if empty
-
-        // Adjust current page if out of bounds
-        if (currentPage > totalPages) {
+        // Ensure current page is within valid range
+        if (currentPage < 1) {
+            currentPage = 1;
+        } else if (currentPage > totalPages) {
             currentPage = totalPages;
         }
 
         // Calculate start and end indices for the current page
         int fromIndex = (currentPage - 1) * pageSize;
+        // Ensure fromIndex is valid
+        fromIndex = Math.max(0, Math.min(fromIndex, totalItems > 0 ? totalItems - 1 : 0));
         int toIndex = Math.min(fromIndex + pageSize, totalItems);
 
         // Create a list for the current page
         List<Conversation> pagedItems;
-        if (fromIndex < toIndex) {
+        if (totalItems > 0 && fromIndex < toIndex) {
             pagedItems = new ArrayList<>(filteredConversations.subList(fromIndex, toIndex));
         } else {
             pagedItems = new ArrayList<>();
@@ -465,15 +475,26 @@ public class ConversationDashboardController {
     @FXML
     public void handleBackToHome() {
         try {
+            // Get the current stage
+            Stage currentStage = (Stage) btnBackToHome.getScene().getWindow();
+            
+            // Load the home/parent view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/parent.fxml"));
             Parent root = loader.load();
+            
+            // Create a new scene
             Scene scene = new Scene(root);
-            Stage stage = (Stage) btnBackToHome.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            
+            // Set the scene on the stage
+            currentStage.setScene(scene);
+            currentStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showErrorAlert("Erreur lors du retour à l'accueil: " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de Navigation");
+            alert.setHeaderText("Impossible de retourner à l'accueil");
+            alert.setContentText("Une erreur est survenue: " + e.getMessage());
+            alert.showAndWait();
         }
     }
     
@@ -506,5 +527,44 @@ public class ConversationDashboardController {
             e.printStackTrace();
             showErrorAlert("Erreur lors de l'ouverture du formulaire de nouvelle conversation: " + e.getMessage());
         }
+    }
+    
+    private void checkUserRoleAndRedirect() {
+        Utilisateur currentUser = Session.getUtilisateurConnecte();
+        if (currentUser != null && "ADMINISTRATEUR".equalsIgnoreCase(currentUser.getRole())) {
+            try {
+                // Load the admin dashboard
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin_dashboard.fxml"));
+                Parent root = loader.load();
+                
+                // Get the current stage
+                Stage currentStage = (Stage) dashboardTitleLabel.getScene().getWindow();
+                if (currentStage != null) {
+                    // Create a new scene with the admin dashboard
+                    Scene scene = new Scene(root);
+                    currentStage.setScene(scene);
+                    currentStage.show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Failed to load admin dashboard: " + e.getMessage());
+                // Continue with regular dashboard if admin dashboard fails to load
+                setupDashboardForRegularUser();
+            } catch (NullPointerException e) {
+                // This might happen if the FXML elements aren't loaded yet
+                // Just continue with regular initialization
+                System.err.println("UI elements not ready yet, continuing with regular initialization");
+                setupDashboardForRegularUser();
+            }
+        } else {
+            // Set up the dashboard for regular users
+            setupDashboardForRegularUser();
+        }
+    }
+    
+    private void setupDashboardForRegularUser() {
+        // This method is called when the user is not an admin or if loading the admin dashboard fails
+        // It ensures the regular conversation dashboard is properly set up
+        // The rest of the initialization will happen in the other setup methods
     }
 }

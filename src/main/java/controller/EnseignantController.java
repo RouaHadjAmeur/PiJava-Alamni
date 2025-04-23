@@ -71,7 +71,6 @@ public class EnseignantController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_reclamation_view.fxml"));
             Parent root = loader.load();
 
-            controllers.AddReclamationController controller = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter Réclamation");

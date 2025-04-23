@@ -9,17 +9,19 @@
         <!-- Header -->
         <VBox styleClass="header">
             <HBox alignment="CENTER_LEFT" spacing="20">
-                <Label fx:id="dashboardTitleLabel" text="My Conversations" styleClass="header-title" HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="Back to Home">
+                <Label fx:id="dashboardTitleLabel" text="Mes Conversations" styleClass="header-title" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="🏠">
                     <tooltip>
-                        <Tooltip text="Return to Home" />
+                        <Tooltip text="Retour à l'accueil" />
                     </tooltip>
                 </Button>
             </HBox>
             <HBox styleClass="breadcrumb">
-                <Label styleClass="breadcrumb-item" text="Home" />
+                <Label styleClass="breadcrumb-item" text="Accueil" />
                 <Label styleClass="breadcrumb-separator" text="/" />
-                <Label styleClass="breadcrumb-item" text="Conversations" />
+                <Label styleClass="breadcrumb-item" text="Pages" />
+                <Label styleClass="breadcrumb-separator" text="/" />
+                <Label styleClass="breadcrumb-item" text="Boîte de discussions" />
             </HBox>
         </VBox>
 
@@ -27,35 +29,46 @@
         <VBox styleClass="conversation-list-container" spacing="15" VBox.vgrow="ALWAYS">
             <!-- Filter Buttons -->
             <HBox fx:id="filterButtonsContainer" spacing="15">
-                <ToggleButton fx:id="btnAllConversations" text="All Conversations" styleClass="tab-button" onAction="#handleAllFilter" />
-                <ToggleButton fx:id="btnSentConversations" text="Sent" styleClass="tab-button" onAction="#handleSentFilter" />
-                <ToggleButton fx:id="btnReceivedConversations" text="Received" styleClass="tab-button" onAction="#handleReceivedFilter" />
-                <Button fx:id="btnAddConversation" text="+ New Conversation" onAction="#handleAddConversation" styleClass="new-conversation-btn" HBox.hgrow="ALWAYS">
+                <Button fx:id="btnFavoriteConversation" text="⭐" styleClass="tab-button, favorite-button" onAction="#handleFavoriteFilter">
                     <tooltip>
-                        <Tooltip text="Start a New Conversation" />
+                        <Tooltip text="Afficher uniquement les conversations favorites" />
                     </tooltip>
                 </Button>
-            </HBox>
-
-            <!-- Search Box -->
-            <HBox styleClass="search-box" spacing="10">
-                <TextField fx:id="searchField" promptText="Search conversations..." styleClass="search-field" HBox.hgrow="ALWAYS" />
-                <ComboBox fx:id="searchTypeComboBox" promptText="Search Type" prefWidth="140" />
-                <Button fx:id="btnSearch" text="Search" onAction="#handleSearch" styleClass="icon-button" />
-                <Button fx:id="btnClearSearch" text="Clear" onAction="#clearSearch" styleClass="icon-button" />
-                <DatePicker fx:id="startDatePicker" promptText="Start Date" prefWidth="130" />
-                <DatePicker fx:id="endDatePicker" promptText="End Date" prefWidth="130" />
+                <Button fx:id="btnAllConversation" text="👥" styleClass="tab-button" onAction="#handleAllFilter">
+                    <tooltip>
+                        <Tooltip text="Afficher toutes les conversations" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnAddConversation" text="✉️" onAction="#handleAddConversation" styleClass="new-conversation-btn" HBox.hgrow="ALWAYS">
+                    <tooltip>
+                        <Tooltip text="Démarrer une nouvelle conversation" />
+                    </tooltip>
+                </Button>
             </HBox>
 
             <!-- Conversations List -->
             <ListView fx:id="allConversationsListView" styleClass="list-view" VBox.vgrow="ALWAYS" />
 
-            <!-- Pagination -->
-            <HBox alignment="CENTER" spacing="15" styleClass="pagination-box">
-                <Button fx:id="btnPrev" text="Previous" styleClass="pagination-button" onAction="#previousPage" />
-                <Label fx:id="pageLabel" text="Page 1 of 1" styleClass="page-label" />
-                <Button fx:id="btnNext" text="Next" styleClass="pagination-button" onAction="#nextPage" />
-                <ComboBox fx:id="pageSizeComboBox" prefWidth="70" />
+            <!-- Pagination Controls -->
+            <HBox alignment="CENTER" spacing="10" styleClass="pagination-box">
+                <Button fx:id="btnPrev" text="◀" styleClass="pagination-button" onAction="#previousPage">
+                    <tooltip>
+                        <Tooltip text="Page précédente" />
+                    </tooltip>
+                </Button>
+                <Label fx:id="pageLabel" text="Page 1 sur 1" styleClass="page-label" />
+                <Button fx:id="btnNext" text="▶" styleClass="pagination-button" onAction="#nextPage">
+                    <tooltip>
+                        <Tooltip text="Page suivante" />
+                    </tooltip>
+                </Button>
+                <Separator orientation="VERTICAL" />
+                <Label text="Éléments par page:" styleClass="pagination-label" />
+                <ComboBox fx:id="pageSizeComboBox" prefWidth="70">
+                    <tooltip>
+                        <Tooltip text="Nombre d'éléments par page" />
+                    </tooltip>
+                </ComboBox>
             </HBox>
         </VBox>
     </VBox>

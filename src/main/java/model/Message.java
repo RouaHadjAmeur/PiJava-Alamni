@@ -15,11 +15,13 @@ public class Message {
     private int is_read;
     private Set<Integer> likedByUsers;
     private Set<Integer> dislikedByUsers;
+    private boolean isPinned;
 
     public Message() {
         this.is_read = 0;
         this.likedByUsers = new HashSet<>();
         this.dislikedByUsers = new HashSet<>();
+        this.isPinned = false;
     }
 
     public Message(String contenu, Timestamp dateCreation, int conversation_id, int expediteur_id) {
@@ -30,6 +32,7 @@ public class Message {
         this.is_read = 0;
         this.likedByUsers = new HashSet<>();
         this.dislikedByUsers = new HashSet<>();
+        this.isPinned = false;
         
         // We need to set expediteur_email separately after construction
         // since it's not available at this point
@@ -44,6 +47,7 @@ public class Message {
         this.is_read = 0;
         this.likedByUsers = new HashSet<>();
         this.dislikedByUsers = new HashSet<>();
+        this.isPinned = false;
     }
 
     public Message(int id, String contenu, Timestamp dateCreation, int conversation_id, int expediteur_id, String expediteur_email, int is_read) {
@@ -56,6 +60,20 @@ public class Message {
         this.is_read = is_read;
         this.likedByUsers = new HashSet<>();
         this.dislikedByUsers = new HashSet<>();
+        this.isPinned = false;
+    }
+    
+    public Message(int id, String contenu, Timestamp dateCreation, int conversation_id, int expediteur_id, String expediteur_email, int is_read, boolean isPinned) {
+        this.id = id;
+        this.contenu = contenu;
+        this.dateCreation = dateCreation;
+        this.conversation_id = conversation_id;
+        this.expediteur_id = expediteur_id;
+        this.expediteur_email = expediteur_email;
+        this.is_read = is_read;
+        this.likedByUsers = new HashSet<>();
+        this.dislikedByUsers = new HashSet<>();
+        this.isPinned = isPinned;
     }
 
     public int getId() {
@@ -164,6 +182,14 @@ public class Message {
         dislikedByUsers.remove(userId);
     }
 
+    public boolean getIsPinned() {
+        return isPinned;
+    }
+
+    public void setIsPinned(boolean isPinned) {
+        this.isPinned = isPinned;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -189,6 +215,7 @@ public class Message {
                 ", is_read=" + is_read +
                 ", likes=" + getLikesCount() +
                 ", dislikes=" + getDislikesCount() +
+                ", isPinned=" + isPinned +
                 '}';
     }
 } 

@@ -7,8 +7,17 @@
 <AnchorPane prefHeight="500.0" prefWidth="700.0" stylesheets="@../styles/conversation.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MessageController">
     <VBox prefHeight="500.0" prefWidth="700.0" styleClass="root" spacing="15" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <!-- Header -->
-        <VBox styleClass="header">
-            <Label fx:id="conversationTitleLabel" styleClass="header-title" text="Messages" />
+        <VBox styleClass="header" spacing="5">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="header-icon" text="💬" />
+                <Label fx:id="conversationTitleLabel" styleClass="header-title" text="Conversation: hello rouaa" />
+            </HBox>
+            <HBox styleClass="header-details" spacing="15">
+                <Label styleClass="header-detail" text="From: rouaa@gmail.com" />
+                <Label styleClass="header-detail" text="To: rouadhafer@gmail.com" />
+                <Label styleClass="header-detail" text="Date: 2025-04-19" />
+                <Label styleClass="header-detail" text="Status: Répondu" />
+            </HBox>
             <HBox styleClass="breadcrumb">
                 <Label styleClass="breadcrumb-item" text="Home" />
                 <Label styleClass="breadcrumb-separator" text="/" />
@@ -20,42 +29,32 @@
         <ListView fx:id="messagesListView" styleClass="messages-list" VBox.vgrow="ALWAYS" />
 
         <!-- Input Area -->
-        <VBox styleClass="message-input-box" spacing="10">
-            <HBox styleClass="rich-text-toolbar" spacing="5">
-                <Button text="B" styleClass="icon-button">
-                    <tooltip>
-                        <Tooltip text="Bold" />
-                    </tooltip>
-                </Button>
-                <Button text="I" styleClass="icon-button">
-                    <tooltip>
-                        <Tooltip text="Italic" />
-                    </tooltip>
-                </Button>
-                <Button text="U" styleClass="icon-button">
-                    <tooltip>
-                        <Tooltip text="Underline" />
-                    </tooltip>
-                </Button>
-            </HBox>
-            <TextArea fx:id="messageContentTextArea" promptText="Write your message..." prefHeight="100.0" wrapText="true" styleClass="rich-text-area" />
-            <HBox alignment="CENTER_RIGHT" spacing="15">
-                <Button fx:id="editButton" text="Edit Message" onAction="#handleEditMessage" styleClass="form-button">
-                    <tooltip>
-                        <Tooltip text="Edit Selected Message" />
-                    </tooltip>
-                </Button>
-                <Button fx:id="deleteButton" text="Delete Message" onAction="#handleDeleteMessage" styleClass="delete-button">
-                    <tooltip>
-                        <Tooltip text="Delete Selected Message" />
-                    </tooltip>
-                </Button>
-                <Button fx:id="sendButton" text="Send" onAction="#handleSendMessage" styleClass="form-button">
-                    <tooltip>
-                        <Tooltip text="Send Message" />
-                    </tooltip>
-                </Button>
-            </HBox>
-        </VBox>
+        <HBox styleClass="message-input-box" spacing="10">
+            <TextField fx:id="messageContentTextField" promptText="Type your message..." styleClass="message-input" HBox.hgrow="ALWAYS" />
+            <Button fx:id="sendButton" onAction="#handleSendMessage" styleClass="send-button" text="📤">
+                <tooltip>
+                    <Tooltip text="Envoyer le message" />
+                </tooltip>
+            </Button>
+        </HBox>
+
+        <!-- Footer Buttons -->
+        <HBox styleClass="footer-buttons" spacing="10" alignment="CENTER">
+            <Button fx:id="backButton" text="🏠" onAction="#handleBackToHome" styleClass="action-button back-button">
+                <tooltip>
+                    <Tooltip text="Retour à la liste des conversations" />
+                </tooltip>
+            </Button>
+            <Button fx:id="deleteButton" text="🗑️" onAction="#handleDeleteConversation" styleClass="action-button delete-button">
+                <tooltip>
+                    <Tooltip text="Supprimer cette conversation" />
+                </tooltip>
+            </Button>
+            <Button fx:id="replyButton" text="↩️" onAction="#handleReply" styleClass="action-button reply-button">
+                <tooltip>
+                    <Tooltip text="Répondre à cette conversation" />
+                </tooltip>
+            </Button>
+        </HBox>
     </VBox>
 </AnchorPane>

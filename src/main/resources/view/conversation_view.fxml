@@ -39,34 +39,34 @@
 
         <!-- Action Buttons -->
         <HBox styleClass="action-bar" alignment="CENTER_RIGHT" spacing="15">
-            <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="Back to Home">
+            <Button fx:id="btnBackToHome" onAction="#handleBackToHome" styleClass="home-button" text="🏠">
                 <tooltip>
-                    <Tooltip text="Return to Home" />
+                    <Tooltip text="Retour à l'accueil" />
                 </tooltip>
             </Button>
-            <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button" text="Delete">
+            <Button fx:id="btnDelete" onAction="#handleDelete" styleClass="action-button, delete-button" text="🗑️">
                 <tooltip>
-                    <Tooltip text="Delete Conversation" />
+                    <Tooltip text="Supprimer la conversation" />
                 </tooltip>
             </Button>
-            <Button fx:id="btnUpdate" onAction="#handleUpdate" styleClass="action-button, update-button" text="Edit">
+            <Button fx:id="btnUpdate" onAction="#handleUpdate" styleClass="action-button, update-button" text="✏️">
                 <tooltip>
-                    <Tooltip text="Edit Conversation" />
+                    <Tooltip text="Modifier la conversation" />
                 </tooltip>
             </Button>
-            <Button fx:id="btnManageMessages" onAction="#handleManageMessages" styleClass="action-button" text="Manage Messages">
+            <Button fx:id="btnManageMessages" onAction="#handleManageMessages" styleClass="action-button" text="💬">
                 <tooltip>
-                    <Tooltip text="Manage Messages" />
+                    <Tooltip text="Gérer les messages" />
                 </tooltip>
             </Button>
-            <Button fx:id="btnClose" onAction="#handleClose" styleClass="action-button, cancel-button" text="Close">
+            <Button fx:id="btnClose" onAction="#handleClose" styleClass="action-button, cancel-button" text="❌">
                 <tooltip>
-                    <Tooltip text="Close" />
+                    <Tooltip text="Fermer" />
                 </tooltip>
             </Button>
-            <Button fx:id="btnRepondre" onAction="#handleRepondre" styleClass="action-button, form-button" text="Reply">
+            <Button fx:id="btnRepondre" onAction="#handleRepondre" styleClass="action-button, form-button" text="↩️">
                 <tooltip>
-                    <Tooltip text="Reply to Conversation" />
+                    <Tooltip text="Répondre à la conversation" />
                 </tooltip>
             </Button>
         </HBox>

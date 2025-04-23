@@ -29,46 +29,53 @@ public class ConversationService implements Iservices<Conversation> {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM conversation LIMIT 1");
                 ResultSetMetaData metaData = rs.getMetaData();
                 boolean hasSujet = false;
+                boolean hasIsFavorite = false;
 
-                // Check if 'sujet' column exists
+                // Check if required columns exist
                 for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                    if (metaData.getColumnName(i).equalsIgnoreCase("sujet")) {
+                    String columnName = metaData.getColumnName(i);
+                    if (columnName.equalsIgnoreCase("sujet")) {
                         hasSujet = true;
-                        break;
+                    } else if (columnName.equalsIgnoreCase("is_favorite")) {
+                        hasIsFavorite = true;
                     }
                 }
 
                 // If 'sujet' doesn't exist, drop and recreate the table
                 if (!hasSujet) {
-                    System.out.println("Table 'conversation' exists but has incorrect structure. Dropping and recreating...");
-                    stmt.execute("DROP TABLE conversation");
+                    stmt.executeUpdate("DROP TABLE IF EXISTS conversation");
                     createConversationTable(stmt);
+                } 
+                // If is_favorite doesn't exist, add it
+                else if (!hasIsFavorite) {
+                    stmt.executeUpdate("ALTER TABLE conversation ADD COLUMN is_favorite tinyint(1) DEFAULT 0");
+                    System.out.println("Added is_favorite column to conversation table");
                 }
             } catch (SQLException e) {
                 // Table doesn't exist, create it
                 createConversationTable(stmt);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la vérification/création de la table conversation: " + e.getMessage());
+            System.out.println("Error checking/creating conversation table: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void createConversationTable(Statement stmt) throws SQLException {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS `conversation` (" +
-                "`id` int(11) NOT NULL AUTO_INCREMENT," +
-                "`sujet` varchar(255) NOT NULL," +
-                "`date_creation` date NOT NULL," +
-                "`expediteur_email` varchar(255) NOT NULL," +
-                "`destinataire_email` varchar(255) NOT NULL," +
-                "`statut` varchar(50) NOT NULL DEFAULT 'Non lu'," +
-                "`expediteur_id` int(11) NOT NULL," +
-                "`destinataire_id` int(11) NOT NULL," +
-                "PRIMARY KEY (`id`)" +
-                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
+            "`id` int(11) NOT NULL AUTO_INCREMENT," +
+            "`sujet` varchar(255) NOT NULL," +
+            "`date_creation` date NOT NULL," +
+            "`expediteur_email` varchar(255) NOT NULL," +
+            "`destinataire_email` varchar(255) NOT NULL," +
+            "`statut` varchar(50) NOT NULL DEFAULT 'Non lu'," +
+            "`expediteur_id` int(11) NOT NULL," +
+            "`destinataire_id` int(11) NOT NULL," +
+            "`is_favorite` tinyint(1) DEFAULT 0," +
+            "PRIMARY KEY (`id`)" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
         stmt.execute(createTableSQL);
-        System.out.println("Table conversation créée avec succès");
+        System.out.println("Conversation table created successfully");
     }
 
     @Override
@@ -91,7 +98,7 @@ public class ConversationService implements Iservices<Conversation> {
             }
         } else {
             // Create a new conversation
-            String req = "INSERT INTO conversation (sujet, date_creation, expediteur_email, destinataire_email, statut, expediteur_id, destinataire_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String req = "INSERT INTO conversation (sujet, date_creation, expediteur_email, destinataire_email, statut, expediteur_id, destinataire_id, is_favorite) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try {
                 PreparedStatement stm = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
                 stm.setString(1, conversation.getSujet());
@@ -101,6 +108,7 @@ public class ConversationService implements Iservices<Conversation> {
                 stm.setString(5, conversation.getStatut());
                 stm.setInt(6, conversation.getExpediteur_id());
                 stm.setInt(7, conversation.getDestinataire_id());
+                stm.setBoolean(8, conversation.isFavorite());
                 stm.executeUpdate();
 
                 // Get the generated conversation ID
@@ -192,7 +200,7 @@ public class ConversationService implements Iservices<Conversation> {
 
     @Override
     public void modifier(Conversation conversation) {
-        String req = "UPDATE conversation SET sujet=?, date_creation=?, expediteur_email=?, destinataire_email=?, statut=?, expediteur_id=?, destinataire_id=? WHERE id=?";
+        String req = "UPDATE conversation SET sujet=?, date_creation=?, expediteur_email=?, destinataire_email=?, statut=?, expediteur_id=?, destinataire_id=?, is_favorite=? WHERE id=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, conversation.getSujet());
@@ -202,7 +210,8 @@ public class ConversationService implements Iservices<Conversation> {
             stm.setString(5, conversation.getStatut());
             stm.setInt(6, conversation.getExpediteur_id());
             stm.setInt(7, conversation.getDestinataire_id());
-            stm.setInt(8, conversation.getId());
+            stm.setBoolean(8, conversation.isFavorite());
+            stm.setInt(9, conversation.getId());
             stm.executeUpdate();
             System.out.println("Conversation modifiée : " + conversation);
         } catch (SQLException e) {
@@ -503,6 +512,15 @@ public class ConversationService implements Iservices<Conversation> {
             rs.getInt("expediteur_id"),
             rs.getInt("destinataire_id")
         );
+        
+        // Set favorite field
+        try {
+            conversation.setFavorite(rs.getBoolean("is_favorite"));
+        } catch (SQLException e) {
+            // Handle case where columns might not exist in older database versions
+            System.out.println("Warning: Some columns might be missing: " + e.getMessage());
+        }
+        
         return conversation;
     }
 

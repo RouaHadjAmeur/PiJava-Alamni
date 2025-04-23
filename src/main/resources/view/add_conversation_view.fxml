@@ -22,6 +22,7 @@
                 <Label styleClass="form-label" text="Recipient:" />
                 <ComboBox fx:id="destinataireComboBox" styleClass="form-input" promptText="Select a user" HBox.hgrow="ALWAYS" />
             </VBox>
+            
             <VBox styleClass="form-field" VBox.vgrow="ALWAYS">
                 <Label styleClass="form-label" text="Message:" />
                 <TextArea fx:id="contenuTextArea" styleClass="form-input" promptText="Write your message..." wrapText="true" prefHeight="200.0" VBox.vgrow="ALWAYS" />

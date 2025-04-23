@@ -19,6 +19,7 @@ public class Conversation {
     private List<Message> messages;
     private Utilisateur expediteur;
     private Utilisateur destinataire;
+    private boolean isFavorite;
 
     // Default constructor
     public Conversation() {
@@ -167,6 +168,14 @@ public class Conversation {
         return Objects.hash(id, sujet, date_creation, expediteur_email, destinataire_email, statut, expediteur_id, destinataire_id);
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     @Override
     public String toString() {
         return "Conversation{" +
@@ -178,7 +187,8 @@ public class Conversation {
                 ", statut='" + statut + '\'' +
                 ", expediteur_id=" + expediteur_id +
                 ", destinataire_id=" + destinataire_id +
+                ", isFavorite=" + isFavorite +
                 ", messages=" + (messages != null ? messages.size() : 0) +
                 '}';
     }
-} 
+}

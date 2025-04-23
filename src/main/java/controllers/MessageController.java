@@ -6,14 +6,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,6 +17,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import model.Conversation;
 import model.Message;
 import model.Utilisateur;
@@ -38,7 +35,7 @@ import java.util.function.Consumer;
 public class MessageController {
 
     @FXML private ListView<Message> messagesListView;
-    @FXML private TextArea messageContentTextArea;
+    @FXML private TextField messageContentTextField;
     @FXML private Button sendButton;
     @FXML private Button deleteButton;
     @FXML private Button editButton;
@@ -51,24 +48,38 @@ public class MessageController {
     
     public void initialize() {
         // Configure message list view with custom cell factory
-        messagesListView.setCellFactory(listView -> new MessageListCell());
+        if (messagesListView != null) {
+            messagesListView.setCellFactory(listView -> new MessageListCell());
+        }
         
-        // Disable edit and delete buttons by default
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
+        // Safely handle buttons that might be null
+        if (editButton != null) {
+            editButton.setDisable(true);
+        }
+        
+        if (deleteButton != null) {
+            deleteButton.setDisable(true);
+        }
         
         // Add selection listener to enable buttons when a message is selected
-        messagesListView.getSelectionModel().selectedItemProperty().addListener(
-            (observable, oldValue, newValue) -> {
-                boolean isMessageSelected = newValue != null;
-                boolean isCurrentUserSender = isMessageSelected && 
-                    newValue.getExpediteur_id() == Session.getUtilisateurConnecte().getId();
-                
-                // Only allow editing/deleting of own messages
-                editButton.setDisable(!isMessageSelected || !isCurrentUserSender);
-                deleteButton.setDisable(!isMessageSelected || !isCurrentUserSender);
-            }
-        );
+        if (messagesListView != null) {
+            messagesListView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    boolean isMessageSelected = newValue != null;
+                    boolean isCurrentUserSender = isMessageSelected && 
+                        newValue.getExpediteur_id() == Session.getUtilisateurConnecte().getId();
+                    
+                    // Only allow editing/deleting of own messages
+                    if (editButton != null) {
+                        editButton.setDisable(!isMessageSelected || !isCurrentUserSender);
+                    }
+                    
+                    if (deleteButton != null) {
+                        deleteButton.setDisable(!isMessageSelected || !isCurrentUserSender);
+                    }
+                }
+            );
+        }
     }
     
     public void setConversation(Conversation conversation) {
@@ -79,7 +90,7 @@ public class MessageController {
             showAlert(Alert.AlertType.ERROR, "Accès refusé", 
                     "Vous n'avez pas l'autorisation de voir cette conversation", 
                     "Vous ne pouvez consulter que les conversations dont vous êtes l'expéditeur ou le destinataire.");
-            Stage stage = (Stage) messageContentTextArea.getScene().getWindow();
+            Stage stage = (Stage) messageContentTextField.getScene().getWindow();
             if (stage != null) {
                 stage.close();
             }
@@ -145,7 +156,7 @@ public class MessageController {
     
     @FXML
     private void handleSendMessage() {
-        String content = messageContentTextArea.getText().trim();
+        String content = messageContentTextField.getText().trim();
         if (content.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Message vide", "Le message est vide", 
                     "Veuillez saisir un message avant d'envoyer.");
@@ -183,7 +194,7 @@ public class MessageController {
         }
         
         // Clear the message input
-        messageContentTextArea.clear();
+        messageContentTextField.clear();
         
         // Refresh the conversation to include the new message
         currentConversation.setMessages(
@@ -212,7 +223,7 @@ public class MessageController {
         }
         
         // Set message content to the text area for editing
-        messageContentTextArea.setText(selectedMessage.getContenu());
+        messageContentTextField.setText(selectedMessage.getContenu());
         
         // Create a confirmation alert
         Alert editConfirm = new Alert(Alert.AlertType.CONFIRMATION);
@@ -302,9 +313,95 @@ public class MessageController {
         alert.showAndWait();
     }
     
+    @FXML
+    private void handleBackToHome() {
+        try {
+            // Get the current stage
+            Stage currentStage = (Stage) messagesListView.getScene().getWindow();
+            
+            // Load the conversation dashboard
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/conversation_dashboard.fxml"));
+            Parent root = loader.load();
+            
+            // Create a new scene
+            Scene scene = new Scene(root);
+            
+            // Set the scene on the stage
+            currentStage.setScene(scene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Navigation impossible", 
+                    "Impossible de revenir à la liste des conversations: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void handleDeleteConversation() {
+        if (currentConversation == null) return;
+        
+        // Confirm deletion
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmation de suppression");
+        confirmAlert.setHeaderText("Supprimer la conversation");
+        confirmAlert.setContentText("Êtes-vous sûr de vouloir supprimer cette conversation et tous ses messages ? Cette action est irréversible.");
+        
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Delete the conversation
+            conversationService.delete(currentConversation.getId());
+            
+            // Call the refresh callback if available
+            if (refreshCallback != null) {
+                refreshCallback.accept(null);
+            }
+            
+            // Close the window
+            Stage stage = (Stage) messagesListView.getScene().getWindow();
+            stage.close();
+        }
+    }
+    
+    @FXML
+    private void handleReply() {
+        try {
+            // Load the add conversation form
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_conversation_view.fxml"));
+            Parent root = loader.load();
+            
+            // Get the controller and set up the reply mode
+            AddConversationController controller = loader.getController();
+            controller.setReplyMode(currentConversation);
+            controller.setRefreshCallback(param -> {
+                // Refresh the conversation list
+                if (refreshCallback != null) {
+                    refreshCallback.accept(null);
+                }
+                
+                // Close this window
+                Stage stage = (Stage) messagesListView.getScene().getWindow();
+                stage.close();
+            });
+            
+            // Create a new stage for the form
+            Stage newStage = new Stage();
+            newStage.setTitle("Répondre: " + currentConversation.getSujet());
+            newStage.setScene(new Scene(root));
+            
+            // Set the stage on the controller so it can be accessed
+            controller.setStage(newStage);
+            
+            // Show the form
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de répondre", 
+                    "Erreur lors de l'ouverture du formulaire de réponse: " + e.getMessage());
+        }
+    }
+    
     private class MessageListCell extends ListCell<Message> {
-        private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        private Message lastMessage;
         
         @Override
         protected void updateItem(Message message, boolean empty) {
@@ -316,43 +413,32 @@ public class MessageController {
                 return;
             }
             
-            Utilisateur currentUser = Session.getUtilisateurConnecte();
-            boolean isCurrentUserSender = (currentUser != null && message.getExpediteur_id() == currentUser.getId());
-            
-            // Check if this is a new sender compared to the previous message
-            boolean isNewSender = true;
-            int index = getIndex();
-            if (index > 0) {
-                Message prevMessage = getListView().getItems().get(index - 1);
-                isNewSender = prevMessage.getExpediteur_id() != message.getExpediteur_id();
-            }
-            
-            // Check if this is a message from a different day than the previous message
-            boolean isNewDay = true;
-            if (index > 0) {
-                Message prevMessage = getListView().getItems().get(index - 1);
-                isNewDay = !message.getCreatedAt().toLocalDateTime().toLocalDate()
-                    .equals(prevMessage.getCreatedAt().toLocalDateTime().toLocalDate());
-            }
-            
+            // Main container for the entire message row
             VBox mainContainer = new VBox(5);
+            mainContainer.setPadding(new Insets(5, 10, 5, 10));
             
-            // Add date separator if this is a message from a new day
-            if (isNewDay) {
-                Label dateLabel = new Label(message.getCreatedAt().toLocalDateTime().toLocalDate().format(dateFormatter));
-                dateLabel.setStyle("-fx-background-color: #e2e8f0; -fx-padding: 2 10; -fx-background-radius: 10;");
-                dateLabel.setAlignment(Pos.CENTER);
-                
-                HBox dateLabelContainer = new HBox();
-                dateLabelContainer.setAlignment(Pos.CENTER);
-                dateLabelContainer.getChildren().add(dateLabel);
-                
-                mainContainer.getChildren().add(dateLabelContainer);
+            // Check if this message is from the same sender as the previous one
+            boolean isNewSender = true;
+            int currentIndex = getIndex();
+            if (currentIndex > 0) {
+                Message previousMessage = getListView().getItems().get(currentIndex - 1);
+                isNewSender = previousMessage.getExpediteur_id() != message.getExpediteur_id();
             }
             
-            // Create message container
+            // Check if the current user is the sender
+            boolean isCurrentUserSender = message.getExpediteur_id() == Session.getUtilisateurConnecte().getId();
+            
+            // Message container with avatar and content
             HBox messageContainer = new HBox(10);
-            messageContainer.setPadding(new Insets(5, 10, 5, 10));
+            
+            // Show pinned indicator if message is pinned
+            if (message.getIsPinned()) {
+                Label pinnedLabel = new Label("📌");
+                pinnedLabel.setStyle("-fx-font-size: 14px;");
+                VBox pinnedContainer = new VBox(pinnedLabel);
+                pinnedContainer.setAlignment(Pos.TOP_CENTER);
+                messageContainer.getChildren().add(pinnedContainer);
+            }
             
             // Only show avatar for the first message from a sender in a sequence
             StackPane avatarPane = null;
@@ -401,7 +487,7 @@ public class MessageController {
             contentLabel.setStyle(bubbleStyle);
             
             // Timestamp
-            Label timeLabel = new Label(message.getCreatedAt().toLocalDateTime().format(timeFormatter));
+            Label timeLabel = new Label(message.getCreatedAt().toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
             timeLabel.setFont(Font.font("System", 10));
             timeLabel.setTextFill(Color.GRAY);
             
@@ -412,16 +498,50 @@ public class MessageController {
             HBox reactionsBox = new HBox(10);
             reactionsBox.setAlignment(Pos.CENTER_LEFT);
             
-            Label thumbsUpIcon = new Label("👍 0");
+            Label thumbsUpIcon = new Label("👍 " + message.getLikesCount());
             thumbsUpIcon.setTextFill(Color.GRAY);
             thumbsUpIcon.setFont(Font.font("System", 12));
             
-            Label thumbsDownIcon = new Label("👎 0");
+            Label thumbsDownIcon = new Label("👎 " + message.getDislikesCount());
             thumbsDownIcon.setTextFill(Color.GRAY);
             thumbsDownIcon.setFont(Font.font("System", 12));
             
             reactionsBox.getChildren().addAll(thumbsUpIcon, thumbsDownIcon);
-            contentContainer.getChildren().add(reactionsBox);
+            
+            // Add action buttons for the message (only visible for user's own messages)
+            if (isCurrentUserSender) {
+                HBox actionButtonsBox = new HBox(5);
+                actionButtonsBox.setAlignment(Pos.CENTER_RIGHT);
+                
+                // Edit button
+                Button editBtn = new Button("✏️");
+                editBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                editBtn.setTooltip(new Tooltip("Modifier ce message"));
+                editBtn.setOnAction(e -> handleEditSingleMessage(message));
+                
+                // Delete button
+                Button deleteBtn = new Button("🗑️");
+                deleteBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                deleteBtn.setTooltip(new Tooltip("Supprimer ce message"));
+                deleteBtn.setOnAction(e -> handleDeleteSingleMessage(message));
+                
+                // Pin/Unpin button
+                Button pinBtn = new Button(message.getIsPinned() ? "📌" : "📍");
+                pinBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+                pinBtn.setTooltip(new Tooltip(message.getIsPinned() ? "Désépingler ce message" : "Épingler ce message"));
+                pinBtn.setOnAction(e -> handleTogglePin(message));
+                
+                actionButtonsBox.getChildren().addAll(editBtn, deleteBtn, pinBtn);
+                
+                // Add action buttons to reactions box
+                HBox combinedBox = new HBox(10);
+                combinedBox.getChildren().addAll(reactionsBox, actionButtonsBox);
+                combinedBox.setAlignment(Pos.CENTER);
+                HBox.setHgrow(reactionsBox, Priority.ALWAYS);
+                contentContainer.getChildren().add(combinedBox);
+            } else {
+                contentContainer.getChildren().add(reactionsBox);
+            }
             
             // Arrange components based on sender
             if (isCurrentUserSender) {
@@ -435,5 +555,96 @@ public class MessageController {
             mainContainer.getChildren().add(messageContainer);
             setGraphic(mainContainer);
         }
+    }
+    
+    private void handleEditSingleMessage(Message message) {
+        // Store the selected message ID
+        int messageId = message.getId();
+        
+        // Create a dialog for editing the message
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Modifier le message");
+        dialog.setHeaderText("Modifier le contenu du message");
+        
+        // Set the button types
+        ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        
+        // Create the content area
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        
+        TextArea contentArea = new TextArea(message.getContenu());
+        contentArea.setWrapText(true);
+        contentArea.setPrefWidth(400);
+        contentArea.setPrefHeight(200);
+        
+        grid.add(new Label("Contenu:"), 0, 0);
+        grid.add(contentArea, 1, 0);
+        
+        dialog.getDialogPane().setContent(grid);
+        
+        // Request focus on the content area by default
+        javafx.application.Platform.runLater(contentArea::requestFocus);
+        
+        // Convert the result to a string when the save button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                return contentArea.getText();
+            }
+            return null;
+        });
+        
+        Optional<String> result = dialog.showAndWait();
+        
+        result.ifPresent(content -> {
+            if (content.trim().length() < 3) {
+                showAlert(Alert.AlertType.WARNING, "Message trop court", "Le message est trop court", 
+                        "Le message doit contenir au moins 3 caractères.");
+                return;
+            }
+            
+            // Update the message content
+            message.setContenu(content);
+            
+            // Save to database
+            messageService.update(message);
+            
+            // Refresh the messages list
+            loadMessages();
+        });
+    }
+    
+    private void handleDeleteSingleMessage(Message message) {
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirmation de suppression");
+        confirmDialog.setHeaderText("Supprimer le message");
+        confirmDialog.setContentText("Êtes-vous sûr de vouloir supprimer ce message ?");
+        
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Delete the message
+            messageService.delete(message.getId());
+            
+            // Refresh the messages list
+            loadMessages();
+        }
+    }
+    
+    private void handleTogglePin(Message message) {
+        if (message.getIsPinned()) {
+            // Unpin the message
+            message.setIsPinned(false);
+            messageService.unpinMessage(message.getId());
+        } else {
+            // Pin the message
+            message.setIsPinned(true);
+            messageService.pinMessage(message.getId());
+        }
+        
+        // Refresh the messages list
+        loadMessages();
     }
 }

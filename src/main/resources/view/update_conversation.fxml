@@ -47,9 +47,21 @@
         <VBox styleClass="reply-section">
             <Label text="New Message" styleClass="section-title" />
             <HBox styleClass="rich-text-toolbar" spacing="5">
-                <Button text="B" styleClass="icon-button" tooltip="Bold"/>
-                <Button text="I" styleClass="icon-button" tooltip="Italic"/>
-                <Button text="U" styleClass="icon-button" tooltip="Underline"/>
+                <Button text="B" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Bold" />
+                    </tooltip>
+                </Button>
+                <Button text="I" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Italic" />
+                    </tooltip>
+                </Button>
+                <Button text="U" styleClass="icon-button">
+                    <tooltip>
+                        <Tooltip text="Underline" />
+                    </tooltip>
+                </Button>
             </HBox>
             <TextArea fx:id="messageTextArea" styleClass="rich-text-area" promptText="Write your message..." wrapText="true" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER_RIGHT" spacing="15">

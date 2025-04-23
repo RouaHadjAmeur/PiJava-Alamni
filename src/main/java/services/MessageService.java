@@ -26,10 +26,20 @@ public class MessageService {
                 "`expediteur_id` int(11) NOT NULL," +
                 "`expediteur_email` varchar(255) NOT NULL," +
                 "`is_read` int(1) NOT NULL DEFAULT 0," +
+                "`is_pinned` tinyint(1) NOT NULL DEFAULT 0," +
                 "PRIMARY KEY (`id`)," +
                 "FOREIGN KEY (`conversation_id`) REFERENCES `conversation`(`id`) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
             stmt.execute(createTableSQL);
+            
+            // Add is_pinned column if it doesn't exist
+            try {
+                stmt.execute("SELECT is_pinned FROM message LIMIT 1");
+            } catch (SQLException e) {
+                // Column doesn't exist, add it
+                stmt.execute("ALTER TABLE message ADD COLUMN is_pinned tinyint(1) NOT NULL DEFAULT 0");
+                System.out.println("Added is_pinned column to message table");
+            }
             
             // Create message_reaction table for likes/dislikes
             String createReactionTableSQL = "CREATE TABLE IF NOT EXISTS `message_reaction` (" +
@@ -49,7 +59,7 @@ public class MessageService {
     }
 
     public void add(Message message) {
-        String req = "INSERT INTO message (contenu, date_creation, conversation_id, expediteur_id, expediteur_email, is_read) VALUES (?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO message (contenu, date_creation, conversation_id, expediteur_id, expediteur_email, is_read, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, message.getContenu());
@@ -58,6 +68,7 @@ public class MessageService {
             stm.setInt(4, message.getExpediteur_id());
             stm.setString(5, message.getExpediteur_email());
             stm.setInt(6, message.getIs_read());
+            stm.setBoolean(7, message.getIsPinned());
             stm.executeUpdate();
             System.out.println("Message ajouté : " + message);
         } catch (SQLException e) {
@@ -80,7 +91,8 @@ public class MessageService {
                     rs.getInt("conversation_id"),
                     rs.getInt("expediteur_id"),
                     rs.getString("expediteur_email"),
-                    rs.getInt("is_read")
+                    rs.getInt("is_read"),
+                    rs.getBoolean("is_pinned")
                 );
                 
                 // Load reactions for this message
@@ -130,7 +142,8 @@ public class MessageService {
                     rs.getInt("conversation_id"),
                     rs.getInt("expediteur_id"),
                     rs.getString("expediteur_email"),
-                    rs.getInt("is_read")
+                    rs.getInt("is_read"),
+                    rs.getBoolean("is_pinned")
                 );
                 
                 // Load reactions
@@ -145,13 +158,46 @@ public class MessageService {
     }
 
     public void delete(int id) {
-        String req = "DELETE FROM message WHERE id = ?";
         try {
+            // First get the message to find its conversation
+            Message message = getById(id);
+            if (message == null) {
+                System.out.println("Message with ID " + id + " not found.");
+                return;
+            }
+            
+            int conversationId = message.getConversation_id();
+            
+            // Check if this is the last message in the conversation
+            String countQuery = "SELECT COUNT(*) FROM message WHERE conversation_id = ?";
+            PreparedStatement countStmt = cnx.prepareStatement(countQuery);
+            countStmt.setInt(1, conversationId);
+            ResultSet countRs = countStmt.executeQuery();
+            
+            int messageCount = 0;
+            if (countRs.next()) {
+                messageCount = countRs.getInt(1);
+            }
+            
+            // Delete the message
+            String req = "DELETE FROM message WHERE id = ?";
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setInt(1, id);
             stm.executeUpdate();
             System.out.println("Message supprimé avec ID : " + id);
+            
+            // If this was the last message and we're now deleting it, update the conversation status
+            if (messageCount == 1) {
+                // This was the last message, but we don't delete the conversation
+                // Instead, update its status to indicate it's empty
+                String updateConvStatus = "UPDATE conversation SET statut = 'Vide' WHERE id = ?";
+                PreparedStatement updateStmt = cnx.prepareStatement(updateConvStatus);
+                updateStmt.setInt(1, conversationId);
+                updateStmt.executeUpdate();
+                System.out.println("Conversation " + conversationId + " marked as empty");
+            }
         } catch (SQLException e) {
+            System.out.println("Error deleting message: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -169,12 +215,13 @@ public class MessageService {
     }
     
     public void update(Message message) {
-        String req = "UPDATE message SET contenu = ?, is_read = ? WHERE id = ?";
+        String req = "UPDATE message SET contenu = ?, is_read = ?, is_pinned = ? WHERE id = ?";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, message.getContenu());
             stm.setInt(2, message.getIs_read());
-            stm.setInt(3, message.getId());
+            stm.setBoolean(3, message.getIsPinned());
+            stm.setInt(4, message.getId());
             stm.executeUpdate();
             System.out.println("Message mis à jour avec ID : " + message.getId());
         } catch (SQLException e) {
@@ -196,7 +243,8 @@ public class MessageService {
                     rs.getInt("conversation_id"),
                     rs.getInt("expediteur_id"),
                     rs.getString("expediteur_email"),
-                    rs.getInt("is_read")
+                    rs.getInt("is_read"),
+                    rs.getBoolean("is_pinned")
                 );
                 
                 // Load reactions
@@ -332,4 +380,28 @@ public class MessageService {
         
         return message;
     }
-} 
+    
+    public void pinMessage(int messageId) {
+        String req = "UPDATE message SET is_pinned = 1 WHERE id = ?";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(req);
+            stm.setInt(1, messageId);
+            stm.executeUpdate();
+            System.out.println("Message épinglé avec ID : " + messageId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public void unpinMessage(int messageId) {
+        String req = "UPDATE message SET is_pinned = 0 WHERE id = ?";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(req);
+            stm.setInt(1, messageId);
+            stm.executeUpdate();
+            System.out.println("Message déépinglé avec ID : " + messageId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

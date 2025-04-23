@@ -91,6 +91,18 @@ public class ConversationListCell extends ListCell<Conversation> {
             HBox actionButtons = new HBox(8);
             actionButtons.setAlignment(Pos.CENTER_RIGHT);
             
+            // Favorite button with star icon
+            String favoriteStyle = conversation.isFavorite() 
+                ? "-fx-background-color: #f59e0b; -fx-text-fill: white;" 
+                : "-fx-background-color: #d1d5db; -fx-text-fill: white;";
+            
+            Button favoriteButton = new Button("⭐");
+            Tooltip favoriteTooltip = new Tooltip(conversation.isFavorite() ? "Retirer des favoris" : "Ajouter aux favoris");
+            Tooltip.install(favoriteButton, favoriteTooltip);
+            favoriteButton.getStyleClass().add("icon-button");
+            favoriteButton.setStyle(favoriteStyle + " -fx-cursor: hand; -fx-font-size: 14px; -fx-min-width: 30px; -fx-min-height: 30px; -fx-max-width: 30px; -fx-max-height: 30px; -fx-background-radius: 15px;");
+            favoriteButton.setOnAction(e -> toggleFavorite(conversation));
+            
             // View button with icon
             Button viewButton = new Button("👁️");
             Tooltip viewTooltip = new Tooltip("Voir la conversation");
@@ -107,7 +119,7 @@ public class ConversationListCell extends ListCell<Conversation> {
             deleteButton.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 14px; -fx-min-width: 30px; -fx-min-height: 30px; -fx-max-width: 30px; -fx-max-height: 30px; -fx-background-radius: 15px;");
             deleteButton.setOnAction(e -> deleteConversation(conversation));
             
-            actionButtons.getChildren().addAll(viewButton, deleteButton);
+            actionButtons.getChildren().addAll(favoriteButton, viewButton, deleteButton);
             
             header.getChildren().addAll(conversationTitle, statusBox, spacer, actionButtons);
 
@@ -252,6 +264,27 @@ public class ConversationListCell extends ListCell<Conversation> {
                 errorAlert.setHeaderText("Impossible de supprimer la conversation");
                 errorAlert.setContentText("Une erreur est survenue: " + e.getMessage());
                 errorAlert.showAndWait();
+            }
+        }
+    }
+    
+    private void toggleFavorite(Conversation conversation) {
+        // Toggle the favorite status
+        conversation.setFavorite(!conversation.isFavorite());
+        
+        // Update in database
+        service.modifier(conversation);
+        
+        // Refresh the cell
+        updateItem(conversation, false);
+        
+        // Refresh the ListView to update filters if needed
+        if (getListView().getScene() != null && 
+            getListView().getScene().getWindow() != null) {
+            
+            Object userData = getListView().getScene().getWindow().getUserData();
+            if (userData instanceof Runnable) {
+                ((Runnable) userData).run();
             }
         }
     }
