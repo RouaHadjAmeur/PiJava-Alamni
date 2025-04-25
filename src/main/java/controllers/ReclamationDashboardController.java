@@ -14,6 +14,7 @@ import model.Reclamation;
 import services.ReclamationServices;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.application.Platform;
 
 public class ReclamationDashboardController {
 
@@ -24,12 +25,12 @@ public class ReclamationDashboardController {
 
     @FXML
     public void initialize() {
+        System.out.println("Initializing ReclamationDashboardController");
         setupHeader();
         loadReclamations();
     }
 
     private void setupHeader() {
-        // Create header
         GridPane header = new GridPane();
         header.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 5px;");
         header.setHgap(10);
@@ -48,20 +49,20 @@ public class ReclamationDashboardController {
         header.add(ratingHeader, 4, 0);
         header.add(actionsHeader, 5, 0);
 
-        // Set column constraints
         header.getColumnConstraints().addAll(
-            new javafx.scene.layout.ColumnConstraints(150), // Objet
-            new javafx.scene.layout.ColumnConstraints(100), // Statut
-            new javafx.scene.layout.ColumnConstraints(100), // Date
-            new javafx.scene.layout.ColumnConstraints(200), // Description
-            new javafx.scene.layout.ColumnConstraints(100), // Rating
-            new javafx.scene.layout.ColumnConstraints(150)  // Actions
+            new javafx.scene.layout.ColumnConstraints(150),
+            new javafx.scene.layout.ColumnConstraints(100),
+            new javafx.scene.layout.ColumnConstraints(100),
+            new javafx.scene.layout.ColumnConstraints(200),
+            new javafx.scene.layout.ColumnConstraints(100),
+            new javafx.scene.layout.ColumnConstraints(150)
         );
 
         reclamationsListView.setStyle("-fx-background-color: white;");
     }
 
     private void loadReclamations() {
+        System.out.println("Loading reclamations...");
         ObservableList<Reclamation> list = FXCollections.observableArrayList(service.afficher());
         reclamationsListView.setItems(list);
 
@@ -77,40 +78,28 @@ public class ReclamationDashboardController {
                     grid.setHgap(10);
                     grid.setPadding(new Insets(5));
 
-                    // Objet
                     Label objet = new Label(r.getObjet());
-                    
-                    // Statut
                     Label statut = new Label("Résolue");
                     statut.setStyle("-fx-text-fill: white; -fx-background-color: #4CAF50; -fx-padding: 2 5; -fx-background-radius: 3;");
-                    
-                    // Date
                     Label date = new Label(r.getDate_soumission().toString());
-                    
-                    // Description
                     Label desc = new Label(r.getDescription());
                     
-                    // Rating
-                    Label rating = new Label(getRatingStars(r.getRating()));
-                    rating.setStyle("-fx-text-fill: #FFD700;"); // Gold color for stars
+                    Label rating = new Label();
+                    int ratingValue = r.getRating();
+                    System.out.println("Processing rating for ID " + r.getId() + ": " + ratingValue);
                     
-                    // Actions
+                    updateRatingLabel(rating, ratingValue);
+                    
                     HBox actions = new HBox(5);
-                    Button viewBtn = new Button();
+                    Button viewBtn = new Button("👁");
                     viewBtn.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
-                    viewBtn.setText("👁");
-                    
-                    Button replyBtn = new Button();
+                    Button replyBtn = new Button("↩");
                     replyBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
-                    replyBtn.setText("↩");
-                    
-                    Button deleteBtn = new Button();
+                    Button deleteBtn = new Button("🗑");
                     deleteBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white;");
-                    deleteBtn.setText("🗑");
                     
                     actions.getChildren().addAll(viewBtn, replyBtn, deleteBtn);
 
-                    // Add all elements to grid
                     grid.add(objet, 0, 0);
                     grid.add(statut, 1, 0);
                     grid.add(date, 2, 0);
@@ -118,14 +107,13 @@ public class ReclamationDashboardController {
                     grid.add(rating, 4, 0);
                     grid.add(actions, 5, 0);
 
-                    // Set column constraints
                     grid.getColumnConstraints().addAll(
-                        new javafx.scene.layout.ColumnConstraints(150), // Objet
-                        new javafx.scene.layout.ColumnConstraints(100), // Statut
-                        new javafx.scene.layout.ColumnConstraints(100), // Date
-                        new javafx.scene.layout.ColumnConstraints(200), // Description
-                        new javafx.scene.layout.ColumnConstraints(100), // Rating
-                        new javafx.scene.layout.ColumnConstraints(150)  // Actions
+                        new javafx.scene.layout.ColumnConstraints(150),
+                        new javafx.scene.layout.ColumnConstraints(100),
+                        new javafx.scene.layout.ColumnConstraints(100),
+                        new javafx.scene.layout.ColumnConstraints(200),
+                        new javafx.scene.layout.ColumnConstraints(100),
+                        new javafx.scene.layout.ColumnConstraints(150)
                     );
 
                     setGraphic(grid);
@@ -134,15 +122,43 @@ public class ReclamationDashboardController {
         });
     }
 
-    private String getRatingStars(int rating) {
-        if (rating == 0) return "☆☆☆☆☆";
-        StringBuilder stars = new StringBuilder();
-        for (int i = 0; i < rating; i++) {
-            stars.append("★");
+    private String getRatingDisplay(int rating) {
+        if (rating == -1) {
+            Label noReview = new Label("No review");
+            noReview.setStyle("-fx-text-fill: gray;");
+            return noReview.getText();
+        } else if (rating == 0) {
+            Label notRated = new Label("Not rated");
+            notRated.setStyle("-fx-text-fill: gray;");
+            return notRated.getText();
+        } else {
+            StringBuilder stars = new StringBuilder();
+            for (int i = 0; i < rating; i++) {
+                stars.append("★"); // Filled star
+            }
+            for (int i = rating; i < 5; i++) {
+                stars.append("☆"); // Empty star
+            }
+            Label ratingLabel = new Label(stars.toString());
+            ratingLabel.setStyle("-fx-text-fill: gold;");
+            return ratingLabel.getText();
         }
-        for (int i = rating; i < 5; i++) {
-            stars.append("☆");
+    }
+
+    private void updateRatingLabel(Label ratingLabel, int rating) {
+        ratingLabel.setText(getRatingDisplay(rating));
+        if (rating <= 0) {
+            ratingLabel.setStyle("-fx-text-fill: gray;");
+        } else {
+            ratingLabel.setStyle("-fx-text-fill: gold;");
         }
-        return stars.toString();
+    }
+
+    public void refreshList() {
+        System.out.println("Refreshing reclamation list");
+        Platform.runLater(() -> {
+            loadReclamations();
+            reclamationsListView.refresh();
+        });
     }
 }

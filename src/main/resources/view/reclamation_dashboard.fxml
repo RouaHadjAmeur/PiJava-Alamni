@@ -39,7 +39,7 @@
     </left>
 
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true" 
+        <ScrollPane fitToWidth="true" fitToHeight="true"
                    hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                    style="-fx-background: transparent; -fx-background-color: transparent;">
             <VBox spacing="5" alignment="TOP_CENTER" style="-fx-background-color: #ffffff; -fx-padding: 20;">
@@ -47,7 +47,7 @@
 
                 <!-- Statistics Section -->
                 <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20; -fx-background-color: #f3f4f6; -fx-background-radius: 10;">
-                    <PieChart fx:id="statusPieChart" title="Répartition des Réclamations par Statut" 
+                    <PieChart fx:id="statusPieChart" title="Répartition des Réclamations par Statut"
                               style="-fx-background-color: transparent; -fx-text-fill: #1f2937;">
                         <title>
                             <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>

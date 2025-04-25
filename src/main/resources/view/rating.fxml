@@ -2,26 +2,23 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import com.ratingwidget.RatingWidget?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.RatingController"
-            style="-fx-background-color: #f9fafb;">
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RatingController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
     
-    <center>
-        <VBox spacing="20" alignment="CENTER" style="-fx-padding: 20;">
-            <Text text="Êtes-vous satisfait de la résolution ?" 
-                  style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-            
-            <HBox fx:id="starsContainer" spacing="10" alignment="CENTER"/>
-            
-            <Label fx:id="ratingLabel" text="Sélectionnez une note" 
-                   style="-fx-font-size: 14px;"/>
-            
-            <Button fx:id="submitButton" text="Soumettre" 
-                    style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-padding: 10 20;"/>
-        </VBox>
-    </center>
-</BorderPane> 
+    <Text text="Comment évaluez-vous cette réclamation?" style="-fx-font-size: 16px;"/>
+    
+    <RatingWidget fx:id="ratingWidget"/>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="submitButton" text="Soumettre" onAction="#handleSubmit" 
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="noThanksButton" text="Non, Merci" onAction="#handleNoThanks"
+                style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
+    </HBox>
+</VBox> 

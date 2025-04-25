@@ -7,15 +7,12 @@
     <list default="true" id="02de21ab-8203-40fd-827c-dc9abfaaf803" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Reclamation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Reclamation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/controller/ParentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/ParentController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,25 +40,25 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.crud1 [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.crud1 [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.crud1 [package].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;reclamation&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/pijava/crud1&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.23708206&quot;,
-    &quot;settings.build.tools.auto.reload&quot;: &quot;ALL&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainApp.executor": "Run",
+    "Maven.crud1 [clean].executor": "Run",
+    "Maven.crud1 [install].executor": "Run",
+    "Maven.crud1 [package].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "reclamation",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/pijava/crud1",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.23708206",
+    "settings.build.tools.auto.reload": "ALL",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
   }
-}</component>
+}]]></component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="mvn clean" />

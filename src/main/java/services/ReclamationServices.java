@@ -111,33 +111,30 @@ public class ReclamationServices implements Iservices<Reclamation> {
 
     @Override
     public List<Reclamation> afficher() {
-        List<Reclamation> reclamations=new ArrayList<>();
-
-        String req="SELECT * FROM reclamation";
+        List<Reclamation> list = new ArrayList<>();
+        String req = "SELECT * FROM reclamation";
         try {
-            Statement stm=cnx.createStatement();
-            ResultSet rs= stm.executeQuery(req);
-
-            while (rs.next()){
-                Reclamation rec=new Reclamation();
-                rec.setId(rs.getInt(1));
-                rec.setUser_email(rs.getString("user_email"));
-                rec.setObjet(rs.getString("objet"));
-                rec.setDescription(rs.getString("description"));
-                rec.setStatus(rs.getString("status"));
-                rec.setDate_soumission(rs.getDate("date_soumission"));
-                rec.setAdmin_mail(rs.getString("admin_mail"));
-                rec.setRole(rs.getString("role"));
-                rec.setUser_id(rs.getInt("user_id"));
-                rec.setRating(rs.getInt("rating"));
-
-                reclamations.add(rec);
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
+                System.out.println("Loaded reclamation ID: " + r.getId() + " with rating: " + r.getRating());
+                list.add(r);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error loading reclamations: " + e.getMessage());
         }
-        System.out.println(reclamations);
-        return reclamations;
+        return list;
     }
 
     @Override
@@ -354,10 +351,12 @@ public class ReclamationServices implements Iservices<Reclamation> {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setInt(1, reclamation.getRating());
             stm.setInt(2, reclamation.getId());
-            stm.executeUpdate();
-            LOGGER.info("Rating updated for reclamation: " + reclamation.getId());
+            int result = stm.executeUpdate();
+            System.out.println("Rating updated for reclamation ID: " + reclamation.getId() + 
+                             " New rating: " + reclamation.getRating() +
+                             " Rows affected: " + result);
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error updating rating", e);
+            System.err.println("Error updating rating: " + e.getMessage());
             throw new RuntimeException("Failed to update rating", e);
         }
     }

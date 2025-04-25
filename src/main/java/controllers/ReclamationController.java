@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -144,7 +146,6 @@ public class ReclamationController {
         loadData();
     }
 
-
     private void loadData() {
         loadData(service.afficher());
     }
@@ -155,178 +156,169 @@ public class ReclamationController {
                 .collect(Collectors.groupingBy(Reclamation::getUser_email));
 
         ObservableList<Reclamation> displayList = FXCollections.observableArrayList();
-
-        // Create table headers
-        HBox headerRow = new HBox(15);
-        headerRow.setStyle("-fx-padding: 10; -fx-background-color: #f3f4f6; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
-
-        Label emailHeader = new Label("Email");
-        emailHeader.setPrefWidth(150);
-        Label dateHeader = new Label("Date");
-        dateHeader.setPrefWidth(100);
-        Label countHeader = new Label("Réclamations");
-        countHeader.setPrefWidth(120);
-
-        headerRow.getChildren().addAll(emailHeader, dateHeader, countHeader);
-        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-        // Add header to the list view
-        reclamationsListView.setPlaceholder(headerRow);
-
-        reclamationsListView.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Reclamation r, boolean empty) {
-                super.updateItem(r, empty);
-
-                if (empty || r == null) {
-                    setGraphic(null);
-                } else {
-                    String userEmail = r.getUser_email();
-                    List<Reclamation> userReclamations = reclamationsByUser.get(userEmail);
-
-                    if (userReclamations == null || userReclamations.isEmpty()) {
-                        setGraphic(null);
-                        return;
-                    }
-
-                    int reclamationCount = userReclamations.size();
-
-                    // Main row content
-                    Label email = new Label(userEmail);
-                    email.setPrefWidth(150);
-
-                    Label date = new Label(r.getDate_soumission().toString());
-                    date.setPrefWidth(100);
-
-                    // Reclamation count with dropdown button
-                    Button countButton = new Button(reclamationCount + " réclamation(s)");
-                    countButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-background-radius: 5;");
-                    countButton.setPrefWidth(120);
-
-                    // Main row container
-                    HBox mainRow = new HBox(15, email, date, countButton);
-                    mainRow.setStyle("-fx-padding: 10; -fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
-                    mainRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-                    // Create dropdown content
-                    VBox dropdownContent = new VBox(5);
-                    dropdownContent.setStyle("-fx-background-color: #f3f4f6; -fx-padding: 10; -fx-background-radius: 5;");
-                    dropdownContent.setVisible(false);
-                    dropdownContent.setManaged(false);
-
-                    // Create headers for reclamation rows
-                    HBox reclamationHeader = new HBox(10);
-                    reclamationHeader.setStyle("-fx-background-color: #e5e7eb; -fx-padding: 5; -fx-background-radius: 5;");
-
-                    Label recObjetHeader = new Label("Objet");
-                    recObjetHeader.setPrefWidth(150);
-                    Label recStatusHeader = new Label("Statut");
-                    recStatusHeader.setPrefWidth(100);
-                    Label recDateHeader = new Label("Date");
-                    recDateHeader.setPrefWidth(100);
-                    Label recDescHeader = new Label("Description");
-                    recDescHeader.setPrefWidth(200);
-                    Label recRatingHeader = new Label("Rating");
-                    recRatingHeader.setPrefWidth(100);
-                    Label recActionsHeader = new Label("Actions");
-                    recActionsHeader.setPrefWidth(120);
-
-                    reclamationHeader.getChildren().addAll(
-                        recObjetHeader, recStatusHeader, recDateHeader, 
-                        recDescHeader, recRatingHeader, recActionsHeader
-                    );
-                    dropdownContent.getChildren().add(reclamationHeader);
-
-                    for (Reclamation userReclamation : userReclamations) {
-                        HBox reclamationRow = new HBox(10);
-                        reclamationRow.setStyle("-fx-background-color: white; -fx-padding: 5; -fx-background-radius: 5;");
-
-                        Label recObjet = new Label(userReclamation.getObjet());
-                        recObjet.setPrefWidth(150);
-
-                        Label recStatus = new Label(userReclamation.getStatus());
-                        recStatus.setStyle("-fx-background-color: " + getStatusColor(userReclamation.getStatus())
-                                + "; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 10;");
-                        recStatus.setPrefWidth(100);
-
-                        Label recDate = new Label(userReclamation.getDate_soumission().toString());
-                        recDate.setPrefWidth(100);
-
-                        Label recDescription = new Label(userReclamation.getDescription());
-                        recDescription.setPrefWidth(200);
-                        recDescription.setWrapText(true);
-
-                        // Rating display
-                        int rating = userReclamation.getRating();
-                        Label recRating = new Label(getRatingStars(rating));
-                        recRating.setStyle("-fx-text-fill: #FFD700; -fx-font-size: 14px;"); // Gold color for stars
-                        recRating.setPrefWidth(100);
-
-                        HBox actionsBox = new HBox(5);
-                        actionsBox.setPrefWidth(120);
-                        actionsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-                        ImageView iconView = new ImageView(new Image(getClass().getResourceAsStream("/img/voir.png")));
-                        iconView.setFitWidth(16);
-                        iconView.setFitHeight(16);
-                        Button btnView = new Button("", iconView);
-                        btnView.setStyle("-fx-background-color: #3B82F6; -fx-background-radius: 5;");
-                        btnView.setOnAction(e -> openViewReclamation(userReclamation));
-
-                        ImageView iconRepondre = new ImageView(new Image(getClass().getResourceAsStream("/img/repondre.png")));
-                        iconRepondre.setFitWidth(16);
-                        iconRepondre.setFitHeight(16);
-                        Button btnRepondre = new Button("", iconRepondre);
-                        btnRepondre.setStyle("-fx-background-color: #10B981; -fx-background-radius: 5;");
-                        btnRepondre.setOnAction(e -> openRepondreReclamation(userReclamation));
-
-                        ImageView iconDelete = new ImageView(new Image(getClass().getResourceAsStream("/img/supprimer.png")));
-                        iconDelete.setFitWidth(16);
-                        iconDelete.setFitHeight(16);
-                        Button btnDelete = new Button("", iconDelete);
-                        btnDelete.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 5;");
-                        btnDelete.setOnAction(e -> handleDeleteReclamation(userReclamation));
-
-                        actionsBox.getChildren().addAll(btnView, btnRepondre, btnDelete);
-
-                        reclamationRow.getChildren().addAll(
-                            recObjet, recStatus, recDate, recDescription, recRating, actionsBox
-                        );
-                        dropdownContent.getChildren().add(reclamationRow);
-                    }
-
-                    // Toggle dropdown visibility
-                    countButton.setOnAction(e -> {
-                        dropdownContent.setVisible(!dropdownContent.isVisible());
-                        dropdownContent.setManaged(!dropdownContent.isManaged());
-                    });
-
-                    VBox container = new VBox(5);
-                    container.getChildren().addAll(mainRow, dropdownContent);
-                    setGraphic(container);
-                }
+        reclamationsByUser.forEach((email, userReclamations) -> {
+            if (!userReclamations.isEmpty()) {
+                displayList.add(userReclamations.get(0));
             }
         });
 
-        // Add only one reclamation per user to the list
-        reclamationsListView.setItems(FXCollections.observableArrayList(
-                reclamationsByUser.values().stream()
-                        .map(list -> list.get(0))
-                        .collect(Collectors.toList())
-        ));
+        reclamationsListView.setCellFactory(param -> new ListCell<>() {
+            private VBox dropdownContent;
+            private boolean isExpanded = false;
+
+            @Override
+            protected void updateItem(Reclamation item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+
+                String userEmail = item.getUser_email();
+                List<Reclamation> userReclamations = reclamationsByUser.get(userEmail);
+
+                // Create main row
+                HBox mainRow = new HBox(15);
+                mainRow.setStyle("-fx-padding: 10; -fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6;");
+                mainRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                Label emailLabel = new Label(userEmail);
+                emailLabel.setPrefWidth(200);
+                emailLabel.setStyle("-fx-font-weight: bold;");
+
+                Button toggleButton = new Button(userReclamations.size() + " réclamation(s)");
+                toggleButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-background-radius: 5;");
+
+                mainRow.getChildren().addAll(emailLabel, toggleButton);
+
+                dropdownContent = new VBox(5);
+                dropdownContent.setStyle("-fx-padding: 10; -fx-background-color: #f3f4f6; -fx-border-color: #ddd; -fx-border-radius: 6;");
+                dropdownContent.setVisible(false);
+                dropdownContent.setManaged(false);
+
+                HBox header = new HBox(10);
+                header.setStyle("-fx-padding: 5; -fx-background-color: #e5e7eb; -fx-background-radius: 5;");
+                header.getChildren().addAll(
+                    createHeaderLabel("Objet", 150),
+                    createHeaderLabel("Statut", 100),
+                    createHeaderLabel("Date", 100),
+                    createHeaderLabel("Description", 200),
+                    createHeaderLabel("Rating", 100),
+                    createHeaderLabel("Actions", 150)
+                );
+                dropdownContent.getChildren().add(header);
+
+                for (Reclamation r : userReclamations) {
+                    HBox reclamationRow = new HBox(10);
+                    reclamationRow.setStyle("-fx-padding: 5; -fx-background-color: white;");
+
+                    Label objetLabel = new Label(r.getObjet());
+                    objetLabel.setPrefWidth(150);
+
+                    Label statusLabel = new Label(r.getStatus());
+                    statusLabel.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) + 
+                                      "; -fx-text-fill: white; -fx-padding: 3 8; -fx-background-radius: 10;");
+                    statusLabel.setPrefWidth(100);
+
+                    Label dateLabel = new Label(r.getDate_soumission().toString());
+                    dateLabel.setPrefWidth(100);
+
+                    Label descLabel = new Label(r.getDescription());
+                    descLabel.setPrefWidth(200);
+                    descLabel.setWrapText(true);
+
+                    // Create rating widget using the RatingController's star display
+                    HBox starsContainer = new HBox(2);
+                    starsContainer.setPrefWidth(100);
+                    starsContainer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                    
+//                    Label[] stars = new Label[5];
+//                    for (int i = 0; i < 5; i++) {
+//                        stars[i] = new Label(i < r.getRating() ? "★" : "☆");
+//                        stars[i].setStyle("-fx-font-size: 14px; -fx-text-fill: " +
+//                                       (i < r.getRating() ? "#FFD700" : "#000000") + ";");
+//                        starsContainer.getChildren().add(stars[i]);
+//                    }
+                    int rating = r.getRating();
+                    starsContainer.getChildren().clear(); // Clear any previous stars or labels
+
+                    if (rating == -1) {
+                        Label noReviewLabel = new Label("No review");
+                        noReviewLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #888888;");
+                        starsContainer.getChildren().add(noReviewLabel);
+                    } else {
+                        Label[] stars = new Label[5];
+                        for (int i = 0; i < 5; i++) {
+                            stars[i] = new Label(i < rating ? "★" : "☆");
+                            stars[i].setStyle("-fx-font-size: 14px; -fx-text-fill: " +
+                                    (i < rating ? "#FFD700" : "#000000") + ";");
+                            starsContainer.getChildren().add(stars[i]);
+                        }
+                    }
+
+                    HBox actionsBox = createActionButtons(r);
+                    actionsBox.setPrefWidth(150);
+
+                    reclamationRow.getChildren().addAll(
+                        objetLabel, statusLabel, dateLabel, descLabel, starsContainer, actionsBox
+                    );
+                    dropdownContent.getChildren().add(reclamationRow);
+                }
+
+                toggleButton.setOnAction(e -> {
+                    isExpanded = !isExpanded;
+                    dropdownContent.setVisible(isExpanded);
+                    dropdownContent.setManaged(isExpanded);
+                });
+
+                VBox container = new VBox(5);
+                container.getChildren().addAll(mainRow, dropdownContent);
+                setGraphic(container);
+            }
+        });
+
+        reclamationsListView.setItems(displayList);
     }
 
-    private String getRatingStars(int rating) {
-        StringBuilder stars = new StringBuilder();
-        // Add filled stars
-        for (int i = 0; i < rating; i++) {
-            stars.append("★");
-        }
-        // Add empty stars
-        for (int i = rating; i < 5; i++) {
-            stars.append("☆");
-        }
-        return stars.toString() + " (" + rating + ")";
+    private Label createHeaderLabel(String text, double width) {
+        Label label = new Label(text);
+        label.setPrefWidth(width);
+        label.setStyle("-fx-font-weight: bold;");
+        return label;
+    }
+
+    private HBox createActionButtons(Reclamation r) {
+        HBox actionsBox = new HBox(5);
+        actionsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        ImageView viewIcon = new ImageView(new Image(getClass().getResourceAsStream("/img/voir.png")));
+        viewIcon.setFitHeight(16);
+        viewIcon.setFitWidth(16);
+        Button btnView = new Button();
+        btnView.setGraphic(viewIcon);
+        btnView.setStyle("-fx-background-color: #3B82F6; -fx-background-radius: 5;");
+        btnView.setOnAction(e -> openViewReclamation(r));
+
+        ImageView replyIcon = new ImageView(new Image(getClass().getResourceAsStream("/img/repondre.png")));
+        replyIcon.setFitHeight(16);
+        replyIcon.setFitWidth(16);
+        Button btnRepondre = new Button();
+        btnRepondre.setGraphic(replyIcon);
+        btnRepondre.setStyle("-fx-background-color: #10B981; -fx-background-radius: 5;");
+        btnRepondre.setOnAction(e -> openRepondreReclamation(r));
+
+        ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/img/supprimer.png")));
+        deleteIcon.setFitHeight(16);
+        deleteIcon.setFitWidth(16);
+        Button btnDelete = new Button();
+        btnDelete.setGraphic(deleteIcon);
+        btnDelete.setStyle("-fx-background-color: #EF4444; -fx-background-radius: 5;");
+        btnDelete.setOnAction(e -> handleDeleteReclamation(r));
+
+        actionsBox.getChildren().addAll(btnView, btnRepondre, btnDelete);
+        return actionsBox;
     }
 
     private Button createActionButton(String text, String color) {
@@ -429,12 +421,12 @@ public class ReclamationController {
     private void loadStatsFromAPI() {
         try {
             List<Reclamation> allReclamations = service.afficher();
-            
+
             Map<String, Integer> stats = new HashMap<>();
             stats.put("En attente", 0);
             stats.put("En cours", 0);
             stats.put("Résolue", 0);
-            
+
             for (Reclamation r : allReclamations) {
                 String status = r.getStatus().toLowerCase();
                 if (status.contains("en cours")) {
@@ -445,19 +437,19 @@ public class ReclamationController {
                     stats.put("Résolue", stats.get("Résolue") + 1);
                 }
             }
-            
+
             // Calculate total
             int total = stats.values().stream().mapToInt(Integer::intValue).sum();
-            
+
             // Update the pie chart with the data
             Platform.runLater(() -> {
                 statusPieChart.getData().clear();
                 for (Map.Entry<String, Integer> entry : stats.entrySet()) {
                     if (entry.getValue() > 0) { // Only add non-zero values
                         double percentage = total > 0 ? (entry.getValue() * 100.0) / total : 0;
-                        String label = String.format("%s (%d - %.1f%%)", 
-                            entry.getKey(), 
-                            entry.getValue(), 
+                        String label = String.format("%s (%d - %.1f%%)",
+                            entry.getKey(),
+                            entry.getValue(),
                             percentage);
                         statusPieChart.getData().add(new PieChart.Data(
                             label,
@@ -469,6 +461,24 @@ public class ReclamationController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getRatingStars(int rating) {
+
+        if (rating == -1) {
+            return "No review";
+        }
+
+        StringBuilder stars = new StringBuilder();
+        // Add filled stars
+        for (int i = 0; i < rating; i++) {
+            stars.append("★");
+        }
+        // Add empty stars
+        for (int i = rating; i < 5; i++) {
+            stars.append("☆");
+        }
+        return stars.toString();
     }
 
 }
