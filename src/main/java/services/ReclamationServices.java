@@ -24,7 +24,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
     @Override
     public void add(Reclamation reclamation) {
 
-        String req="INSERT INTO pijava.reclamation (user_email, objet, description, status, date_soumission, admin_mail, role, user_id) VALUES (?, ?,?,?,?,?,?,?)";
+        String req="INSERT INTO pijava.reclamation (user_email, objet, description, status, date_soumission, admin_mail, role, user_id, rating) VALUES (?, ?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm=cnx.prepareStatement(req);
             stm.setString(1, reclamation.getUser_email());
@@ -35,6 +35,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
             stm.setString(6, reclamation.getAdmin_mail());
             stm.setString(7, reclamation.getRole());
             stm.setInt(8, reclamation.getUser_id());
+            stm.setInt(9, reclamation.getRating());
             
             stm.executeUpdate();
             LOGGER.info("Reclamation added: " + reclamation);

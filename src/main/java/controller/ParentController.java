@@ -18,8 +18,10 @@ import javafx.stage.Window;
 import model.Utilisateur;
 import services.ReponseReclamationService;
 import util.Session;
-
-
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +38,7 @@ public class ParentController {
     @FXML private ImageView notificationIcon;
     @FXML private Label notificationBadge;
 
-
+    private Timeline notificationRefreshTimeline;
 
     @FXML
     public void initialize() {
@@ -45,6 +47,7 @@ public class ParentController {
         if (user != null) {
             userMenu.setText(user.getPrenom() + " " + user.getNom());
             updateNotificationBadge(user.getEmail());
+            setupNotificationRefresh();
 
             if (user.getPhoto() != null) {
                 File file = new File(user.getPhoto());
@@ -56,6 +59,21 @@ public class ParentController {
         }
     }
 
+    private void setupNotificationRefresh() {
+        if (notificationRefreshTimeline != null) {
+            notificationRefreshTimeline.stop();
+        }
+
+        notificationRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            Utilisateur user = Session.getUtilisateurConnecte();
+            if (user != null) {
+                Platform.runLater(() -> updateNotificationBadge(user.getEmail()));
+            }
+        }));
+        notificationRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        notificationRefreshTimeline.play();
+    }
+
     private void updateNotificationBadge(String userEmail) {
         ReponseReclamationService reponseService = new ReponseReclamationService();
         int unread = reponseService.countUnreadResponsesByUserEmail(userEmail);
@@ -63,6 +81,9 @@ public class ParentController {
         if (unread > 0) {
             notificationBadge.setVisible(true);
             notificationBadge.setText(String.valueOf(unread));
+            notificationBadge.setStyle("-fx-background-color: #ff0000; -fx-text-fill: white; " +
+                                     "-fx-padding: 2 8; -fx-font-weight: bold; " +
+                                     "-fx-background-radius: 10; -fx-min-width: 20;");
         } else {
             notificationBadge.setVisible(false);
         }
@@ -72,7 +93,7 @@ public class ParentController {
     private void handleNotificationsClick(MouseEvent event) {
         Utilisateur user = Session.getUtilisateurConnecte();
         if (user != null) {
-            new ReponseReclamationService().markResponsesAsRead(user.getEmail());
+            new ReponseReclamationService().markAllResponsesAsRead(user.getEmail());
             Window currentWindow = ((Node) event.getSource()).getScene().getWindow();
             switchScene("/view/MesReclamations.fxml", "Mes Réclamations", currentWindow);
         }
@@ -183,11 +204,11 @@ public class ParentController {
             newStage.setTitle(windowTitle);
             newStage.setResizable(false);
 
-            // Positionner la nouvelle fenêtre à l’endroit exact de l’ancienne
+            // Positionner la nouvelle fenêtre à l'endroit exact de l'ancienne
             if (currentWindow instanceof Stage oldStage) {
                 newStage.setX(oldStage.getX());
                 newStage.setY(oldStage.getY());
-                oldStage.close(); // fermeture rapide de l’ancienne
+                oldStage.close(); // fermeture rapide de l'ancienne
             }
 
             newStage.show(); // ouverture immédiate
@@ -203,7 +224,7 @@ public class ParentController {
         Window currentWindow;
         Utilisateur user = Session.getUtilisateurConnecte();
         if (user != null) {
-            new ReponseReclamationService().markResponsesAsRead(user.getEmail());
+            new ReponseReclamationService().markAllResponsesAsRead(user.getEmail());
         }
         if (event.getSource() instanceof MenuItem) {
             currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
@@ -220,10 +241,10 @@ public class ParentController {
     private void handleMesReclamations(ActionEvent event) {
         Window currentWindow;
 
-        Utilisateur user = Session.getUtilisateurConnecte();
-        if (user != null) {
-            new ReponseReclamationService().markResponsesAsRead(user.getEmail());
-        }
+//        Utilisateur user = Session.getUtilisateurConnecte();
+//        if (user != null) {
+//            new ReponseReclamationService().markAllResponsesAsRead(user.getEmail());
+//        }
 
         if (event.getSource() instanceof MenuItem) {
             currentWindow = ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();

@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +23,10 @@ import model.Utilisateur;
 import services.ReclamationServices;
 import services.ReponseReclamationService;
 import util.Session;
+import javafx.application.Platform;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,14 +41,23 @@ public class MesReclamationController implements Initializable {
     @FXML private MenuButton userMenu;
     @FXML private ImageView profileImage;
     @FXML private Label statusLabel;
+    @FXML private ComboBox<String> filterComboBox;
 
     private final ReclamationServices service = new ReclamationServices();
     private final ReponseReclamationService reponseService = new ReponseReclamationService();
     private Utilisateur user;
+    private ObservableList<Reclamation> allReclamations;
+    private Timeline refreshTimeline;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         user = Session.getUtilisateurConnecte();
+
+        // Initialize filter combo box
+        filterComboBox.setItems(FXCollections.observableArrayList(
+            "Tous", "En attente", "En cours", "Résolue"
+        ));
+        filterComboBox.setValue("Tous");
 
         if (user != null) {
             userMenu.setText(user.getPrenom() + " " + user.getNom());
@@ -57,7 +71,22 @@ public class MesReclamationController implements Initializable {
             }
 
             afficherMesReclamations(user.getEmail());
+            setupAutoRefresh();
         }
+    }
+
+    private void setupAutoRefresh() {
+        if (refreshTimeline != null) {
+            refreshTimeline.stop();
+        }
+        
+        refreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            if (user != null) {
+                Platform.runLater(() -> afficherMesReclamations(user.getEmail()));
+            }
+        }));
+        refreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        refreshTimeline.play();
     }
 
     @FXML
@@ -77,11 +106,24 @@ public class MesReclamationController implements Initializable {
         }
     }
 
+    @FXML
+    private void filterByStatus(ActionEvent event) {
+        String selectedStatus = filterComboBox.getValue();
+        if (selectedStatus == null || selectedStatus.equals("Tous")) {
+            reclamationsListView.setItems(allReclamations);
+        } else {
+            ObservableList<Reclamation> filteredList = allReclamations.filtered(
+                reclamation -> reclamation.getStatus().equalsIgnoreCase(selectedStatus)
+            );
+            reclamationsListView.setItems(filteredList);
+        }
+    }
+
     private void afficherMesReclamations(String userEmail) {
-        ObservableList<Reclamation> list = FXCollections.observableArrayList(service.getMesReclamations());
+        allReclamations = FXCollections.observableArrayList(service.getMesReclamations());
         Map<Integer, Integer> unreadResponseCounts = reponseService.getUnreadCountPerReclamation(userEmail);
 
-        reclamationsListView.setItems(list);
+        reclamationsListView.setItems(allReclamations);
         reclamationsListView.setCellFactory(listView -> new ListCell<>() {
             @Override
             protected void updateItem(Reclamation r, boolean empty) {
@@ -90,11 +132,33 @@ public class MesReclamationController implements Initializable {
                 if (empty || r == null) {
                     setGraphic(null);
                 } else {
+                    //System.out.println("Unread counts map: " + unreadResponseCounts);
                     VBox card = new VBox(10);
                     card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;");
 
+                    // Header with object and badge
+                    HBox header = new HBox(10);
+                    header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
                     Label objet = new Label("Objet : " + r.getObjet());
                     objet.setStyle("-fx-font-weight: bold; -fx-text-fill: #374151;");
+
+                    // Spacer pour pousser le badge à droite
+                    Region spacer = new Region();
+                    HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+                    header.getChildren().addAll(objet, spacer);
+
+                    // Add badge for unread responses
+                    Integer count = unreadResponseCounts.getOrDefault(r.getId(), 0);
+                    if (count > 0) {
+                        Label badge = new Label(count + " nouvelle" + (count > 1 ? "s" : "") + " réponse" + (count > 1 ? "s" : ""));
+                        badge.setStyle("-fx-background-color: #ff0000; -fx-text-fill: white; " +
+                                "-fx-padding: 5 10; -fx-font-weight: bold; " +
+                                "-fx-background-radius: 15;");
+                        header.getChildren().add(badge);
+                    }
+
 
                     Label description = new Label("Description : " + r.getDescription());
                     description.setWrapText(true);
@@ -103,16 +167,8 @@ public class MesReclamationController implements Initializable {
                     date.setStyle("-fx-text-fill: #6b7280;");
 
                     Label status = new Label("Statut : " + r.getStatus());
-                    status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) + "; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 5;");
-
-                    HBox header = new HBox(10, objet);
-
-                    Integer count = unreadResponseCounts.getOrDefault(r.getId(), 0);
-                    if (count > 0) {
-                        Label badge = new Label(String.valueOf(count));
-                        badge.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 2 6; -fx-font-weight: bold; -fx-background-radius: 20;");
-                        header.getChildren().add(badge);
-                    }
+                    status.setStyle("-fx-background-color: " + getStatusColor(r.getStatus()) + 
+                                  "; -fx-text-fill: white; -fx-padding: 2 8; -fx-background-radius: 5;");
 
                     Button btnVoirReponses = new Button("Voir Réponses");
                     btnVoirReponses.setStyle("-fx-background-color: #ff5722; -fx-text-fill: white; -fx-background-radius: 5;");
@@ -126,9 +182,10 @@ public class MesReclamationController implements Initializable {
         });
     }
 
-
     private void openReponse(Reclamation reclamation) {
         try {
+            reponseService.markResponsesAsRead(user.getEmail(), reclamation.getId());
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/voirRepRec.fxml"));
             Parent root = loader.load();
             voirRepRecController controller = loader.getController();
@@ -223,11 +280,6 @@ public class MesReclamationController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    private void filterByStatus(ActionEvent event) {
-        showAlert(Alert.AlertType.INFORMATION, "Filtre en cours de développement.");
     }
 
     private void showAlert(Alert.AlertType type, String message) {

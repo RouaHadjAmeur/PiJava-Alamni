@@ -180,7 +180,7 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         String sql = "SELECT COUNT(r.id) " +
                 "FROM reponsereclamation r " +
                 "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
-                "WHERE rec.user_email = ? AND r.is_read = false";
+                "WHERE rec.user_email = ? AND r.is_read = 0";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, userEmail);
@@ -194,14 +194,15 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         return count;
     }
 
-    public void markResponsesAsRead(String userEmail) {
+    public void markResponsesAsRead(String userEmail, int reclamationId) {
         String sql = "UPDATE reponsereclamation r " +
                 "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
                 "SET r.is_read = true " +
-                "WHERE rec.user_email = ? AND r.is_read = false";
+                "WHERE rec.user_email = ? AND rec.id = ? AND r.is_read = 0";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, userEmail);
+            ps.setInt(2, reclamationId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -213,10 +214,12 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         String sql = "SELECT r.reclamation_id_id, COUNT(*) as total " +
                 "FROM reponsereclamation r " +
                 "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
-                "WHERE rec.user_email = ? AND r.is_read = false " +
+                "WHERE rec.user_email = ? AND r.is_read = 0 " +
                 "GROUP BY r.reclamation_id_id";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+           // System.out.println("Unread counts map: " + map);
+
             ps.setString(1, userEmail);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -227,6 +230,20 @@ public class ReponseReclamationService implements Iservices<ReponseReclamation> 
         }
 
         return map;
+    }
+
+    public void markAllResponsesAsRead(String userEmail) {
+        String sql = "UPDATE reponsereclamation r " +
+                "JOIN reclamation rec ON r.reclamation_id_id = rec.id " +
+                "SET r.is_read = true " +
+                "WHERE rec.user_email = ? AND r.is_read = 0";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, userEmail);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -6,13 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="02de21ab-8203-40fd-827c-dc9abfaaf803" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ratingwidget/RatingWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ratingwidget/RatingWidget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ParentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ParentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/ReponseReclamationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReponseReclamationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/reclamation_dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/ParentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/ParentController.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

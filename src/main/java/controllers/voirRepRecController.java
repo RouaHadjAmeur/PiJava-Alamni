@@ -31,10 +31,14 @@ public class voirRepRecController implements Initializable {
 
 
     private Reclamation reclamation;
+    private ReponseReclamationService reponseService = new ReponseReclamationService();
 
     public void setReclamation(Reclamation reclamation) {
         this.reclamation = reclamation;
-
+        
+        // Mark responses as read for this specific reclamation
+        reponseService.markResponsesAsRead(reclamation.getUser_email(), reclamation.getId());
+        
         objetLabel.setText("Objet : " + reclamation.getObjet());
         descriptionLabel.setText("Description : " + reclamation.getDescription());
         statusLabel.setText("Statut : " + reclamation.getStatus());
@@ -80,6 +84,9 @@ public class voirRepRecController implements Initializable {
                             Stage stage = new Stage();
                             stage.setTitle("Évaluation");
                             stage.setScene(new Scene(root));
+
+                            controller.setDialogStage(stage);
+
                             stage.show();
                         } catch (IOException e) {
                             e.printStackTrace();

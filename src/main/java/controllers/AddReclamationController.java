@@ -144,9 +144,10 @@ public class AddReclamationController implements Initializable {
                     new Date(System.currentTimeMillis()),
                     selectedAdminEmail,
                     user.getRole(),
-                    user.getId()
+                    user.getId(),
+                    -2
             );
-
+            //r.setRating(-2);
             service.add(r);
 
             showAlert(Alert.AlertType.INFORMATION, "Réclamation ajoutée avec succès !");

@@ -229,34 +229,13 @@ public class ReclamationController {
                     descLabel.setPrefWidth(200);
                     descLabel.setWrapText(true);
 
-                    // Create rating widget using the RatingController's star display
+                    // Affichage correct du rating
                     HBox starsContainer = new HBox(2);
                     starsContainer.setPrefWidth(100);
                     starsContainer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                    
-//                    Label[] stars = new Label[5];
-//                    for (int i = 0; i < 5; i++) {
-//                        stars[i] = new Label(i < r.getRating() ? "★" : "☆");
-//                        stars[i].setStyle("-fx-font-size: 14px; -fx-text-fill: " +
-//                                       (i < r.getRating() ? "#FFD700" : "#000000") + ";");
-//                        starsContainer.getChildren().add(stars[i]);
-//                    }
-                    int rating = r.getRating();
-                    starsContainer.getChildren().clear(); // Clear any previous stars or labels
-
-                    if (rating == -1) {
-                        Label noReviewLabel = new Label("No review");
-                        noReviewLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #888888;");
-                        starsContainer.getChildren().add(noReviewLabel);
-                    } else {
-                        Label[] stars = new Label[5];
-                        for (int i = 0; i < 5; i++) {
-                            stars[i] = new Label(i < rating ? "★" : "☆");
-                            stars[i].setStyle("-fx-font-size: 14px; -fx-text-fill: " +
-                                    (i < rating ? "#FFD700" : "#000000") + ";");
-                            starsContainer.getChildren().add(stars[i]);
-                        }
-                    }
+                    Label ratingLabel = new Label(getRatingStars(r.getRating()));
+                    ratingLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FFD700;");
+                    starsContainer.getChildren().add(ratingLabel);
 
                     HBox actionsBox = createActionButtons(r);
                     actionsBox.setPrefWidth(150);
@@ -464,9 +443,11 @@ public class ReclamationController {
     }
 
     private String getRatingStars(int rating) {
-
         if (rating == -1) {
             return "No review";
+        }
+        else if (rating == -2) {
+            return "_";
         }
 
         StringBuilder stars = new StringBuilder();

@@ -10,15 +10,20 @@
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
-    
-    <Text text="Comment évaluez-vous cette réclamation?" style="-fx-font-size: 16px;"/>
-    
-    <RatingWidget fx:id="ratingWidget"/>
-    
+
+    <Text text="Comment évaluez-vous le service ?" style="-fx-font-size: 16px;"/>
+
+    <HBox alignment="CENTER">
+        <RatingWidget fx:id="ratingWidget"/>
+    </HBox>
+
+    <Label fx:id="ratingLabel" text="Sélectionnez une note" style="-fx-font-size: 14px; -fx-text-fill: #4B5563;" alignment="CENTER"/>
+
+    <!-- Les boutons en dessous -->
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="submitButton" text="Soumettre" onAction="#handleSubmit" 
+        <Button fx:id="submitButton" text="Soumettre" onAction="#handleSubmit"
                 style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
         <Button fx:id="noThanksButton" text="Non, Merci" onAction="#handleNoThanks"
                 style="-fx-background-color: #9E9E9E; -fx-text-fill: white;"/>
     </HBox>
-</VBox> 
+</VBox>
