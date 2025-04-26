@@ -49,7 +49,7 @@ public class DiscussionReclamationService {
                         dr.getContenu(),
                         dr.getDateReponse()
                     );
-                    EmailService.sendEmail(reclamation.getUser_email(), subject, content);
+                    //EmailService.sendEmail(reclamation.getUser_email(), subject, content);
                 }
                 // If the response is from user, notify the admin
                 else {
@@ -65,7 +65,7 @@ public class DiscussionReclamationService {
                         dr.getContenu(),
                         dr.getDateReponse()
                     );
-                    EmailService.sendEmail(reclamation.getAdmin_mail(), subject, content);
+                    //EmailService.sendEmail(reclamation.getAdmin_mail(), subject, content);
                 }
             }
         } catch (SQLException e) {

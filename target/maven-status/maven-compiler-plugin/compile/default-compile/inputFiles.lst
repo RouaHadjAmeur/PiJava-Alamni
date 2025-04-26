@@ -1,3 +1,4 @@
+C:\pijava\crud1\src\main\java\com\ratingwidget\RatingWidget.java
 C:\pijava\crud1\src\main\java\controller\AdminController.java
 C:\pijava\crud1\src\main\java\controller\AjouterUtilisateurController.java
 C:\pijava\crud1\src\main\java\controller\DemandeInscriptionController.java
@@ -13,6 +14,7 @@ C:\pijava\crud1\src\main\java\controller\UtilisateurController.java
 C:\pijava\crud1\src\main\java\controllers\AddReclamationController.java
 C:\pijava\crud1\src\main\java\controllers\EditReclamationController.java
 C:\pijava\crud1\src\main\java\controllers\MesReclamationController.java
+C:\pijava\crud1\src\main\java\controllers\RatingController.java
 C:\pijava\crud1\src\main\java\controllers\ReclamationController.java
 C:\pijava\crud1\src\main\java\controllers\ReclamationDashboardController.java
 C:\pijava\crud1\src\main\java\controllers\ReclamationDetailsController.java
@@ -33,7 +35,6 @@ C:\pijava\crud1\src\main\java\model\ReponseReclamation.java
 C:\pijava\crud1\src\main\java\model\Utilisateur.java
 C:\pijava\crud1\src\main\java\service\UtilisateurService.java
 C:\pijava\crud1\src\main\java\services\DiscussionReclamationService.java
-C:\pijava\crud1\src\main\java\services\EmailService.java
 C:\pijava\crud1\src\main\java\services\Iservices.java
 C:\pijava\crud1\src\main\java\services\ReclamationServices.java
 C:\pijava\crud1\src\main\java\services\ReponseReclamationService.java

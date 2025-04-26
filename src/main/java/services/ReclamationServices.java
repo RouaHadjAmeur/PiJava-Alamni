@@ -3,17 +3,32 @@ import Main.DatabaseConnection;
 import model.Reclamation;
 import model.Utilisateur;
 import util.Session;
+import services.ReponseReclamationService;
+import model.ReponseReclamation;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 public class ReclamationServices implements Iservices<Reclamation> {
 
     private static final Logger LOGGER = Logger.getLogger(ReclamationServices.class.getName());
+
+    // Remplace cette clé par ta vraie clé GeminiAI
+    private static final String GEMINI_API_KEY = "AIzaSyDVwpbH46wq2B-15u_4JHvIQNlkzyMzEeo";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=";
 
     Connection cnx;
 
@@ -23,10 +38,9 @@ public class ReclamationServices implements Iservices<Reclamation> {
 
     @Override
     public void add(Reclamation reclamation) {
-
         String req="INSERT INTO pijava.reclamation (user_email, objet, description, status, date_soumission, admin_mail, role, user_id, rating) VALUES (?, ?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement stm=cnx.prepareStatement(req);
+            PreparedStatement stm=cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, reclamation.getUser_email());
             stm.setString(2, reclamation.getObjet());
             stm.setString(3, reclamation.getDescription());
@@ -36,9 +50,64 @@ public class ReclamationServices implements Iservices<Reclamation> {
             stm.setString(7, reclamation.getRole());
             stm.setInt(8, reclamation.getUser_id());
             stm.setInt(9, reclamation.getRating());
-            
             stm.executeUpdate();
             LOGGER.info("Reclamation added: " + reclamation);
+
+            // Récupérer l'ID généré de la nouvelle réclamation
+            int newReclamationId = -1;
+            try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    newReclamationId = generatedKeys.getInt(1);
+                }
+            }
+
+            // 1. Récupérer toutes les anciennes réclamations résolues
+            List<Reclamation> anciennes = new ArrayList<>();
+            String sql = "SELECT * FROM reclamation WHERE status = 'Résolue'";
+            try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    Reclamation r = new Reclamation();
+                    r.setId(rs.getInt("id"));
+                    r.setObjet(rs.getString("objet"));
+                    r.setDescription(rs.getString("description"));
+                    anciennes.add(r);
+                }
+            }
+
+            // 2. Comparer la nouvelle réclamation à chaque ancienne
+            double maxScore = 0;
+            Reclamation plusProche = null;
+            for (Reclamation ancienne : anciennes) {
+                double score = getSimilarityGemini(
+                    reclamation.getObjet() + " " + reclamation.getDescription(),
+                    ancienne.getObjet() + " " + ancienne.getDescription()
+                );
+                if (score > maxScore) {
+                    maxScore = score;
+                    plusProche = ancienne;
+                }
+            }
+
+            // 3. Si similarité >= 0.85, créer une réponse automatique
+            if (maxScore >= 0.85 && plusProche != null) {
+                // Récupérer la réponse de l'ancienne réclamation
+                ReponseReclamationService repService = new ReponseReclamationService();
+                List<ReponseReclamation> reponses = repService.getReponsesByReclamationId(plusProche.getId());
+                if (!reponses.isEmpty()) {
+                    ReponseReclamation ancienneRep = reponses.get(0); // On prend la première réponse
+                    // Créer une nouvelle réponse automatique
+                    ReponseReclamation autoRep = new ReponseReclamation();
+                    Reclamation rec = new Reclamation();
+                    rec.setId(newReclamationId);
+                    autoRep.setReclamation(rec);
+                    autoRep.setAdminId(ancienneRep.getAdminId());
+                    autoRep.setContenue("[Réponse automatique] " + ancienneRep.getContenue());
+                    autoRep.setDateReponse(java.sql.Date.valueOf(LocalDate.now(ZoneId.systemDefault())));
+                    repService.add(autoRep);
+                    LOGGER.info("Réponse automatique ajoutée à la réclamation ID: " + newReclamationId);
+                }
+            }
 
             // Send email notification to admin
             try {
@@ -62,6 +131,61 @@ public class ReclamationServices implements Iservices<Reclamation> {
             LOGGER.log(Level.SEVERE, "Error adding reclamation", e);
             throw new RuntimeException("Failed to add reclamation", e);
         }
+    }
+
+    // Appel à l'API GeminiAI pour la similarité (cosine similarity entre embeddings)
+    private double getSimilarityGemini(String texte1, String texte2) {
+        try {
+            double[] emb1 = getGeminiEmbedding(texte1);
+            double[] emb2 = getGeminiEmbedding(texte2);
+            if (emb1 == null || emb2 == null) return 0.0;
+            return cosineSimilarity(emb1, emb2);
+        } catch (Exception e) {
+            LOGGER.warning("Erreur GeminiAI: " + e.getMessage());
+            return 0.0;
+        }
+    }
+
+    // Appel Gemini pour obtenir l'embedding d'un texte
+    private double[] getGeminiEmbedding(String texte) throws Exception {
+        URL url = new URL(GEMINI_API_URL + GEMINI_API_KEY);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+        String jsonInput = "{\"content\":{\"parts\":[{\"text\":\"" + texte.replace("\"", "\\\"") + "\"}]}}";
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInput.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        int code = conn.getResponseCode();
+        if (code != 200) throw new RuntimeException("Gemini API HTTP error: " + code);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line.trim());
+            }
+            JsonObject obj = JsonParser.parseString(response.toString()).getAsJsonObject();
+            if (!obj.has("embedding")) return null;
+            var arr = obj.getAsJsonObject("embedding").getAsJsonArray("values");
+            double[] vec = new double[arr.size()];
+            for (int i = 0; i < arr.size(); i++) {
+                vec[i] = arr.get(i).getAsDouble();
+            }
+            return vec;
+        }
+    }
+
+    // Calcul de la similarité cosinus entre deux vecteurs
+    private double cosineSimilarity(double[] v1, double[] v2) {
+        double dot = 0.0, norm1 = 0.0, norm2 = 0.0;
+        for (int i = 0; i < v1.length; i++) {
+            dot += v1[i] * v2[i];
+            norm1 += v1[i] * v1[i];
+            norm2 += v2[i] * v2[i];
+        }
+        return (norm1 == 0 || norm2 == 0) ? 0.0 : dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
     }
 
     @Override

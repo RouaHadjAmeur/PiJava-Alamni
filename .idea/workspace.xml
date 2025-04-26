@@ -6,17 +6,35 @@
   <component name="ChangeListManager">
     <list default="true" id="02de21ab-8203-40fd-827c-dc9abfaaf803" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ratingwidget/RatingWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ratingwidget/RatingWidget.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ParentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ParentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/AddReclamationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/MesReclamationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/RatingController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/ReclamationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controllers/voirRepRecController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/DiscussionReclamationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReclamationServices.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/ReponseReclamationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/ReponseReclamationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/rating.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/controller/ParentController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/ParentController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/AdminController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/AjouterUtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/AjouterUtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/DemandeInscriptionController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/DemandeInscriptionController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/DemandeInscriptionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/DemandeInscriptionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/DetailUtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/DetailUtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/EleveController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/EleveController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/EnseignantController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/EnseignantController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/LoginController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/ModifierUtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/ModifierUtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/ProfilUtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/ProfilUtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/SignUpController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/SignUpController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/UtilisateurController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/UtilisateurController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/UtilisateurController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/UtilisateurController$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/controller/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/controller/UtilisateurController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/main/MainApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/MainApp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Administrateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/Administrateur.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Eleve.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/Eleve.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Enseignant.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/Enseignant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/ParentUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/ParentUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Utilisateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/Utilisateur.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service/UtilisateurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/service/UtilisateurService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/util/DatabaseConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/util/DatabaseConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/util/Session.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/util/Session.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,9 +65,13 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.MainApp.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
     "Maven.crud1 [clean].executor": "Run",
     "Maven.crud1 [install].executor": "Run",
     "Maven.crud1 [package].executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "reclamation",
@@ -60,7 +82,7 @@
     "project.structure.proportion": "0.15527344",
     "project.structure.side.proportion": "0.23708206",
     "settings.build.tools.auto.reload": "ALL",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RunAnythingCache">

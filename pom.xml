@@ -60,13 +60,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- RatingWidget API -->
-        <dependency>
-            <groupId>com.ratingwidget</groupId>
-            <artifactId>ratingwidget-java</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
