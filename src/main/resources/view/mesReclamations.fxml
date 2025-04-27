@@ -4,36 +4,54 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MesReclamationController"
             prefHeight="687" prefWidth="1022">
 
     <!-- Header -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #ffffff; -fx-padding: 10 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+        <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #fff;">
             <Label fx:id="alamniLogo" text="📚 ALAMNI"
                    style="-fx-text-fill: #ff5722; -fx-font-size: 24px; -fx-font-weight: bold;"
                    onMouseClicked="#handleAlamniClick"/>
 
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
             <HBox spacing="20">
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Home" />
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="About Us" />
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Classes" />
-                <MenuButton style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;" text="Réclamations">
+                <Button text="Home" style="-fx-background-color: transparent;"/>
+                <Button text="Élèves" style="-fx-background-color: transparent;"/>
+                <Button text="Contact" style="-fx-background-color: transparent;"/>
+                <MenuButton text="Réclamations" style="-fx-text-fill: #ff5722; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #ffffff;">
                     <items>
-                        <MenuItem onAction="#handleAjouterReclamation" text="Ajouter Réclamation" />
-                        <MenuItem onAction="#handleMesReclamations" text="Mes Réclamations" />
+                        <MenuItem text="Ajouter Réclamation" onAction="#handleAjouterReclamation"/>
+                        <MenuItem text="Mes Réclamations" onAction="#handleMesReclamations"/>
                     </items>
                 </MenuButton>
-                <Hyperlink style="-fx-text-fill: #374151; -fx-font-size: 14px;" text="Discussion" />
             </HBox>
+
+            <!-- Notification badge -->
+            <StackPane fx:id="notificationPane">
+                <ImageView fx:id="notificationIcon"
+                           fitWidth="24" fitHeight="24"
+                           pickOnBounds="true"
+                           style="-fx-cursor: hand;">
+                    <image>
+                        <Image url="@/img/notification.png"/>
+                    </image>
+                </ImageView>
+                <Label fx:id="notificationBadge"
+                       text="0"
+                       style="-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 10px; -fx-padding: 2px 6px; -fx-background-radius: 10;"
+                       visible="false"
+                       StackPane.alignment="TOP_RIGHT"/>
+            </StackPane>
+
             <Region HBox.hgrow="ALWAYS"/>
 
             <ImageView fx:id="profileImage" fitWidth="40" fitHeight="40"/>
 
             <MenuButton fx:id="userMenu" text="Mon Compte"
-                        style="-fx-text-fill: #374151;-fx-border-color: #ffffff; -fx-background-color: #ffffff; -fx-font-size: 14px;">
+                        style="-fx-font-size: 16; -fx-text-fill: #333; -fx-background-color: #ffffff;">
                 <items>
                     <MenuItem text="👤 Mon Profil" onAction="#handleMonProfil"/>
                     <MenuItem text="📄 Bulletin" onAction="#handleMesBulletins"/>

@@ -18,6 +18,7 @@ import services.ReclamationServices;
 import service.UtilisateurService;
 import util.Session;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,10 @@ public class AddReclamationController implements Initializable {
     @FXML private Label objetErrorLabel;
     @FXML private Label descriptionErrorLabel;
     @FXML private Label adminEmailErrorLabel;
+    @FXML private StackPane notificationPane;
+    @FXML private ImageView notificationIcon;
+    @FXML private Label notificationBadge;
+    private javafx.animation.Timeline notificationRefreshTimeline;
 
     private final ReclamationServices service = new ReclamationServices();
 
@@ -51,6 +56,8 @@ public class AddReclamationController implements Initializable {
         // Set user info
         Utilisateur user = Session.getUtilisateurConnecte();
         if (user != null) {
+            updateNotificationBadge(user.getEmail());
+            setupNotificationRefresh();
             userEmailLabel.setText(user.getEmail());
             userRoleLabel.setText(user.getRole());
             userMenu.setText(user.getPrenom() + " " + user.getNom());
@@ -62,6 +69,9 @@ public class AddReclamationController implements Initializable {
                 }
             }
         }
+        
+        // Add click handler for notification icon
+        notificationIcon.setOnMouseClicked(this::handleNotificationsClick);
         
         // Load admin emails
         loadAdminEmails();
@@ -314,6 +324,44 @@ private void handleLogout() {
         stage.setTitle("Connexion - Alamni");
     } catch (IOException e) {
         e.printStackTrace();
+    }
+}
+
+private void setupNotificationRefresh() {
+    if (notificationRefreshTimeline != null) {
+        notificationRefreshTimeline.stop();
+    }
+    notificationRefreshTimeline = new javafx.animation.Timeline(new javafx.animation.KeyFrame(javafx.util.Duration.seconds(5), event -> {
+        Utilisateur user = Session.getUtilisateurConnecte();
+        if (user != null) {
+            javafx.application.Platform.runLater(() -> updateNotificationBadge(user.getEmail()));
+        }
+    }));
+    notificationRefreshTimeline.setCycleCount(javafx.animation.Timeline.INDEFINITE);
+    notificationRefreshTimeline.play();
+}
+
+private void updateNotificationBadge(String userEmail) {
+    services.ReponseReclamationService reponseService = new services.ReponseReclamationService();
+    int unread = reponseService.countUnreadResponsesByUserEmail(userEmail);
+    if (unread > 0) {
+        notificationBadge.setVisible(true);
+        notificationBadge.setText(String.valueOf(unread));
+        notificationBadge.setStyle("-fx-background-color: #ff0000; -fx-text-fill: white; " +
+                                 "-fx-padding: 2 8; -fx-font-weight: bold; " +
+                                 "-fx-background-radius: 10; -fx-min-width: 20;");
+    } else {
+        notificationBadge.setVisible(false);
+    }
+}
+
+@FXML
+private void handleNotificationsClick(javafx.scene.input.MouseEvent event) {
+    Utilisateur user = Session.getUtilisateurConnecte();
+    if (user != null) {
+        new services.ReponseReclamationService().markAllResponsesAsRead(user.getEmail());
+        javafx.stage.Window currentWindow = ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        switchScene("/view/MesReclamations.fxml", "Mes Réclamations", currentWindow);
     }
 }
 

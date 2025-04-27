@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 
 public class MesReclamationController implements Initializable {
     @FXML private Label alamniLogo;
@@ -42,16 +43,29 @@ public class MesReclamationController implements Initializable {
     @FXML private ImageView profileImage;
     @FXML private Label statusLabel;
     @FXML private ComboBox<String> filterComboBox;
+    @FXML private StackPane notificationPane;
+    @FXML private ImageView notificationIcon;
+    @FXML private Label notificationBadge;
 
     private final ReclamationServices service = new ReclamationServices();
     private final ReponseReclamationService reponseService = new ReponseReclamationService();
     private Utilisateur user;
     private ObservableList<Reclamation> allReclamations;
     private Timeline refreshTimeline;
+    private Timeline notificationRefreshTimeline;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         user = Session.getUtilisateurConnecte();
+
+        // Notification logic
+        if (user != null) {
+            updateNotificationBadge(user.getEmail());
+            setupNotificationRefresh();
+        }
+
+        // Add click handler for notification icon
+        notificationIcon.setOnMouseClicked(this::handleNotificationsClick);
 
         // Initialize filter combo box
         filterComboBox.setItems(FXCollections.observableArrayList(
@@ -87,6 +101,33 @@ public class MesReclamationController implements Initializable {
         }));
         refreshTimeline.setCycleCount(Timeline.INDEFINITE);
         refreshTimeline.play();
+    }
+
+    private void setupNotificationRefresh() {
+        if (notificationRefreshTimeline != null) {
+            notificationRefreshTimeline.stop();
+        }
+        notificationRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            Utilisateur user = Session.getUtilisateurConnecte();
+            if (user != null) {
+                Platform.runLater(() -> updateNotificationBadge(user.getEmail()));
+            }
+        }));
+        notificationRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        notificationRefreshTimeline.play();
+    }
+
+    private void updateNotificationBadge(String userEmail) {
+        int unread = reponseService.countUnreadResponsesByUserEmail(userEmail);
+        if (unread > 0) {
+            notificationBadge.setVisible(true);
+            notificationBadge.setText(String.valueOf(unread));
+            notificationBadge.setStyle("-fx-background-color: #ff0000; -fx-text-fill: white; " +
+                                     "-fx-padding: 2 8; -fx-font-weight: bold; " +
+                                     "-fx-background-radius: 10; -fx-min-width: 20;");
+        } else {
+            notificationBadge.setVisible(false);
+        }
     }
 
     @FXML
@@ -279,6 +320,16 @@ public class MesReclamationController implements Initializable {
             stage.setTitle("Connexion - Alamni");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleNotificationsClick(MouseEvent event) {
+        Utilisateur user = Session.getUtilisateurConnecte();
+        if (user != null) {
+            new ReponseReclamationService().markAllResponsesAsRead(user.getEmail());
+            Window currentWindow = ((Node) event.getSource()).getScene().getWindow();
+            switchScene("/view/MesReclamations.fxml", "Mes Réclamations", currentWindow);
         }
     }
 
