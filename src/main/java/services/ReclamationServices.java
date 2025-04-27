@@ -237,7 +237,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
     @Override
     public List<Reclamation> afficher() {
         List<Reclamation> list = new ArrayList<>();
-        String req = "SELECT * FROM reclamation";
+        String req = "SELECT * FROM reclamation WHERE status != 'Archivée'";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ResultSet rs = ps.executeQuery();
@@ -496,12 +496,10 @@ public class ReclamationServices implements Iservices<Reclamation> {
 
     public List<Reclamation> getResolvedReclamations() {
         List<Reclamation> reclamations = new ArrayList<>();
-        // Sélectionner uniquement les réclamations résolues depuis plus de 3 jours
-        String query = "SELECT * FROM reclamation WHERE status = 'Résolue' AND date_resolution <= DATE_SUB(CURDATE(), INTERVAL 3 DAY)";
-        
+        // Sélectionner uniquement les réclamations résolues depuis plus de 3 jours et dont la date de résolution n'est pas NULL
+        String query = "SELECT * FROM reclamation WHERE status = 'Résolue' AND date_resolution IS NOT NULL AND date_resolution <= DATE_SUB(CURDATE(), INTERVAL 3 DAY)";
         try (PreparedStatement stmt = cnx.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
-            
             while (rs.next()) {
                 Reclamation r = new Reclamation(
                     rs.getString("user_email"),

@@ -158,9 +158,8 @@ public class ReclamationController {
         Map<String, List<Reclamation>> reclamationsByUser = reclamations.stream()
                 .collect(Collectors.groupingBy(Reclamation::getUser_email));
 
-        // Compter les archivées par user
-        List<Reclamation> all = service.afficherToutes();
-        Map<String, Long> archivedByUser = all.stream()
+        // Compter les archivées par user (dans la base locale uniquement)
+        Map<String, Long> archivedByUser = service.afficherToutes().stream()
             .filter(r -> "Archivée".equalsIgnoreCase(r.getStatus()))
             .collect(Collectors.groupingBy(Reclamation::getUser_email, Collectors.counting()));
 
@@ -388,15 +387,13 @@ public class ReclamationController {
         try {
             ArchiveService archiveService = new ArchiveService();
             List<Reclamation> archivedReclamations = archiveService.getArchivedReclamations();
-            
             if (archivedReclamations != null) {
-                // Afficher les archives dans une nouvelle fenêtre
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/archives.fxml"));
                 Parent root = loader.load();
-                
                 Stage stage = new Stage();
                 stage.setTitle("Archives des Réclamations");
                 stage.setScene(new Scene(root));
+                stage.setOnHidden(e -> loadData(service.afficher())); // Rafraîchir le dashboard à la fermeture
                 stage.show();
             } else {
                 showAlert(Alert.AlertType.ERROR, "Impossible de récupérer les archives.");
