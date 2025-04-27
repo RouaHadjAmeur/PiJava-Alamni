@@ -155,7 +155,8 @@ public class AddReclamationController implements Initializable {
                     selectedAdminEmail,
                     user.getRole(),
                     user.getId(),
-                    -2
+                    -2,
+                    null
             );
             //r.setRating(-2);
             service.add(r);

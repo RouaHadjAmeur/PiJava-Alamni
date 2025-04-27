@@ -14,6 +14,7 @@ public class Reclamation {
     private String role;
     private int user_id;
     private int rating;
+    private java.sql.Date date_resolution;
 
     public Reclamation(String mail, String aaa, String aaaa, String enAttente, String s, String mail1, String etudiant, int userId, int rating) {
     }
@@ -99,6 +100,14 @@ public class Reclamation {
         this.rating = rating;
     }
 
+    public java.sql.Date getDate_resolution() {
+        return date_resolution;
+    }
+
+    public void setDate_resolution(java.sql.Date date_resolution) {
+        this.date_resolution = date_resolution;
+    }
+
     @Override
     public String toString() {
         return "Reclamation{" +
@@ -115,7 +124,7 @@ public class Reclamation {
                 '}';
     }
 
-    public Reclamation(int id, String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating) {
+    public Reclamation(int id, String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating, Date date_resolution) {
         this.id = id;
         this.user_email = user_email;
         this.objet = objet;
@@ -126,21 +135,10 @@ public class Reclamation {
         this.role = role;
         this.user_id = user_id;
         this.rating = rating;
+        this.date_resolution = date_resolution;
     }
 
-    public Reclamation(String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id) {
-        this.user_email = user_email;
-        this.objet = objet;
-        this.description = description;
-        this.status = status;
-        this.date_soumission = date_soumission;
-        this.admin_mail = admin_mail;
-        this.role = role;
-        this.user_id = user_id;
-
-    }
-
-    public Reclamation(String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating) {
+    public Reclamation(String user_email, String objet, String description, String status, Date date_soumission, String admin_mail, String role, int user_id, int rating, Date date_resolution) {
         this.user_email = user_email;
         this.objet = objet;
         this.description = description;
@@ -150,7 +148,7 @@ public class Reclamation {
         this.role = role;
         this.user_id = user_id;
         this.rating = rating;
-
+        this.date_resolution = date_resolution;
     }
 
     public Reclamation() {

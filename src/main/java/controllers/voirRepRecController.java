@@ -69,6 +69,7 @@ public class voirRepRecController implements Initializable {
                     if (response == oui) {
                         // ✅ Mettre à jour le statut
                         reclamation.setStatus("Résolue");
+                        reclamation.setDate_resolution(new java.sql.Date(System.currentTimeMillis()));
                         statusLabel.setText("Statut : Résolue");
 
                         // Appel du service pour enregistrer le changement

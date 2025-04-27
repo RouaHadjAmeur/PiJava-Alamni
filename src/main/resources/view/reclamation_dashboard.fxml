@@ -33,6 +33,7 @@
                 <Button text="Demandes" onAction="#handleDemandes" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
                 <Button text="Classes" onAction="#handleClasses" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
                 <Button text="Réclamations" onAction="#handleReclamations" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
+                <Button text="Archives" onAction="#handleArchives" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
                 <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT;"/>
             </VBox>
         </VBox>

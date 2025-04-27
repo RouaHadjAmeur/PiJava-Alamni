@@ -253,6 +253,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setRole(rs.getString("role"));
                 r.setUser_id(rs.getInt("user_id"));
                 r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
                 System.out.println("Loaded reclamation ID: " + r.getId() + " with rating: " + r.getRating());
                 list.add(r);
             }
@@ -294,7 +295,8 @@ public class ReclamationServices implements Iservices<Reclamation> {
                         rs.getString("admin_mail"),
                         rs.getString("role"),
                         rs.getInt("user_id"),
-                        rs.getInt("rating")
+                        rs.getInt("rating"),
+                        rs.getDate("date_resolution")
                                 );
             }
         } catch (SQLException e) {
@@ -304,11 +306,12 @@ public class ReclamationServices implements Iservices<Reclamation> {
     }
 
     public void update(Reclamation reclamation) {
-        String req = "UPDATE reclamation SET status=? WHERE id=?";
+        String req = "UPDATE reclamation SET status=?, date_resolution=? WHERE id=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, reclamation.getStatus());
-            stm.setInt(2, reclamation.getId());
+            stm.setDate(2, reclamation.getDate_resolution());
+            stm.setInt(3, reclamation.getId());
             stm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -339,6 +342,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setRole(rs.getString("role"));
                 r.setUser_id(rs.getInt("user_id"));
                 r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
 
                 list.add(r);
             }
@@ -370,6 +374,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setRole(rs.getString("role"));
                 r.setUser_id(rs.getInt("user_id"));
                 r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
                 resultats.add(r);
             }
         } catch (SQLException e) {
@@ -399,6 +404,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setRole(rs.getString("role"));
                 r.setUser_id(rs.getInt("user_id"));
                 r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
                 resultats.add(r);
             }
         } catch (SQLException e) {
@@ -427,6 +433,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
                 r.setRole(rs.getString("role"));
                 r.setUser_id(rs.getInt("user_id"));
                 r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
                 list.add(r);
             }
 
@@ -467,6 +474,7 @@ public class ReclamationServices implements Iservices<Reclamation> {
         r.setRole(rs.getString("role"));
         r.setUser_id(rs.getInt("user_id"));
         r.setRating(rs.getInt("rating"));
+        r.setDate_resolution(rs.getDate("date_resolution"));
         return r;
     }
 
@@ -484,6 +492,76 @@ public class ReclamationServices implements Iservices<Reclamation> {
             System.err.println("Error updating rating: " + e.getMessage());
             throw new RuntimeException("Failed to update rating", e);
         }
+    }
+
+    public List<Reclamation> getResolvedReclamations() {
+        List<Reclamation> reclamations = new ArrayList<>();
+        // Sélectionner uniquement les réclamations résolues depuis plus de 3 jours
+        String query = "SELECT * FROM reclamation WHERE status = 'Résolue' AND date_resolution <= DATE_SUB(CURDATE(), INTERVAL 3 DAY)";
+        
+        try (PreparedStatement stmt = cnx.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                Reclamation r = new Reclamation(
+                    rs.getString("user_email"),
+                    rs.getString("objet"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getDate("date_soumission"),
+                    rs.getString("admin_mail"),
+                    rs.getString("role"),
+                    rs.getInt("user_id"),
+                    rs.getInt("rating"),
+                    rs.getDate("date_resolution")
+                );
+                r.setId(rs.getInt("id"));
+                reclamations.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reclamations;
+    }
+
+    public void markAsArchived(List<Reclamation> reclamations) {
+        String query = "UPDATE reclamation SET status = 'Archivée' WHERE id = ?";
+        
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            for (Reclamation r : reclamations) {
+                stmt.setInt(1, r.getId());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Reclamation> afficherToutes() {
+        List<Reclamation> list = new ArrayList<>();
+        String req = "SELECT * FROM reclamation";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Reclamation r = new Reclamation();
+                r.setId(rs.getInt("id"));
+                r.setUser_email(rs.getString("user_email"));
+                r.setObjet(rs.getString("objet"));
+                r.setDescription(rs.getString("description"));
+                r.setStatus(rs.getString("status"));
+                r.setDate_soumission(rs.getDate("date_soumission"));
+                r.setAdmin_mail(rs.getString("admin_mail"));
+                r.setRole(rs.getString("role"));
+                r.setUser_id(rs.getInt("user_id"));
+                r.setRating(rs.getInt("rating"));
+                r.setDate_resolution(rs.getDate("date_resolution"));
+                list.add(r);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error loading all reclamations: " + e.getMessage());
+        }
+        return list;
     }
 
 }

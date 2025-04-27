@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ArchiveController"
+            style="-fx-background-color: #f9fafb;">
+
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <Label text="Archives des Réclamations"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+
+            <!-- Filtres -->
+            <HBox spacing="10" alignment="CENTER">
+                <TextField fx:id="searchField" promptText="Rechercher..."
+                          style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+                <ComboBox fx:id="filterComboBox" promptText="Filtrer par statut"
+                          style="-fx-background-radius: 20; -fx-padding: 5 10;"/>
+            </HBox>
+
+            <!-- Liste des archives -->
+            <TableView fx:id="archivesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="150"/>
+                    <TableColumn fx:id="objetColumn" text="Objet" prefWidth="200"/>
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="300"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane> 

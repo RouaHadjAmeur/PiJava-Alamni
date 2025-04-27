@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Reclamation;
 import model.Utilisateur;
+import services.ArchiveService;
 import services.ReclamationServices;
 import util.Session;
 
@@ -71,6 +72,8 @@ public class ReclamationController {
 
     public ReclamationController() {
         Main.DatabaseConnection.getInstance();
+        // Démarrer le service d'archivage
+        new ArchiveService().startArchiving();
     }
 
     @FXML
@@ -155,6 +158,12 @@ public class ReclamationController {
         Map<String, List<Reclamation>> reclamationsByUser = reclamations.stream()
                 .collect(Collectors.groupingBy(Reclamation::getUser_email));
 
+        // Compter les archivées par user
+        List<Reclamation> all = service.afficherToutes();
+        Map<String, Long> archivedByUser = all.stream()
+            .filter(r -> "Archivée".equalsIgnoreCase(r.getStatus()))
+            .collect(Collectors.groupingBy(Reclamation::getUser_email, Collectors.counting()));
+
         ObservableList<Reclamation> displayList = FXCollections.observableArrayList();
         reclamationsByUser.forEach((email, userReclamations) -> {
             if (!userReclamations.isEmpty()) {
@@ -178,6 +187,7 @@ public class ReclamationController {
 
                 String userEmail = item.getUser_email();
                 List<Reclamation> userReclamations = reclamationsByUser.get(userEmail);
+                long archivedCount = archivedByUser.getOrDefault(userEmail, 0L);
 
                 // Create main row
                 HBox mainRow = new HBox(15);
@@ -188,8 +198,11 @@ public class ReclamationController {
                 emailLabel.setPrefWidth(200);
                 emailLabel.setStyle("-fx-font-weight: bold;");
 
-                Button toggleButton = new Button(userReclamations.size() + " réclamation(s)");
+                Button toggleButton = new Button(userReclamations.size() + " (+" + archivedCount + " archivées)");
                 toggleButton.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-background-radius: 5;");
+                if (archivedCount > 0) {
+                    toggleButton.setStyle(toggleButton.getStyle() + " -fx-text-fill: #3B82F6; -fx-background-color: #e5e7eb; -fx-font-style: italic;");
+                }
 
                 mainRow.getChildren().addAll(emailLabel, toggleButton);
 
@@ -371,6 +384,36 @@ public class ReclamationController {
     @FXML private void handleDemandes() { loadView("/view/demandes.fxml"); }
     @FXML private void handleClasses() { loadView("/view/classes.fxml"); }
     @FXML private void handleReclamations() { loadView("/view/reclamation_dashboard.fxml"); }
+    @FXML private void handleArchives() {
+        try {
+            ArchiveService archiveService = new ArchiveService();
+            List<Reclamation> archivedReclamations = archiveService.getArchivedReclamations();
+            
+            if (archivedReclamations != null) {
+                // Afficher les archives dans une nouvelle fenêtre
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/archives.fxml"));
+                Parent root = loader.load();
+                
+                Stage stage = new Stage();
+                stage.setTitle("Archives des Réclamations");
+                stage.setScene(new Scene(root));
+                stage.show();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Impossible de récupérer les archives.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur lors du chargement des archives.");
+        }
+    }
+
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     private void loadView(String path) {
         try {
